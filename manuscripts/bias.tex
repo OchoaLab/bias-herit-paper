@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb, pdfpages} 
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[capitalize]{cleveref}
+
+% next three for UTF8 to work (for non-ASCII names to work without awkward codes)
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[utf8]{inputenc}
+
+% import biblatex with prefered settings
+% reuse code and library from LIGERA paper in the same repository
+\input{../../manuscripts/headerBiblatexHarvard.tex}
+\bibliography{../../manuscripts/zotero, ../../manuscripts/dummy} % biblatex wants this in the preamble...
+
+\usepackage[noT]{kinshipsymbols}
+% % copy of \Fst from package `kinshipsymbols`
+%\newcommand{\Fst}{F_\text{ST}}
+
+% double line spacing (PLoS wants this)
+\usepackage{setspace}
+\doublespacing
+% original, smaller spacing
+%\renewcommand{\baselinestretch}{1.2}
+
+\title{\Large \textbf{The effect of population kinship estimation bias in heritability estimation and genetic association}}
+\author{Zhuoran Hou$^1$, Alejandro Ochoa$^{1,2,*}$}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+$^1$ Department of Biostatistics and Bioinformatics, Duke University, Durham, NC 27705, USA \\
+$^2$ Duke Center for Statistical Genetics and Genomics, Duke University, Durham, NC 27705, USA \\
+$^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
+
+
+\begin{abstract}
+  Population kinship matrices are estimated for a variety of applications, including estimation of heritability and to control for population structure in genetic association studies.
+  Recent work found that the most common family of kinship estimators can be severely biased.
+  In this work, we investigate the effect of this kinship bias on the two downstream applications of heritability estimation and genetic association.
+  We present a novel trait simulation strategy that accurately parametrizes heritability, even when utilizing real genotypes.
+  Using these simulations, we find that heritability estimation becomes biased when using such biased kinship matrices.
+  Remarkably however, this kinship bias does not affect genetic associations based on either Principal Components Analysis (PCA) or Linear Mixed-effects Models (LMM).
+  Lastly, we explain our empirical observations using theory.
+  In particular, the exact form of the bias of the standard kinship estimator is such that it is compensated for by fitting the intercept in both PCA and LMM approaches, which model population structure via covariates, suggesting that downstream applications without this precise arrangement will not be robust to this kinship bias.
+\end{abstract}
+
+% \clearpage
+
+% \tableofcontents
+
+\clearpage
+	
+\section{Introduction} 
+
+...
+
+\section{Methods}
+
+...
+
+\section{Results}
+
+...
+
+\section{Discussion}
+
+...
+
+\printbibliography
+
+
+
+\end{document}
