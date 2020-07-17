@@ -55,9 +55,13 @@ $^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
 
 \clearpage
 	
-\section{Introduction} 
+\section{Introduction}
 
-...
+We previously found that the most common family of kinship estimators is biased \citep{ochoa_fst2}.
+
+GCTA estimated the heritability of human height from population data \citep{yang_common_2010}.
+GCTA is based on the biased kinship estimator \citep{yang_common_2010,yang_gcta:_2011}.
+
 
 \section{Methods}
 
@@ -308,8 +312,37 @@ These undesireable distortions propagate to the trait, which we confirmed in sim
 %It is not clear how to correct these distortions after centering the trait as shown above.
 Note that the intercept version we chose instead does not induce this genotype centering, which prevents the undesireable distortions in the trait covariance.
 
+\subsection{Admixture simulation for genotype matrices}
+
+TODO: describe the BNPSD simulation.
+
+\subsection{Kinship estimation}
+
+TODO: Present our popkin estimator, standard estimator (MOR and ROM versions), and GCTA estimator (like standard-MOR but with diff diagonal), with limits.
+
+\subsection{Heritability and genetic association software}
+
+TODO: state versions, download links, etc.
+
+Outline:
+\begin{itemize}
+\item SOLAR-Eclipse (herit only) \citep{almasy_multipoint_1998}.
+\item GCTA (both heritability and genetic association) \citep{yang_gcta:_2011}.
+\item PCA: our optimized R implementation [TODO: cite Yao and Ochoa].  Genetic association only.
+\end{itemize}
 
 \section{Results}
+
+\subsection{Empirical demonstration of biases in heritability estimation}
+
+TODO: add results using SOLAR and GCTA, varying the input kinship matrices (estimates and limits from methods).
+
+\subsection{Empirical demonstration of robustness to kinship bias in PCA and LMM genetic assocation studies}
+
+TODO: add results showing that p-values are highly correlated under all variations of these kinship matrices, for PCA and LMM (under simple admixture simulation without family structure).
+
+\subsection{Theoretical justification of empirical observations}
+
 
 ...
 
