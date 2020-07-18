@@ -17,7 +17,28 @@
 
 \usepackage[noT]{kinshipsymbols}
 % % copy of \Fst from package `kinshipsymbols`
-%\newcommand{\Fst}{F_\text{ST}}
+
+% some more definitions
+\newcommand{\kinMat}{%
+  \ensuremath{%
+    \mathbf{\Phi}
+  }%
+  \xspace%
+}%
+\newcommand{\kinMatStdLim}{%
+  \ensuremath{%
+    \mathbf{\hat{\Phi}}^\text{std-lim}
+  }%
+  \xspace%
+}%
+
+% for theorems!
+\usepackage{amsthm}
+%\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thm}{Theorem}
+%\newtheorem{lem}[thm]{Lemma}
+\newtheorem*{lem}{Lemma}
+% \newtheorem{lemma}[theorem]{Lemma}
 
 % % double line spacing (PLoS wants this)
 % \usepackage{setspace}
@@ -79,11 +100,11 @@ If \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is th
   \quad\quad
   \Cov(\mathbf{x}_i)
   =
-    4 \pit (1-\pit) \mathbf{\Phi}
+    4 \pit (1-\pit) \kinMat
     ,
 \end{align*}
-where $\mathbf{x}_i$ is the length-$n$ column vector of genotypes at locus $i$, $\mathbf{X} = (\mathbf{x}_i^\intercal)$ is the complete $m \times n$ genotype matrix, $\mathbf{\Phi} = (\kt)$ is the $n \times n$ kinship matrix, $\mathbf{p} = (\pit)$ is a length-$m$ column vector of ancestral allele frequencies, $\mathbf{1}_n = (1)$ is a length-$n$ column vector where every element is 1, and the $\intercal$ superscript denotes matrix transposition.
-Both kinship ($\mathbf{\Phi}$) and ancestral allele frequencies ($\mathbf{p}$) are parameters that depend on the choice of ancestral population, for which the Most Recent Common Ancestor (MRCA) population is the most sensible choice \citep{ochoa_fst1,ochoa_fst2}.
+where $\mathbf{x}_i$ is the length-$n$ column vector of genotypes at locus $i$, $\mathbf{X} = (\mathbf{x}_i^\intercal)$ is the complete $m \times n$ genotype matrix, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, $\mathbf{p} = (\pit)$ is a length-$m$ column vector of ancestral allele frequencies, $\mathbf{1}_n = (1)$ is a length-$n$ column vector where every element is 1, and the $\intercal$ superscript denotes matrix transposition.
+Both kinship ($\kinMat$) and ancestral allele frequencies ($\mathbf{p}$) are parameters that depend on the choice of ancestral population, for which the Most Recent Common Ancestor (MRCA) population is the most sensible choice \citep{ochoa_fst1,ochoa_fst2}.
 In this work, to simplify notation, we omit cumbersome notation that marks this dependence of parameters on the choice of ancestral population, not do we explicitly condition on the ancestral population when calculating expectations and covariances as done in previous work, although it is done implicitly.
 This and later notation is summarized in \cref{tab:notation}.
 
@@ -109,7 +130,7 @@ This and later notation is summarized in \cref{tab:notation}.
     $\mathbf{\beta} = (\beta_i)$ & $m \times 1$ & Effect size coefficients     \\
     $\mathbf{\epsilon}$          & $n \times 1$ & Non-genetic random effect    \\
     $\mathbf{p} = (\pit)$        & $m \times 1$ & Ancestral allele frequencies \\
-    $\mathbf{\Phi} = (\kt)$      & $n \times n$ & Kinship matrix               \\
+    $\kinMat = (\kt)$      & $n \times n$ & Kinship matrix               \\
     $\mathbf{1}_n$               & $n \times 1$ & Vector of ones               \\
     $\mathbf{I}_n$               & $n \times n$ & Identity matrix              \\
     \hline
@@ -117,9 +138,12 @@ This and later notation is summarized in \cref{tab:notation}.
 \end{table}
 
 The length-$n$ quantitative trait vector $\mathbf{y}$ for all individuals is assumed to follow a linear polygenic model,
-$$
-\mathbf{y} = \alpha \mathbf{1}_n + \mathbf{X}^\intercal \mathbf{\beta}  + \mathbf{\epsilon},
-$$
+\begin{equation}
+  \label{eq:trait}
+  \mathbf{y}
+  =
+  \mathbf{1}_n \alpha + \mathbf{X}^\intercal \mathbf{\beta}  + \mathbf{\epsilon},
+\end{equation}
 where $\alpha$ is the intercept coefficient, $\mathbf{\beta} = (\beta_i)$ is a length-$m$ column vector of effect size coefficients for each locus $i$ (which may be zero), and $\mathbf{\epsilon}$ is a length-$n$ column vector of non-genetic effects.
 To analyze the covariance structure of the trait, we shall treat $\alpha$ and $\mathbf{\beta}$ are fixed parameters, while $\mathbf{X}$ and $\mathbf{\epsilon}$ are random.
 The non-genetic effects are assumed to be independent with variance $(1-h^2) \sigma^2$ given by the total trait variance scale $\sigma^2$ and the narrow-sense heritability $h^2$:
@@ -153,26 +177,26 @@ The covariance matrix of the trait is
   =
   \left( \sum_{i=1}^m \Cov(\mathbf{x}_i) \beta_i^2 \right) + \Cov(\mathbf{\epsilon})
   =
-  \mathbf{\Phi} \left( \sum_{i=1}^m 4 \pit (1-\pit) \beta_i^2 \right) + (1-h^2) \sigma^2 \mathbf{I}_n
+  \kinMat \left( \sum_{i=1}^m 4 \pit (1-\pit) \beta_i^2 \right) + (1-h^2) \sigma^2 \mathbf{I}_n
   .
 \end{align*}
 Therefore, we can write the covariance in terms of the heritability and the overall variance scale, in a formulation that matches previous work [TODO: add citations]:
 \begin{align*}
   \Cov(\mathbf{y})
   =
-  \sigma^2 \left( 2 h^2 \mathbf{\Phi}  + (1-h^2) \mathbf{I}_n \right)
+  \sigma^2 \left( 2 h^2 \kinMat  + (1-h^2) \mathbf{I}_n \right)
   , \quad\quad \text{where} \quad\quad
   \sigma^2 h^2 
   = 
   \sum_{i=1}^m 2 \pit (1-\pit) \beta_i^2
   .
 \end{align*}
-Since the above expectation and covariance is conditioned on the choice of ancestral population, and given in terms of parameters that depend on it (\pit and $\mathbf{\Phi}$), then the parameters $\mu, \sigma^2, h^2$ are all also dependent on the choice of ancestral population.
+Since the above expectation and covariance is conditioned on the choice of ancestral population, and given in terms of parameters that depend on it (\pit and $\kinMat$), then the parameters $\mu, \sigma^2, h^2$ are all also dependent on the choice of ancestral population.
 
 The parametrization of our model is equivalent to setting separate absolute scales to the genetic and environment variance components, as $\sigma^2_G = \sigma^2 h^2$ and $\sigma^2_E = (1-h^2) \sigma^2$, respectively, which results in $\sigma^2_G + \sigma^2_E = \sigma^2$ and $\sigma^2_G / (\sigma^2_G + \sigma^2_E) = h^2$, as desired.
 
-The factor of two in front of $\mathbf{\Phi}$ is traditionally there so that for an unstructured population
-$2 \mathbf{\Phi} = \mathbf{I}_n$, in which case the trait covariance simplifies to
+The factor of two in front of $\kinMat$ is traditionally there so that for an unstructured population
+$2 \kinMat = \mathbf{I}_n$, in which case the trait covariance simplifies to
 $\Cov(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ for any value of $h^2$.
 More broadly, the variance of the trait for any outbred individual is $\sigma^2$ under this parametrization.
 
@@ -183,7 +207,7 @@ The goal is to choose the intercept $\alpha$ and draw random effect sizes $\math
 First we randomly select $m_1$ loci to be causal, and subset the genotype matrix $\mathbf{X}$ and ancestral allele frequency vector $\mathbf{p}$ so that from this point on they contain only those causal loci (they now have dimensions $m_1 \times n$ and length $m_1$, respectively).
 
 Below we divide the algorithm into two steps: (1) scaling the effect sizes, and (2) centering the trait.
-Each step forks into two cases: whether the true ancestral allele frequencies $\mathbf{p}$ are known or not (the latter requires a known kinship matrix $\mathbf{\Phi}$).
+Each step forks into two cases: whether the true ancestral allele frequencies $\mathbf{p}$ are known or not (the latter requires a known kinship matrix $\kinMat$).
 
 \subsubsection{Scaling effect sizes}
 
@@ -224,7 +248,7 @@ $$
 \pit(1-\pit) (1 - \bar{\varphi})
 ,
 $$
-where $\bar{\varphi} = \frac{1}{n^2} \mathbf{1}_n^\intercal \mathbf{\Phi} \mathbf{1}_n$ is the mean kinship coefficient in the data.
+where $\bar{\varphi} = \frac{1}{n^2} \mathbf{1}_n^\intercal \kinMat \mathbf{1}_n$ is the mean kinship coefficient in the data.
 Therefore the initial genetic variance scale, estimated as
 $$
 \hat{\sigma}^2_0
@@ -301,13 +325,13 @@ $$
 \Cov \left( \mathbf{x}_i - 2 \pith \mathbf{1}_n \right)
 =
 \pit ( 1 - \pit ) \left( 
-\mathbf{\Phi} 
+\kinMat 
 + \bar{\varphi} \mathbf{1}_n \mathbf{1}_n^\intercal 
 - \mathbf{\varphi} \mathbf{1}_n^\intercal 
 - \mathbf{1}_n \mathbf{\varphi}^\intercal 
 \right),
 $$
-where $\bar{\varphi}$ is the overall mean kinship, as before, and $\mathbf{\varphi} = \frac{1}{n} \mathbf{\Phi} \mathbf{1}_n$ is a length-$n$ column vector of per-row mean kinship values.
+where $\bar{\varphi}$ is the overall mean kinship, as before, and $\mathbf{\varphi} = \frac{1}{n} \kinMat \mathbf{1}_n$ is a length-$n$ column vector of per-row mean kinship values.
 These undesireable distortions propagate to the trait, which we confirmed in simulations (not shown).
 %It is not clear how to correct these distortions after centering the trait as shown above.
 Note that the intercept version we chose instead does not induce this genotype centering, which prevents the undesireable distortions in the trait covariance.
@@ -343,8 +367,129 @@ TODO: add results showing that p-values are highly correlated under all variatio
 
 \subsection{Theoretical justification of empirical observations}
 
+Here, to eliminate random estimation noise from the analysis (which our empirical evaluations suggest play a minor role), we shall focus on the limiting bias of the standard kinship estimator.
+Therefore, our theoretical results only consider the true kinship matrix \kinMat and the limit of the standard kinship estimator, given by
+$$
+\kinMatStdLim
+=
+\frac{1}{1 - \bar{\varphi}}
+\left(
+  \kinMat
+  + \bar{\varphi} \mathbf{1}_n \mathbf{1}_n^\intercal 
+  - \mathbf{\varphi} \mathbf{1}_n^\intercal 
+  - \mathbf{1}_n \mathbf{\varphi}^\intercal 
+\right)
+.
+$$
+The two kinship matrices are related more succinctly using the centering matrix $\mathbf{C}$:
+$$
+\kinMatStdLim
+=
+\frac{1}{1 - \bar{\varphi}}
+\mathbf{C} \kinMat \mathbf{C}
+, \quad\quad
+\mathbf{C}
+=
+\mathbf{I}_n - \frac{1}{n} \mathbf{1}_n \mathbf{1}_n^\intercal
+.
+$$
 
-...
+The centering matrix has been well studied, and we review its properties here.
+For any length-$n$ vector $\mathbf{v}$ we have
+\begin{align*}
+  \mathbf{C} \mathbf{v}
+  % =
+  % \left(\mathbf{I} - \frac{1}{n} \mathbf{1} \mathbf{1}^\intercal\right) \mathbf{v}
+  % =
+  % \mathbf{I} \mathbf{v} - \frac{1}{n} \mathbf{1} \mathbf{1}^\intercal \mathbf{v}
+  =
+  \mathbf{v} - \mathbf{1}_n \bar{v}
+  ,
+\end{align*}
+where $\bar{v} = \frac{1}{n} \mathbf{1}_n^\intercal \mathbf{v}$ is the mean value of the elements of $\mathbf{v}$.
+Therefore, $\mathbf{v} = \mathbf{1}_n$ gets transformed to the zero vector, so it is an eigenvector with an eigenvalue of zero:
+\begin{align*}
+  \mathbf{C} \mathbf{1}_n
+  % =
+  % \mathbf{1} - \mathbf{1}
+  =
+  \mathbf{0}_n
+  .
+\end{align*}
+Moreover, any vector $\mathbf{v}$ orthogonal to $\mathbf{1}_n$ has a zero mean element ($\bar{v} = 0$) by hypothesis and it is not altered by $\mathbf{C}$ ($\mathbf{C} \mathbf{v} = \mathbf{v}$).
+Therefore, the nullspace of $\mathbf{C}$ is spanned by $\mathbf{1}_n$.
+
+This centering matrix provides the key insight as to why PCA and LMM approaches are robust to this specific kinship bias, namely that by fitting the intercept term $\alpha \mathbf{1}_n$ together with the eigenvectors (for PCA) or random effects (in the same rowspace as the eigenvectors; for LMM) of \kinMatStdLim, they complete the rowspace of \kinMatStdLim to equal the rowspace of the true kinship matrix \kinMat.
+First we show the following lemma.
+
+\begin{lem}
+  $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim but not of \kinMat.
+\end{lem}
+
+\begin{proof}
+The vector $\mathbf{1}_n$ is not in the nullspace of any true kinship matrix \kinMat, since $\kinMat \mathbf{1}_n \neq \mathbf{0}_n$, which follows since all kinship values are non-negative and the diagonal of the kinship matrix is strictly positive (it has a minimum value of $\frac{1}{2}$).
+However, $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim since $\mathbf{C} \mathbf{1}_n = \mathbf{0}_n$:
+$$
+\kinMatStdLim \mathbf{1}_n
+=
+\frac{1}{1 - \bar{\varphi}}
+\mathbf{C} \kinMat \mathbf{C} \mathbf{1}_n
+=
+\mathbf{0}_n
+.
+$$
+\end{proof}
+
+Now we may prove the desired theorem.
+
+\begin{thm}
+  The rowspace of \kinMat equals the direct sum of rowspaces of \kinMatStdLim and $\mathbf{1}_n$.
+\end{thm}
+
+\begin{proof}
+  Since $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim but not \kinMat, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which therefore have zero mean ($\bar{v}=0$).
+  These vectors satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$, so
+  $$
+  \kinMatStdLim \mathbf{v}
+  =
+  \mathbf{C} \kinMat \mathbf{C} \mathbf{v}
+  =
+  \mathbf{C} \kinMat \mathbf{v}
+  .
+  $$
+  Therefore, if $\mathbf{v}$ is in the nullspace of \kinMat, then $\kinMat \mathbf{v} = \mathbf{0}_n$, which implies $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, so $\mathbf{v}$ is also in the nullspace of \kinMatStdLim.
+  
+  Conversely, if $\mathbf{v}$ is in the nullspace of \kinMatStdLim, then $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, which implies that $\mathbf{C} \kinMat \mathbf{v} = \mathbf{0}_n$.
+  Therefore, $\kinMat \mathbf{v}$ is in the nullspace of $\mathbf{C}$, and since that is spanned by $\mathbf{1}_n$, then $\kinMat \mathbf{v} = \gamma \mathbf{1}_n$ for some $\gamma$.
+  Left multiplying by $\mathbf{v}^\intercal$ results in $\mathbf{v}^\intercal \kinMat \mathbf{v} = \gamma \mathbf{v}^\intercal \mathbf{1}_n = 0$ (since $\mathbf{v}$ is orthogonal to $\mathbf{1}_n$), which implies that $\mathbf{v}$ is in the nullspace of \kinMat, as desired.
+
+  Since the nullspace of \kinMat and the direct sum of the nullspaces of \kinMatStdLim and $\mathbf{1}_n$ are the same, it follows from the fundamental theorem of linear algebra that the respectice rowspaces are also the same.
+\end{proof}
+
+\subsubsection{Theoretical justification for PCA genetic association}
+
+In PCA-based genetic association, the desired result follows from the previous theorem, as follows.
+Here the goal is to fit the trait $\mathbf{y}$ using a model simiar to our main model in \cref{eq:trait}, namely
+\begin{equation}
+  \label{eq:pca_gwas}
+  \mathbf{y}
+  =
+  \mathbf{1}_n \alpha + \mathbf{x}_i \beta_i + \mathbf{U}_r \mathbf{\gamma}_r + \mathbf{\epsilon}
+  ,
+\end{equation}
+where instead of including the whole genotype matrix $\mathbf{X}$ as we did in \cref{eq:trait}, here the genotype vector $\mathbf{x}_i$ at a single locus $i$ is fit, and the effect of the rest of the genome is approxiated using the top $r$ eigenvectors of the kinship matrix, contained in the $n \times r$ matrix $\mathbf{U}_r$ and its length-$r$ vector of coefficients $\mathbf{\gamma}_r$.
+At each locus $i$ the coefficients $\alpha$, $\beta_i$, and $\mathbf{\gamma}_r$ are fit to minimize the squared error between the observed trait and the model, and the residuals and possibly the degrees of freedom are used to evaluate the significance of the fit for the genotype under the null hypothesis that $\beta_i = 0$.
+
+Here the kinship matrix in question is not the full kinship matrix \kinMat, but its $r$-dimensional approximation $\kinMat_r = \mathbf{U}_r \mathbf{\Lambda}_r \mathbf{U}_r^\intercal$, where $\mathbf{\Lambda}_r$ is an $r \times r$ diagonal matrix of the top $r$ eigenvalues.
+One key requirement in need of verification is that $\mathbf{1}_n$ is not in the nullspace of $\kinMat_r$, which certainly holds for reasonable approximations as $\mathbf{1}_n^\intercal \kinMat_r \mathbf{1}_n$ estimates the mean kinship of the data, which is non-zero except for completey unstructured populations.
+The other key requirement is that $\kinMatStdLim_r \propto C \kinMat_r C$, which is not clear if it holds exactly (that is, is centering the kinship matrix first and then approximating to the top $r$ dimensions the same as first approximating to $r$ dimensions and then centering?).
+Assuming that these key assumptions hold, then the rowspace of $\kinMat_r$ again equals the direct sum of the rowspaces of $\kinMatStdLim_r$ and $\mathbf{1}_n$.
+
+The rowspace of $\mathbf{U}_r$ is the same as the rowspace of the $r$-dimensional kinship matrix it is derived from, so either $\kinMat_r$ or $\kinMatStdLim_r$.
+Thus, when fitting the model, the space spanned by $\mathbf{1}_n \alpha + \mathbf{U}_r \mathbf{\gamma}_r$ is the same whether the eigenvectors $\mathbf{U}_r$ are derived from the true kinship matrix \kinMat or the limit of the biased estimator \kinMatStdLim, and this is so exclusively because the intercept vector $\mathbf{1}_n$ is present in the model.
+That implies that, while the coefficients $\alpha$ and $\mathbf{\gamma}_r$ may change when fit based on \kinMat or \kinMatStdLim, the sum of the term $\mathbf{1}_n \alpha + \mathbf{U}_r \mathbf{\gamma}_r$ will be the same, as it is being chosen to minimize the least square error and the subspace is the same, so the value of this solution must be the same.
+Thus, the fit of the focal coefficient $\beta_i$ is the same either way, and so is its evaluation of significance (the sum of square errors is also the same).
+Therefore, the genetic association test is unchanged when the eigenvectors of either \kinMat or \kinMatStdLim are included as covariates.
 
 \section{Discussion}
 
