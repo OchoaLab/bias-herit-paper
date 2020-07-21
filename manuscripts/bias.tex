@@ -211,7 +211,7 @@ Each step forks into two cases: whether the true ancestral allele frequencies $\
 
 \subsubsection{Scaling effect sizes}
 
-The initial effect sizes are drawn independently from a standard normal distribution:
+The initial effect sizes $\beta_i$ are drawn independently from a standard normal distribution:
 $$
 \beta_i \sim \text{N}(0, 1).
 $$
@@ -273,8 +273,10 @@ results in the desired variance.
 
 \subsubsection{Centering the trait}
 
+Here we consider the problem of selecting the intercept coefficient $\alpha$ that, together with the previous effect size coefficient vector $\mathbf{\beta}$, result in the desired trait mean $\mu$.
+
 When ancestral allele frequencies are known, the trait can be centered precisely.
-Given our model, we obtain the desired overall trait mean $\mu$ by choosing the intercept to be
+Given our model, we obtain the desired overall trait mean $\mu$ by choosing the intercept coefficient to be
 $$
 \alpha 
 =
@@ -282,7 +284,7 @@ $$
 .
 $$
 
-When ancestral allele frequencies are unknown, the solution is to choose the intercept
+When ancestral allele frequencies are unknown, the solution is to choose the intercept coefficient
 \begin{align*}
   \alpha 
   =
@@ -301,10 +303,16 @@ where $\mathbf{1}_{m_1}$ is a length-$m_1$ column vector of ones.
 Note that this overal mean allele frequency $\hat{\bar{p}}$ is computed among causal loci only.
 This works very well in practice since $\mathbf{\beta}$ is drawn randomly, so it is uncorrelated to $\mathbf{p}$ and therefore
 $$
-\frac{1}{m_1} \sum_{i=1}^{m_1} \mathbf{x}_i \beta_i
+\frac{1}{m_1} \mathbf{p}^\intercal \mathbf{\beta}
+=
+\frac{1}{m_1} \sum_{i=1}^{m_1} \pit \beta_i
 \approx
-\left( \frac{1}{m_1} \sum_{i=1}^{m_1} \mathbf{x}_i \right)
+\left( \frac{1}{m_1} \sum_{i=1}^{m_1} \pit \right)
 \left( \frac{1}{m_1} \sum_{i=1}^{m_1} \beta_i \right)
+=
+\frac{1}{m_1}
+\bar{p}
+\mathbf{1}_{m_1}^\intercal \mathbf{\beta}
 $$
 is a good approximation.
 
@@ -447,7 +455,7 @@ Now we may prove the desired theorem.
 \end{thm}
 
 \begin{proof}
-  Since $\mathbf{1}_n$ is in both rowspaces, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which therefore have zero mean ($\bar{v}=0$) and satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$.
+  Since $\mathbf{1}_n$ is in both rowspaces, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$.
   We shall prove below that any such vector is in the nullspace of \kinMat if and only if it is in the nullspace of \kinMatStdLim.
   Then, since the nullspace of \kinMat and $\mathbf{1}_n$ is the same as the nullspace of \kinMatStdLim and $\mathbf{1}_n$, it follows from the fundamental theorem of linear algebra that their rowspaces are also the same.
   
