@@ -419,7 +419,7 @@ Therefore, $\mathbf{v} = \mathbf{1}_n$ gets transformed to the zero vector, so i
 Moreover, any vector $\mathbf{v}$ orthogonal to $\mathbf{1}_n$ has a zero mean element ($\bar{v} = 0$) by hypothesis and it is not altered by $\mathbf{C}$ ($\mathbf{C} \mathbf{v} = \mathbf{v}$).
 Therefore, the nullspace of $\mathbf{C}$ is spanned by $\mathbf{1}_n$.
 
-This centering matrix provides the key insight as to why PCA and LMM approaches are robust to this specific kinship bias, namely that by fitting the intercept term $\alpha \mathbf{1}_n$ together with the eigenvectors (for PCA) or random effects (in the same rowspace as the eigenvectors; for LMM) of \kinMatStdLim, they complete the rowspace of \kinMatStdLim to equal the rowspace of the true kinship matrix \kinMat.
+This centering matrix provides the key insight as to why PCA and LMM approaches are robust to this specific kinship bias, namely that by fitting the intercept term $\alpha \mathbf{1}_n$ together with the eigenvectors (for PCA) or random effects (in the same rowspace as the eigenvectors; for LMM) of \kinMatStdLim, they complete the rowspace of \kinMatStdLim to equal the rowspace of the true kinship matrix \kinMat plus the intercept.
 First we show the following lemma.
 
 \begin{lem}
@@ -443,27 +443,47 @@ $$
 Now we may prove the desired theorem.
 
 \begin{thm}
-  The rowspace of \kinMat equals the direct sum of rowspaces of \kinMatStdLim and $\mathbf{1}_n$.
+  The rowspace of \kinMat and $\mathbf{1}_n$ equals rowspace of \kinMatStdLim and $\mathbf{1}_n$.
 \end{thm}
 
 \begin{proof}
-  Since $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim but not \kinMat, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which therefore have zero mean ($\bar{v}=0$).
-  These vectors satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$, so
+  Since $\mathbf{1}_n$ is in both rowspaces, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which therefore have zero mean ($\bar{v}=0$) and satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$.
+  We shall prove below that any such vector is in the nullspace of \kinMat if and only if it is in the nullspace of \kinMatStdLim.
+  Then, since the nullspace of \kinMat and $\mathbf{1}_n$ is the same as the nullspace of \kinMatStdLim and $\mathbf{1}_n$, it follows from the fundamental theorem of linear algebra that their rowspaces are also the same.
+  
+  If $\mathbf{v}$ is in the nullspace of \kinMat, then $\kinMat \mathbf{v} = \mathbf{0}_n$.
+  It follows that
   $$
   \kinMatStdLim \mathbf{v}
   =
+  \frac{1}{1 - \bar{\varphi}}
+  \mathbf{C} \kinMat \mathbf{C} \mathbf{v}
+  =
+  \frac{1}{1 - \bar{\varphi}}
+  \mathbf{C} \kinMat \mathbf{v}
+  =
+  \mathbf{0}_n
+  ,
+  $$
+  so $\mathbf{v}$ is also in the nullspace of \kinMatStdLim.
+  
+  Conversely, if $\mathbf{v}$ is in the nullspace of \kinMatStdLim, then $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, which implies that
+  $
   \mathbf{C} \kinMat \mathbf{C} \mathbf{v}
   =
   \mathbf{C} \kinMat \mathbf{v}
-  .
-  $$
-  Therefore, if $\mathbf{v}$ is in the nullspace of \kinMat, then $\kinMat \mathbf{v} = \mathbf{0}_n$, which implies $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, so $\mathbf{v}$ is also in the nullspace of \kinMatStdLim.
-  
-  Conversely, if $\mathbf{v}$ is in the nullspace of \kinMatStdLim, then $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, which implies that $\mathbf{C} \kinMat \mathbf{v} = \mathbf{0}_n$.
-  Therefore, $\kinMat \mathbf{v}$ is in the nullspace of $\mathbf{C}$, and since that is spanned by $\mathbf{1}_n$, then $\kinMat \mathbf{v} = \gamma \mathbf{1}_n$ for some $\gamma$.
-  Left multiplying by $\mathbf{v}^\intercal$ results in $\mathbf{v}^\intercal \kinMat \mathbf{v} = \gamma \mathbf{v}^\intercal \mathbf{1}_n = 0$ (since $\mathbf{v}$ is orthogonal to $\mathbf{1}_n$), which implies that $\mathbf{v}$ is in the nullspace of \kinMat, as desired.
-
-  Since the nullspace of \kinMat and the direct sum of the nullspaces of \kinMatStdLim and $\mathbf{1}_n$ are the same, it follows from the fundamental theorem of linear algebra that the respectice rowspaces are also the same.
+  =
+  \mathbf{0}_n
+  $.
+  Left multiplying by $\mathbf{v}^\intercal$ results in
+  $
+  \mathbf{v}^\intercal \mathbf{C} \kinMat \mathbf{v}
+  =
+  \mathbf{v}^\intercal \kinMat \mathbf{v}
+  =
+  0
+  $, which implies that $\mathbf{v}$ is also in the nullspace of the positive-semidefinite matrix \kinMat, as desired.
+  If \kinMat were positive definite, then no such $\mathbf{v} \ne \mathbf{0}_n$ would exist (\kinMat would have the trivial nullspace $\{ \mathbf{0}_n \}$).
 \end{proof}
 
 \subsubsection{Theoretical justification for PCA genetic association}
@@ -492,13 +512,7 @@ $$
 $$
 is only approximately true.
 In other words, centering the kinship matrix first and then approximating to the top $r$ dimensions is not exactly equal to first approximating to $r$ dimensions and then centering, although in simulations we found it to be a very good approximation (especially in the absence of family structure, which is where use of PCA is most appropriate anyway [TODO: cite Yao, other papers]).
-% WRONG :(
-% Moreover, the rowspaces of
-% $\left( \mathbf{C} \kinMat \mathbf{C} \right)_r$
-% and
-% $\mathbf{C} \kinMat_r \mathbf{C}$
-% are the same, since (1) centering before or after the low-dimensional approximation both result in $\mathbf{1}_n$ being in the nullspace of $\kinMatStdLim_r$, and (2) ...
-Therefore, in this case the rowspace of $\kinMat_r$ only approximately equals the direct sum of the rowspaces of $\kinMatStdLim_r$ and $\mathbf{1}_n$.
+Therefore, in this case the rowspace of $\kinMat_r$ and $\mathbf{1}_n$ only approximately equals the rowspace of $\kinMatStdLim_r$ and $\mathbf{1}_n$.
 
 The rowspace of $\mathbf{U}_r$ is the same as the rowspace of the $r$-dimensional kinship matrix it is derived from, so either $\kinMat_r$ or $\kinMatStdLim_r$.
 Thus, when fitting the model, the space spanned by $\mathbf{1}_n \alpha + \mathbf{U}_r \mathbf{\gamma}_r$ is approximately the same whether the eigenvectors $\mathbf{U}_r$ are derived from the true kinship matrix \kinMat or the limit of the biased estimator \kinMatStdLim, and this is so because the intercept vector $\mathbf{1}_n$ is present in the model.
