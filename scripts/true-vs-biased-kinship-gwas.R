@@ -19,7 +19,7 @@ source('gas_pca_optim.R')
 source('gas_lmm_gemma.R')
 
 # get back to this subdirectory
-setwd( '../env/scripts/' )
+setwd( '../bias/scripts/' )
 
 
 # change this path to GEMMA to whatever it is in your computer

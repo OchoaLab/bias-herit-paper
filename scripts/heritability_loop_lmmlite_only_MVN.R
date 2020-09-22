@@ -27,7 +27,7 @@ source('kinship_gcta_limit.R')
 source('herit_lmmlite.R')
 
 # get back to this subdirectory
-setwd( '../env/scripts/' )
+setwd( '../bias/scripts/' )
 
 # change this path to GCTA to whatever it is in your computer
 #gcta_bin <- '/home/viiia/bin/gcta_1.93.2beta/gcta64'

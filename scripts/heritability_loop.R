@@ -26,7 +26,7 @@ source('gas_lmm_gcta.R')
 source('kinship_gcta_limit.R')
 
 # get back to this subdirectory
-setwd( '../env/scripts/' )
+setwd( '../bias/scripts/' )
 
 
 # change this path to GCTA to whatever it is in your computer
@@ -337,7 +337,7 @@ delete_files_phen(name_out)
 
 ## rename results matrix 
 
-setwd( '../env/scripts/' )
+setwd( '../bias/scripts/' )
 
 herit_all<-as.data.frame(herit_all)
 
