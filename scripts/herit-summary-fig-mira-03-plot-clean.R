@@ -1,0 +1,124 @@
+# this script generates a few replicates of the same simulation with slight differences, to showcase the biases Zhuoran has identified.
+# this follow up actually creates the plot
+
+library(optparse)    # for terminal options
+library(readr)       # to write data
+library(ochoalabtools) # for plotting
+
+# move to data location
+setwd( '../data/' )
+
+############
+### ARGV ###
+############
+
+# define options
+option_list = list(
+    make_option(c("-r", "--rep"), type = "integer", default = 10, 
+                help = "number of replicates", metavar = "int"),
+    make_option(c("-n", "--n_ind"), type = "integer", default = 2000, 
+                help = "number of individuals", metavar = "int"),
+    make_option(c("-m", "--m_loci"), type = "integer", default = 100000, 
+                help = "number of loci", metavar = "int"),
+    make_option(c("-k", "--k_subpops"), type = "integer", default = 3, 
+                help = "admixture intermediate subpopulations", metavar = "int"),
+    make_option(c("-f", "--fst"), type = "double", default = 0.3, 
+                help = "FST (fixation index)", metavar = "double"),
+    make_option(c("--bias_coeff"), type = "double", default = 0.5, 
+                help = "admixture bias coeff", metavar = "double"),
+    make_option(c("-g", "--generations"), type = "integer", default = 1, 
+                help = "number of generations, for realistic local kinship", metavar = "int"),
+    make_option("--herit", type = "double", default = 0.8, 
+                help = "heritability", metavar = "double"),
+    make_option("--m_causal", type = "integer", default = 100, 
+                help = "num causal loci", metavar = "int")
+)
+
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
+
+# get values
+rep <- opt$rep
+n_ind <- opt$n_ind
+m_loci <- opt$m_loci
+k_subpops <- opt$k_subpops
+fst <- opt$fst
+bias_coeff <- opt$bias_coeff
+generations <- opt$generations
+m_causal <- opt$m_causal
+herit <- opt$herit
+
+# output path for BED files
+name_out <- paste0(
+    'herit-estimates',
+    '-n', n_ind,
+    '-m', m_loci,
+    '-k', k_subpops,
+    '-f', fst,
+    '-s', bias_coeff,
+    '-mc', m_causal,
+    '-h', herit,
+    '-g', generations,
+    '-r', rep
+)
+
+# load data
+data <- read_tsv(
+    paste0( name_out, '.txt' )
+)
+
+# remove data that would be confusing to show (std_lim and gcta_lim, names are weirder though, meh)
+# list of things to keep
+names_keep <- c('tru', 'pop', 'std', 'gct')
+names_nice <- c('Truth', 'Popkin', 'Standard', 'GCTA')
+# add X and N suffixes
+names_keep <- c(
+    paste0( names_keep, 'X' ),
+    paste0( names_keep, 'N' )
+)
+# apply filter
+data <- data[ , names(data) %in% names_keep ]
+
+# begin plot
+fig_start(
+    paste0( name_out, '-clean' ),
+    height = 3.5,
+    mar_t = 2,
+    mar_b = 5
+)
+boxplot(
+    data,
+    names = c( names_nice, names_nice ),
+    xlab = '',
+    ylab = 'Heritability estimate',
+    las = 3
+)
+abline( h = herit, lty = 2, col = 'red' )
+text(
+    x = 0.5,
+    y = herit,
+    labels = "True\nHeritability",
+    col = 'red',
+    adj = 0
+)
+mtext(
+    'Kinship estimator',
+    side = 1,
+    line = 4
+)
+mtext(
+    'Trait simulation type',
+    side = 3,
+    line = 1
+)
+mtext(
+    'Genetic',
+    adj = 0.15
+)
+mtext(
+    'MVN',
+    adj = 0.8
+)
+abline( v = 4.5 )
+fig_end()
+# and trait type
