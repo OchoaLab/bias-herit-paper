@@ -33,9 +33,9 @@ time Rscript herit-summary-fig-mira-01-estimate.R -n 5000 -g 2
 
 
 # plot versions take the same arguments
-time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2
 # and version of plot actually used in MIRA proposal
-time Rscript herit-summary-fig-mira-03-plot-clean.R -n 5000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2 --grant
 
 
 ### THEORY ###
