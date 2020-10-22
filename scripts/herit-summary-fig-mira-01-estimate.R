@@ -366,19 +366,19 @@ data <- tibble(
     slmX = herit_slmX,
     stdX = herit_stdX,
     glmX = herit_glmX,
-    gctX = herit_glmX,
+    gctX = herit_gctX,
     truN = herit_truN,
     popN = herit_popN,
     slmN = herit_slmN,
     stdN = herit_stdN,
     glmN = herit_glmN,
-    gctN = herit_glmN
+    gctN = herit_gctN
 )
 
 # save data
 write_tsv(
     data,
-    path = paste0( name_out, '.txt' )
+    file = paste0( name_out, '.txt' )
 )
 
 ###############
