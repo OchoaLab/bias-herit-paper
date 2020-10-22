@@ -131,7 +131,7 @@ boxplot(
 )
 if (!grant) {
     legend(
-        if ( generations == 1 ) 'bottomright' else 'topright',
+        'bottomleft', # if ( generations == 1 ) 'bottomleft' else 'topright',
         title = 'Kinship type',
         title.col = 'black', # default uses col_oracle for some reason :(
         legend = c('Oracle', 'Estimated'),
@@ -139,15 +139,15 @@ if (!grant) {
         col = NA,
 #        bty = 'n',
         cex = 0.7
-        )
+    )
 }
 abline( h = herit, lty = 2, col = 'red' )
 text(
-    x = if ( generations == 1 ) ncol(data) + 0.5 else 0.5,
+    x = 0.5, # if ( generations == 1 ) ncol(data) + 0.5 else 0.5,
     y = herit,
     labels = "True\nHeritability",
     col = 'red',
-    adj = if ( generations == 1 ) 1 else 0
+    adj = 0, # if ( generations == 1 ) 1 else 0
 )
 mtext(
     'Kinship estimator',

@@ -31,8 +31,19 @@ time Rscript herit-summary-fig-mira-01-estimate.R -n 5000
 time Rscript herit-summary-fig-mira-01-estimate.R -n 5000 -g 2
 # 161m4.862s labbyDuke
 
-
 # plot versions take the same arguments
+time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 1
+time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 4
+time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 6
+time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 10
+time Rscript herit-summary-fig-mira-02-plot.R -n 2000 -g 1
+time Rscript herit-summary-fig-mira-02-plot.R -n 2000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 3000 -g 1
+time Rscript herit-summary-fig-mira-02-plot.R -n 3000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 4000 -g 1
+time Rscript herit-summary-fig-mira-02-plot.R -n 4000 -g 2
+time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 1
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2
 # and version of plot actually used in MIRA proposal
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2 --grant
