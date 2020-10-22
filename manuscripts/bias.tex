@@ -255,21 +255,23 @@ LMMs \citep{astle_population_2009, zhou_genome-wide_2012, loh_efficient_2015, su
 and other models \citep{rakovski_kinship-based_2009, thornton_roadtrips:_2010}.
 The popular heritability estimation approach GCTA \citep{yang_common_2010, yang_gcta:_2011} employs a variant of this estimator detailed in the next paragraph.
 The standard estimator, and its almost sure limit as the number of loci $m$ and number of individuals $n$ go to infinity \citep{ochoa_fst2}, are given by
-\begin{equation}
+\begin{align}
   \label{eq:kinship_std}
   \ktHatStd
-  =
-  \frac{1}{m} \sum\limits_{i=1}^m \frac{\left( \xij - 2 \pith \right) \left( \xij[k] - 2 \pith \right)}{4 \pith \left( 1-\pith \right)}
-  \toasNM
-  \frac{\kt -\bar{\varphi}_j -\bar{\varphi}_k + \bar{\varphi}}{1 - \bar{\varphi}}
-  ,
-\end{equation}
+  &=
+    \frac{1}{m} \sum\limits_{i=1}^m \frac{\left( \xij - 2 \pith \right) \left( \xij[k] - 2 \pith \right)}{4 \pith \left( 1-\pith \right)}
+  \\
+  \label{eq:kinship_std_lim}
+  &\toasNM
+    \frac{\kt -\bar{\varphi}_j -\bar{\varphi}_k + \bar{\varphi}}{1 - \bar{\varphi}}
+    ,
+\end{align}
 where \ktHatStd is the estimated kinship of individuals $j$ and $k$,
 $\pith = \frac{1}{2n} \sum_{j=1}^n \xij$ is the standard ancestral allele frequency estimator,
 $\bar{\varphi}_j = \frac{1}{n} \sum_{k=1}^n \kt$ is the mean kinship of individual $j$ with all others, and
 $\bar{\varphi} = \frac{1}{n^2} \sum_{j=1}^n \sum_{k=1}^n \kt$ is the overall mean kinship.
 This is a complex bias that varies for every pair of individuals, and which is on average a downward bias.
-(Note that the mean \ktHatStd is exactly zero, regardless of the true value of the mean kinship.)
+(Note that the mean estimate, or $\frac{1}{n^2} \sum_{j=1}^n \sum_{k=1}^n \ktHatStd$, is algebraically zero, regardless of the true value of the mean kinship.)
 
 Variants of this approach that weigh loci according to linkage disequilibrium \citep{speed_reevaluation_2017, wang_efficient_2017} do not alter the bias calculated above, since the same bias is present in each individual locus \citep{ochoa_fst2}.
 Our previous work also considered a more general form where the ancestral allele frequency estimator $\pith = \frac{1}{2} \sum_{j=1}^n w_j \xij$ is calculated with weights $w_j$ per individual $j$ (such that $\sum_{j=1}^n w_j = 1$), and found that these weights alter the values of the bias terms $\bar{\varphi}_j$ and $\bar{\varphi}$ to be weighted averages, but no choice of weights eliminates these biases \citep{ochoa_fst2}.
@@ -311,15 +313,17 @@ The GCTA kinship estimator differs from the standard estimator only for $j=k$ \c
 %   \end{split}
 % \end{equation}
 % This is the real MOR version, removed $T$s:
-\begin{equation}
-  \label{eq:kjjHatGcta}
-  \begin{split}
-    \ktHatNamed[j]{GCTA}
-    &= \frac{1}{2} + \frac{1}{m} \sum_{i=1}^m \frac{\xij^2 - \left( 1 + 2\pith \right) \xij + 2 \pith^2}{4 \pith \left( 1-\pith \right)}
-    \toasNM
-    \frac{ \kt[j] - \bar{\varphi}_j }{1 - \bar{\varphi}}.
-  \end{split}
-\end{equation}
+\begin{align}
+  \label{eq:kinship_gcta_self}
+  \ktHatNamed[j]{GCTA}
+  &=
+    \frac{1}{2} + \frac{1}{m} \sum_{i=1}^m \frac{\xij^2 - \left( 1 + 2\pith \right) \xij + 2 \pith^2}{4 \pith \left( 1-\pith \right)}
+  \\
+  \label{eq:kinship_gcta_self_lim}
+  &\toasNM
+    \frac{ \kt[j] - \bar{\varphi}_j }{1 - \bar{\varphi}}
+    .
+\end{align}
 
 \subsubsection{Popkin kinship estimator}
 
@@ -506,26 +510,89 @@ TODO: describe the BNPSD simulation.
 
 \subsection{Empirical demonstration of biases in heritability estimation}
 
-TODO: add results using SOLAR and GCTA, varying the input kinship matrices (estimates and limits from methods).
+Here we consider the effect of kinship estimator bias in heritability estimation.
+We use simulated genotypes and traits, and either estimate kinship matrices from these genotypes or we show the effect of asymptotic estimator bias based on previously-calculated limits.
+In particular, we consider the true kinship matrix of the simulation,
+the unbiased popkin estimator in \cref{eq:popkin},
+the standard kinship estimator in \cref{eq:kinship_std}
+and its limit in \cref{eq:kinship_std_lim},
+and the GCTA estimator in \cref{eq:kinship_gcta_self} and its limit in \cref{eq:kinship_gcta_self_lim}.
+Lastly, we also consider two simulated trait types, namely the genetic trait in \cref{eq:trait} and the MVN trait (or infinitesimal approximation) in \cref{eq:heritMVN}.
+Each scenario was replicated 10 times, in each case producing a new genotype matrix as well as a new genetic and MVN traits.
 
-GCTA results:
-
-\cref{fig:heritability_estimation} shows the distribution of heritability estimated by GCTA with different input kinship matrices.
-The performance of the default kinship matrix of GCTA is surprisingly different from the other kinship matrices.
-Using popkin and std lim kinship matrices perform most similar to the one using true kinship matrix.
-
-% herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g1-r10.pdf
+First we considered a setting where there is only population structure (absence of family structure).
+We find that all estimates based on the genetic trait are upwardly biased, including that based on the true kinship matrix of the simulation (\cref{fig:herit_estimation_g1}).
+In this case (genetic trait) the GCTA kinship estimates result in heritability estimates without an apparent bias, though its variance is very high.
+For the MVN trait case, the true kinship matrix results in unbiased estimation, as expected since here the model is fully specified correctly (the MVN trait assumption holds, and the true kinship matrix is used).
+The rest of the estimators and limits are biased for MVN traits too, although the direction varies for different cases:
+all kinship estimates underestimate heritability, while the GCTA limit overestimates it.
+Many of the overestimates across kinship variants and trait simulation types result in values near or at one.
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=6in]{herit_all_6_n_ind=2000-raw.pdf}
+  \includegraphics[width=6in]{../data/{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g1-r10}.pdf}
   \caption{
-    {\bf Heritability estimation by GCTA with different kinship matrices.}
-    $n = 2000$ individuals for 10 replicates, others are default settings ($m = 100000$ loci, $k = 3$ admixture ancestral subpopulations, $\Fst = 0.3$ for admixed individuals, bias coefficient $s = 0.5$, no family structure, and the trait had a heritability of $h^2 = 0.8$ and $m_1 = 100$ causal loci).
+    {\bf Heritability estimation by GCTA with various kinship matrices and trait simulation types, admixture structure only.}
+    Oracle kinship matrices rely on the true kinship matrix being known (unknown in practice), while estimated kinship matrices are obtained from observed genotypes and are what is used in practice.
+    Genetic traits are simulated from genotypes, whereas MVN traits are simulated from the Multivariate Normal model, which is itself used to infer heritability but is unrealistic since it does not depend on any genotypes.
+    Genotypes and traits were simulated for $n = 5000$ individuals, $m = 100000$ loci, for 10 replicates, from an admixture simulation ($K = 3$ ancestral subpopulations, $\Fst = 0.3$ for admixed individuals, bias coefficient of $s = 0.5$), no family structure, and the traits had a true heritability of $h^2 = 0.8$ and $m_1 = 100$ causal loci).
   }
-  \label{fig:heritability_estimation}
+  \label{fig:herit_estimation_g1}
 \end{figure}
 
+Since traditional heritability estimation is based on family structure, we decided to consider a simulation including both population and family structure.
+Simply adding siblings results in striking changes in estimation biases (\cref{fig:herit_estimation_g2}).
+Most versions of this analysis yield estimates with lower variance and bias when siblings are included, and the proportion of estimates close to 1 is sharply reduced.
+Another large differences is for the GCTA kinship limit, which is near one in the absence of siblings, and are instead downwardly biased when siblings are present.
+We still observe that all estimates on the genetic trait are upwardly biased.
+Moreover, although the GCTA estimated kinship appeared to ahve low bias in the absence of siblings, the inclusion of siblings reduces their variance and reveals an updard bias in these estimates too.
+For the MVN trait, now all estimates are downwardly biased, except for the true kinship matrix (which is expected to be unbiased), and possibly the limit of the standard kinship estimator.
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=6in]{../data/{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g2-r10}.pdf}
+  \caption{
+    {\bf Heritability estimation by GCTA with various kinship matrices and trait simulation types, admixture plus family structure (siblings).}
+    Like \cref{fig:herit_estimation_g1}, but proximal individuals (with the most similar ancestries) were mated to simulate siblings, and only the second generation (the siblings) were used to estimate heritability.
+  }
+  \label{fig:herit_estimation_g2}
+\end{figure}
+
+In all these cases (\cref{fig:herit_estimation_g1,fig:herit_estimation_g2}) we find that kinship estimates do not result in the same estimates, on average, as their limits (expected as the number of loci goes to infinity).
+In all but one of these cases, heritability estimates are downwardly biased when estimated kinship matrices are used compared to the limits of their respective kinship estimators.
+This suggests that kinship estimation variance results in an additional downward bias in heritability estimation, compared to the bias due to kinship estimator bias.
+We also find that estimation from proper, genetic traits, is biased under the MVN model on which GCTA's inference is based.
+Although MVN traits result in unbiased estimation under the true kinship matrix, this is an impractical scenario since the true kinship matrix is never known and true traits are never MVN.
+
+Overall, since true traits are more like our genetic trait simulation, we expect there to be a heritability upward bias due to performing inference with the misspecified MVN model, and a separate downward bias due to the noise in kinship estimation.
+These biases must be further characterized in order to understand when they are problematic, and doing so may lead to new strategies for correction of these biases.
+
+[INTERNAL NOTES:]
+However, these results are currently limited as only 10 replicates were simulated.
+These genotype simulations are expensive, but we should aim to speed them up to scale better as the number of individuals increases.
+
+\subsubsection{Next steps}
+
+\begin{enumerate}
+\item The above suggests that heritability estimates from kinship estimates should approach those of their limits as the number of loci goes to infinity.
+  We should come up with simulations where the number of loci is increased.
+  However, the current code requires a lot of memory, so we may need to use the cluster and optimize the code.
+  For simplicity, we could focus on a single estimator, such as ``popkin'', and can also add a step where kinship estimates are perfectly unbiased regardless of number of loci, to eliminate that confounding issue.
+  This is because popkin is only unbiased as long as \AMinHat in \cref{eq:popkin} is estimated perfectly, and I know for a fact that in our simulations there is a small bias in how \AMinHat, but that small bias may ultimately have an effect too and it'd be interesting to look at it separately.
+  Anyway, the experiment could verify that kinship estimation noise does go to zero as the number of loci goes to infinity; that could help us determine the relationship between the number of loci and the bias, which could be used to correct the bias.
+  Alternatively, should the experiment fail, we need to think about what other explanations there are for the observed biases (not sure what that would be yet).
+\item Another prediction is that genetic traits should converge to MVN traits as the number of causal loci goes to infinity.
+  More narrowly, heritability estimates from genetic traits (for simplicity, lets stick with the true kinship matrix) should approach the unbiased heritability estimates of MVN traits as the number of causal loci goes to infinity.
+  A theoretical problem with this convergence is that right now the effect sizes, or per-locus heritabilities, vary randomly per causal locus, whereas convergence is only guaranteed when each per-locus heritability is equal.
+  So perhaps that is not happening here for that reason, and I can extend the simtrait code to simulate traits where effect sizes are exactly equal for every locus.
+  This issue is related to the assumptions on distribution of effect sizes discussed by \citet{speed_improved_2012}.
+  If the expected result is observed, then we can again figure out how the bias and the number of causal loci are related, and there may be other parameters that are important, such as the variance of effect sizes, though maybe it is not possible to fully characterize this bias.
+  On the other hand, if the expected result is not observed, one potential explanation is that ``simtrait'' has bugs.
+  I have performed several tests before that suggests that things are fine, but it remains a remote possibility.
+\item Can you think of other interesting questions or tests we should make?
+  Remember that our main simulation (based on the genetic trait, \cref{eq:trait}) and the inference model (MVN, \cref{eq:heritMVN}) disagree, so the inference model is misspecified, and the use of estimated kinship matrices makes the model additionally misspecified, so there are several potential explanations for the biases.
+  We should think more about what other explanations there are that I didn't list, or what other computational experiments can be informative towards understanding the problem better.
+\end{enumerate}
 
 \subsection{Empirical demonstration of robustness to kinship bias in PCA and LMM genetic assocation studies}
 
