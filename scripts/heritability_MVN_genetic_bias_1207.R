@@ -105,22 +105,8 @@ inbr_subpops <- obj$inbr_subpops
 parents <- obj$parents
 kinship <- obj$kinship
 
-# There are 6 kinship matrices to consider
+# There are 1 kinship matrices to consider
 # 1- `kinship`: true kinship matrix of simulation
-# 2- `kinship_std_lim`: limit of biased "standard" estimator
-# 3- `kinship_gcta_lim`: limit of the GCTA estimator
-# 4- `kinship_popkin`: unbiased (but noisy) estimate from genotypes
-# 5- `kinship_std`: biased (and noisy) "standard" estimate from genotypes (same as GEMMAs)
-# 6- `kinship_gcta`: GCTA estimator (equation is most similar to `std`)
-
-# 1) true kinship (as given by simulation)
-
-# # 2) limit of biased "standard" estimator
-# # calculated with function kinship_std_limit from package popkinsuppl
-# kinship_std_lim <- kinship_std_limit( kinship )
-# 
-# # 3) gcta limit estimate
-# kinship_gcta_lim <- kinship_gcta_limit( kinship )
 
 # SAVE as GRM files
 
@@ -146,11 +132,6 @@ my_write_grm <- function( name_out, kinship ) {
 name_kinship_true <- paste0(name_out, '.kinship_true')
 my_write_grm( name_kinship_true, kinship )
 
-# name_kinship_std_lim <- paste0(name_out, '.kinship_std_lim')
-# my_write_grm( name_kinship_std_lim, kinship_std_lim )
-# 
-# name_kinship_gcta_lim <- paste0(name_out, '.kinship_gcta_lim')
-# my_write_grm( name_kinship_gcta_lim, kinship_gcta_lim )
 
 #################
 ### SIM TRAIT ###
@@ -169,23 +150,65 @@ traits_mvn <- sim_trait_mvn(
 ### GENOME REPS ###
 ###################
 
+loci_test <- c(100,1000,10000,100000)
+
 # store the heritability estimates in these vectors
 # first using trait from genotypes
-herit_truX <- vector( 'numeric', rep )
-# herit_popX <- vector( 'numeric', rep )
-# herit_stdX <- vector( 'numeric', rep )
-# herit_slmX <- vector( 'numeric', rep )
-# herit_glmX <- vector( 'numeric', rep )
-# herit_gctX <- vector( 'numeric', rep )
+#herit_truX <- vector( 'numeric', rep )
+herit_truX <- matrix( NA, ncol = length(loci_test), nrow = rep )
+
 # then using trait from MVN model
 herit_truN <- vector( 'numeric', rep )
-# herit_popN <- vector( 'numeric', rep )
-# herit_stdN <- vector( 'numeric', rep )
-# herit_slmN <- vector( 'numeric', rep )
-# herit_glmN <- vector( 'numeric', rep )
-# herit_gctN <- vector( 'numeric', rep )
+
+##############################################
+### Estimate heritability based on MVN trait##
+##############################################
 
 for ( rep_i in 1 : rep ) {
+    
+    # and write MVN trait too
+    fam$pheno <- traits_mvn[ rep_i, ]
+    name_pheno_N <- paste0(name_out, '.pheno_N')
+    write_phen(name_pheno_N, fam)
+    
+    ############
+    ### GCTA ###
+    ############
+    
+    # get estimates
+    # another wrapper to avoid mistakes in these loops
+    my_herit_lmm_gcta <- function ( name_pheno, name_kinship ) {
+        herit_lmm_gcta(gcta_bin, name_pheno, name_grm = name_kinship, threads = threads)$herit
+    }
+    
+    # then using trait from MVN model
+    message('herit_truN...')
+    herit_truN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_true)
+    
+    
+    ###############
+    ### CLEANUP ###
+    ###############
+    
+    # these get deleted after every iteration
+    delete_files_phen(name_pheno_N)
+    
+    
+    # herit output and log files (only two, they get overwritten for every GRM tested)
+    delete_files_gcta(name_pheno_N, herit = TRUE)
+}
+
+##################################################
+### Estimate heritability based on genetic trait##
+##################################################
+
+i_loci <-1
+
+for ( m_loci in loci_test  ) {
+    
+    m_causal <- m_loci
+
+    for ( rep_i in 1 : rep ) {
     
     ################
     ### SIM GENO ###
@@ -217,54 +240,16 @@ for ( rep_i in 1 : rep ) {
     )
     # since we have two traits, differentiate in names
     trait_X <- obj$trait
-    causal_indexes <- obj$causal_indexes
-    causal_coeffs <- obj$causal_coeffs
-    
+
     # write phenotype file (this one is the true genetic trait)
     fam$pheno <- trait_X
     name_pheno_X <- paste0(name_out, '.pheno_X')
     write_phen(name_pheno_X, fam)
 
-    # and write MVN trait too
-    fam$pheno <- traits_mvn[ rep_i, ]
-    name_pheno_N <- paste0(name_out, '.pheno_N')
-    write_phen(name_pheno_N, fam)
-    
     # write BED version for external code
-    write_plink(name_out, X)
+    #write_plink(name_out, X)
     
-    ###############
-    ### KINSHIP ###
-    ###############
 
-    # estimates that get redone at every replicate
-
-    # # 4) popkin estimate
-    # # need labels first
-    # labs <- ceiling( ( 1 : n_ind ) / n_ind * 10 )
-    # # actual popkin estimate
-    # message( 'popkin' )
-    # kinship_popkin <- popkin(X, labs)
-    # 
-    # # 5) compute biased "standard" kinship estimate
-    # # calculated with function kinship_std from package popkinsuppl
-    # message( 'kinship_std' )
-    # kinship_std <- kinship_std( X )
-    # 
-    # # SAVE as GRM files
-    # name_kinship_popkin <- paste0(name_out, '.kinship_popkin')
-    # my_write_grm( name_kinship_popkin, kinship_popkin )
-    # 
-    # name_kinship_std <- paste0(name_out, '.kinship_std')
-    # my_write_grm( name_kinship_std, kinship_std )
-    # 
-    # # 6) GCTA is created by its own software
-    # name_kinship_gcta <- paste0(name_out, '.kinship_gcta')
-    # gas_lmm_gcta_kin(gcta_bin, name = name_out, name_out = name_kinship_gcta, threads = threads)
-    # # cleanup
-    # delete_files_log(name_kinship_gcta)
-    # 
-    
     ############
     ### GCTA ###
     ############
@@ -278,43 +263,9 @@ for ( rep_i in 1 : rep ) {
     # first using trait from genotypes
     
     message('herit_truX...')
-    herit_truX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_true)
+    herit_truX[ rep_i,i_loci  ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_true)
     
-    # message('herit_popX...')
-    # herit_popX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_popkin)
-    # 
-    # message('herit_stdX...')
-    # herit_stdX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_std)
-    # 
-    # message('herit_slmX...')
-    # herit_slmX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_std_lim)
-    # 
-    # message('herit_glmX...')
-    # herit_glmX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_gcta_lim)
-    # 
-    # message('herit_gctX...')
-    # herit_gctX[ rep_i ] <- my_herit_lmm_gcta(name_pheno_X, name_kinship_gcta)
-    
-    # then using trait from MVN model
-    
-    message('herit_truN...')
-    herit_truN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_true)
-    
-    # message('herit_popN...')
-    # herit_popN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_popkin)
-    # 
-    # message('herit_stdN...')
-    # herit_stdN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_std)
-    # 
-    # message('herit_slmN...')
-    # herit_slmN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_std_lim)
-    # 
-    # message('herit_glmN...')
-    # herit_glmN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_gcta_lim)
-    # 
-    # message('herit_gctN...')
-    # herit_gctN[ rep_i ] <- my_herit_lmm_gcta(name_pheno_N, name_kinship_gcta)
-    # 
+
     ###############
     ### CLEANUP ###
     ###############
@@ -322,25 +273,14 @@ for ( rep_i in 1 : rep ) {
     # these get deleted after every iteration
     delete_files_plink(name_out)
     delete_files_phen(name_pheno_X)
-    delete_files_phen(name_pheno_N)
-    # delete_files_grm(name_kinship_popkin)
-    # delete_files_grm(name_kinship_std)
-    # delete_files_grm(name_kinship_gcta)
+
+    
     # herit output and log files (only two, they get overwritten for every GRM tested)
     delete_files_gcta(name_pheno_X, herit = TRUE)
-    delete_files_gcta(name_pheno_N, herit = TRUE)
 }
+    i_loci = i_loci+1
 
-######################
-### SAVE ESTIMATES ###
-######################
-
-# gather vectors into a tibble
-data <- tibble(
-    truX = herit_truX,
-    truN = herit_truN
-
-)
+}
 
 ###############
 ### CLEANUP ###
@@ -349,46 +289,33 @@ data <- tibble(
 # delete these shared files only after all replicates are done
 delete_files_grm(name_kinship_true)
 
+
+######################
+### SAVE ESTIMATES ###
+######################
+
+# gather vectors into a dataframe
+data <- cbind(
+    herit_truX,
+    herit_truN
+)
+
+herit_all1 <- as.data.frame(data)
+names(herit_all1) <- c("true_genetic_100","true_genetic_1k","true_genetic_10k",
+                          "true_genetic_100k","true_MVN")
+
+write.csv(herit_all1,file = "herit_100_1k_10k_100k.csv",row.names = FALSE)
+
+# setwd( 'D:/3.Duke/research/alex_ochoa/1.reverse_regression/coding/mycode/herit_1201/results_mvn_genetic_bias' )
+# herit_all1<-read.csv("herit_100_1k_10k_100k_200K.csv")
+
+
 ###############
 ### boxplot ###
 ###############
 
 
-herit_all_100 <- as.data.frame(data)
-names(herit_all_100) <- c("true_genetic_100","true_MVN_100")
-
-
-herit_all_1k <- as.data.frame(data)
-names(herit_all_1k) <- c("true_genetic_1k","true_MVN_1k")
-
-
-herit_all_10k <- as.data.frame(data)
-names(herit_all_10k) <- c("true_genetic_10k","true_MVN_10k")
-
-herit_all_100k <- as.data.frame(data)
-names(herit_all_100k) <- c("true_genetic_100k","true_MVN_100k")
-
-herit_all_200k <- as.data.frame(data)
-names(herit_all_200k) <- c("true_genetic_200k","true_MVN_200k")
-
-
-
-herit_all1<-cbind(herit_all_100,herit_all_1k,herit_all_10k,herit_all_100k,herit_all_200k)
-
-#write.csv(herit_all1,file = "herit_100_1k_10k_100k_200K.csv",row.names = FALSE)
-
-
-setwd( 'D:/3.Duke/research/alex_ochoa/1.reverse_regression/coding/mycode/herit_1201/results_mvn_genetic_bias' )
-herit_all1<-read.csv("herit_100_1k_10k_100k_200K.csv")
-
-names(herit_all)<-c("default","true kin","popkin","std lim kin","std kin","gcta lim kin")
-
-
-## boxplot
-
 library(tidyverse)
-
-herit<-0.8
 
 herit_all1 %>% 
     pivot_longer(names(herit_all1), names_to = "methods", values_to = "herit") ->herit_all2
