@@ -35,6 +35,8 @@ setwd( './results_mvn_genetic_bias3/')
 #gcta_bin <- './software/gcta_1.93.2beta/gcta64'
 gcta_bin <- '/hpc/home/zh105/Alex_project/gcta_1.93.2beta/gcta64'
 
+#p_anc_input <- NULL
+p_anc_input <- 0.5
 
 ############
 ### ARGV ###
@@ -232,7 +234,8 @@ for ( m_loci in loci_test  ) {
         generations = generations,
         parents = parents,
         m_loci = m_loci,
-        verbose = TRUE
+        verbose = TRUE,
+        p_anc_input = p_anc_input
     )
     X <- obj$X
     p_anc <- obj$p_anc
