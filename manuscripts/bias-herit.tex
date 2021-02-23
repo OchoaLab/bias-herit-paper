@@ -49,7 +49,7 @@
 % spacing smaller than double
 \renewcommand{\baselinestretch}{1.2}
 
-\title{\Large \textbf{The effect of population kinship estimation bias in heritability estimation and genetic association}}
+\title{\Large \textbf{The effect of population kinship estimation bias in heritability estimation}}
 \author{Zhuoran Hou$^1$, Alejandro Ochoa$^{1,2,*}$}
 \date{}
 
@@ -63,14 +63,11 @@ $^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
 
 
 \begin{abstract}
-  Population kinship matrices are estimated for a variety of applications, including estimation of heritability and to control for population structure in genetic association studies.
-  Recent work found that the most common family of kinship estimators can be severely biased.
-  In this work, we investigate the effect of this kinship bias on the two downstream applications of heritability estimation and genetic association.
+  Population kinship matrices are estimated for a variety of applications, including estimation of heritability from population data.
+  Recent work found that the most common kinship estimators can be severely biased.
+  In this work, we investigate the effect of this kinship bias on the downstream application of heritability estimation.
   We present a novel trait simulation strategy that accurately parametrizes heritability, even when utilizing real genotypes.
   Using these simulations, we find that heritability estimation becomes biased when using such biased kinship matrices.
-  Remarkably however, this kinship bias does not affect genetic associations based on either Principal Components Analysis (PCA) or Linear Mixed-effects Models (LMM).
-  Lastly, we explain our empirical observations using theory.
-  In particular, the exact form of the bias of the standard kinship estimator is such that it is compensated for by fitting the intercept in both PCA and LMM approaches, which model population structure via covariates, suggesting that only downstream applications with this precise arrangement will be robust to this kinship bias.
 \end{abstract}
 
 % \clearpage
@@ -347,15 +344,14 @@ where $S_u$ are subpopulations that partition individuals.
 This estimator is accurate ($\ktHatNew \toas \kt$) under the assumption that \AMinHat is calculated over individual pairs whose true kinship is zero.
 In other words, the two subpopulations $S_u$ and $S_v$ with the minimum mean \Ajk value should have its true mean kinship value \kt be zero.
 
-\subsection{Heritability and genetic association software}
+\subsection{Software}
 
 TODO: state versions, download links, etc.
 
 Outline:
 \begin{itemize}
-\item SOLAR-Eclipse (herit only) \citep{almasy_multipoint_1998}.
-\item GCTA (both heritability and genetic association) \citep{yang_gcta:_2011}.
-\item PCA: used plink2 (genetic association only) \citep{chang_second-generation_2015}.
+\item SOLAR-Eclipse \citep{almasy_multipoint_1998}.
+\item GCTA \citep{yang_gcta:_2011}.
 \end{itemize}
 
 \subsection{Simulations}
@@ -594,199 +590,7 @@ These genotype simulations are expensive, but we should aim to speed them up to 
   We should think more about what other explanations there are that I didn't list, or what other computational experiments can be informative towards understanding the problem better.
 \end{enumerate}
 
-\subsection{Empirical demonstration of robustness to kinship bias in PCA and LMM genetic assocation studies}
-
-To quantify the effect of the various kinship matrix estimates, and their limiting biases, we calculated effect size coefficients and p-values for all variants of the PCA and LMM methods, and calculated correlation coefficients of these vectors across methods.
-To further differentiate methods, we reduced the number of loci in the simulation to $m=10,000$, which results in greater noise in all kinship matrix estimates (compared to a typical association study, which often contains millions of loci), which allows us to better distinguish that effect from the effect of bias (which remains in the limit of infinite loci).
-
-We found that all the methods yield highly correlated values (for p-values in \cref{fig:all_pval}, effect sizes $\hat{\mathbf{\beta}}$ in \cref{fig:all_beta_hat}).
-However, while all PCA variants cluster together, LMM statistics do not cluster with each other.
-Instead, LMMs using the limiting kinship values cluster strongly with PCA, while LMMs that use estimated kinship matrices formed a separate clusted.
-This suggests that PCA is more robust to estimation noise than the LMM approach.
-Nevertheless, these effects are expected to be very small in real datasets, which typically have greater numbers of loci (recall we artificially reduced this number here to create greater differences between methods).
-
-\begin{figure}[bp!]
-  \centering
-  \includegraphics[width=6in]{all_pval.pdf}
-  \caption{
-    {\bf Heatmap and dendrogram for p-values of GCTA and PCA with different kinship matrices ($m=10,000$).}
-  }
-  \label{fig:all_pval}
-\end{figure}
-
-\begin{figure}[bp!]
-  \centering
-  \includegraphics[width=6in]{all_beta_hat.pdf}
-  \caption{
-    {\bf Heatmap and dendrogram for $\hat{\mathbf{\beta}}$ of GCTA and PCA with different kinship matrices ($m=10,000$).}
-  }
-  \label{fig:all_beta_hat}
-\end{figure}
-
-
-\subsection{Theoretical justification of empirical observations}
-
-Here, to eliminate random estimation noise from the analysis (which our empirical evaluations suggest play a minor role), we shall focus on the limiting bias of the standard kinship estimator.
-Therefore, our theoretical results only consider the true kinship matrix \kinMat and the limit of the standard kinship estimator from \cref{eq:kinship_std}, which can be restated in terms of matrix operations as
-$$
-\kinMatStdLim
-=
-\frac{1}{1 - \bar{\varphi}}
-\left(
-  \kinMat
-  + \bar{\varphi} \mathbf{1}_n \mathbf{1}_n^\intercal 
-  - \mathbf{\varphi} \mathbf{1}_n^\intercal 
-  - \mathbf{1}_n \mathbf{\varphi}^\intercal 
-\right)
-.
-$$
-The two kinship matrices are related more succinctly using the centering matrix $\mathbf{C}$:
-$$
-\kinMatStdLim
-=
-\frac{1}{1 - \bar{\varphi}}
-\mathbf{C} \kinMat \mathbf{C}
-, \quad\quad
-\mathbf{C}
-=
-\mathbf{I}_n - \frac{1}{n} \mathbf{1}_n \mathbf{1}_n^\intercal
-.
-$$
-
-The centering matrix has been well studied, and we review its properties here.
-For any length-$n$ vector $\mathbf{v}$ we have
-\begin{align*}
-  \mathbf{C} \mathbf{v}
-  % =
-  % \left(\mathbf{I} - \frac{1}{n} \mathbf{1} \mathbf{1}^\intercal\right) \mathbf{v}
-  % =
-  % \mathbf{I} \mathbf{v} - \frac{1}{n} \mathbf{1} \mathbf{1}^\intercal \mathbf{v}
-  =
-  \mathbf{v} - \mathbf{1}_n \bar{v}
-  ,
-\end{align*}
-where $\bar{v} = \frac{1}{n} \mathbf{1}_n^\intercal \mathbf{v}$ is the mean value of the elements of $\mathbf{v}$.
-Therefore, $\mathbf{v} = \mathbf{1}_n$ gets transformed to the zero vector, so it is an eigenvector with an eigenvalue of zero:
-\begin{align*}
-  \mathbf{C} \mathbf{1}_n
-  % =
-  % \mathbf{1} - \mathbf{1}
-  =
-  \mathbf{0}_n
-  .
-\end{align*}
-Moreover, any vector $\mathbf{v}$ orthogonal to $\mathbf{1}_n$ has a zero mean element ($\bar{v} = 0$) by hypothesis and it is not altered by $\mathbf{C}$ ($\mathbf{C} \mathbf{v} = \mathbf{v}$).
-Therefore, the nullspace of $\mathbf{C}$ is spanned by $\mathbf{1}_n$.
-
-This centering matrix provides the key insight as to why PCA and LMM approaches are robust to this specific kinship bias, namely that by fitting the intercept term $\alpha \mathbf{1}_n$ together with the eigenvectors (for PCA) or random effects (in the same rowspace as the eigenvectors; for LMM) of \kinMatStdLim, they complete the rowspace of \kinMatStdLim to equal the rowspace of the true kinship matrix \kinMat plus the intercept.
-First we show the following lemma.
-
-\begin{lem}
-  $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim but not of \kinMat.
-\end{lem}
-
-\begin{proof}
-The vector $\mathbf{1}_n$ is not in the nullspace of any true kinship matrix \kinMat, since $\kinMat \mathbf{1}_n \neq \mathbf{0}_n$, which follows since all kinship values are non-negative and the diagonal of the kinship matrix is strictly positive (it has a minimum value of $\frac{1}{2}$).
-However, $\mathbf{1}_n$ is in the nullspace of \kinMatStdLim since $\mathbf{C} \mathbf{1}_n = \mathbf{0}_n$:
-$$
-\kinMatStdLim \mathbf{1}_n
-=
-\frac{1}{1 - \bar{\varphi}}
-\mathbf{C} \kinMat \mathbf{C} \mathbf{1}_n
-=
-\mathbf{0}_n
-.
-$$
-\end{proof}
-
-Now we may prove the desired theorem.
-
-\begin{thm}
-  The rowspace of \kinMat and $\mathbf{1}_n$ equals rowspace of \kinMatStdLim and $\mathbf{1}_n$.
-\end{thm}
-
-\begin{proof}
-  Since $\mathbf{1}_n$ is in both rowspaces, it suffices to consider vectors $\mathbf{v}$ orthogonal to $\mathbf{1}_n$, which satisfy $\mathbf{C} \mathbf{v} = \mathbf{v}$.
-  We shall prove below that any such vector is in the nullspace of \kinMat if and only if it is in the nullspace of \kinMatStdLim.
-  Then, since the nullspace of \kinMat and $\mathbf{1}_n$ is the same as the nullspace of \kinMatStdLim and $\mathbf{1}_n$, it follows from the fundamental theorem of linear algebra that their rowspaces are also the same.
-  
-  If $\mathbf{v}$ is in the nullspace of \kinMat, then $\kinMat \mathbf{v} = \mathbf{0}_n$.
-  It follows that
-  $$
-  \kinMatStdLim \mathbf{v}
-  =
-  \frac{1}{1 - \bar{\varphi}}
-  \mathbf{C} \kinMat \mathbf{C} \mathbf{v}
-  =
-  \frac{1}{1 - \bar{\varphi}}
-  \mathbf{C} \kinMat \mathbf{v}
-  =
-  \mathbf{0}_n
-  ,
-  $$
-  so $\mathbf{v}$ is also in the nullspace of \kinMatStdLim.
-  
-  Conversely, if $\mathbf{v}$ is in the nullspace of \kinMatStdLim, then $\kinMatStdLim \mathbf{v} = \mathbf{0}_n$, which implies that
-  $
-  \mathbf{C} \kinMat \mathbf{C} \mathbf{v}
-  =
-  \mathbf{C} \kinMat \mathbf{v}
-  =
-  \mathbf{0}_n
-  $.
-  Left multiplying by $\mathbf{v}^\intercal$ results in
-  $
-  \mathbf{v}^\intercal \mathbf{C} \kinMat \mathbf{v}
-  =
-  \mathbf{v}^\intercal \kinMat \mathbf{v}
-  =
-  0
-  $, which implies that $\mathbf{v}$ is also in the nullspace of the positive-semidefinite matrix \kinMat, as desired.
-  If \kinMat were positive definite, then no such $\mathbf{v} \ne \mathbf{0}_n$ would exist (\kinMat would have the trivial nullspace $\{ \mathbf{0}_n \}$).
-\end{proof}
-
-\subsubsection{Theoretical justification for PCA genetic association}
-
-In PCA-based genetic association, the desired result follows from the previous theorem, as follows.
-Here the goal is to fit the trait $\mathbf{y}$ using a model simiar to our main model in \cref{eq:trait}, namely
-\begin{equation}
-  \label{eq:pca_gwas}
-  \mathbf{y}
-  =
-  \mathbf{1}_n \alpha + \mathbf{x}_i \beta_i + \mathbf{U}_r \mathbf{\gamma}_r + \mathbf{\epsilon}
-  ,
-\end{equation}
-where instead of including the whole genotype matrix $\mathbf{X}$ as we did in \cref{eq:trait}, here the genotype vector $\mathbf{x}_i$ at a single locus $i$ is fit, and the effect of the rest of the genome is approxiated using the top $r$ eigenvectors of the kinship matrix, contained in the $n \times r$ matrix $\mathbf{U}_r$ and its length-$r$ vector of coefficients $\mathbf{\gamma}_r$.
-At each locus $i$ the coefficients $\alpha$, $\beta_i$, and $\mathbf{\gamma}_r$ are fit to minimize the squared error between the observed trait and the model, and the residuals and possibly the degrees of freedom are used to evaluate the significance of the fit for the genotype under the null hypothesis that $\beta_i = 0$.
-
-Here the kinship matrix in question is not the full kinship matrix \kinMat, but its $r$-dimensional approximation $\kinMat_r = \mathbf{U}_r \mathbf{\Lambda}_r \mathbf{U}_r^\intercal$, where $\mathbf{\Lambda}_r$ is an $r \times r$ diagonal matrix of the top $r$ eigenvalues.
-One key requirement in need of verification is that $\mathbf{1}_n$ is not in the nullspace of $\kinMat_r$, which certainly holds for reasonable approximations as $\mathbf{1}_n^\intercal \kinMat_r \mathbf{1}_n$ estimates the mean kinship of the data, which is non-zero except for completely unstructured populations.
-The other key assumption,
-$$
-\kinMatStdLim_r \left( 1 - \bar{\varphi} \right)
-=
-\left( \mathbf{C} \kinMat \mathbf{C} \right)_r
-\approx
-\mathbf{C} \kinMat_r \mathbf{C},
-$$
-is only approximately true.
-In other words, centering the kinship matrix first and then approximating to the top $r$ dimensions is not exactly equal to first approximating to $r$ dimensions and then centering, although in simulations we found it to be a very good approximation (especially in the absence of family structure, which is where use of PCA is most appropriate anyway [TODO: cite Yao, other papers]).
-Therefore, in this case the rowspace of $\kinMat_r$ and $\mathbf{1}_n$ only approximately equals the rowspace of $\kinMatStdLim_r$ and $\mathbf{1}_n$.
-
-The rowspace of $\mathbf{U}_r$ is the same as the rowspace of the $r$-dimensional kinship matrix it is derived from, so either $\kinMat_r$ or $\kinMatStdLim_r$.
-Thus, when fitting the model, the space spanned by $\mathbf{1}_n \alpha + \mathbf{U}_r \mathbf{\gamma}_r$ is approximately the same whether the eigenvectors $\mathbf{U}_r$ are derived from the true kinship matrix \kinMat or the limit of the biased estimator \kinMatStdLim, and this is so because the intercept vector $\mathbf{1}_n$ is present in the model.
-That implies that, while the coefficients $\alpha$ and $\mathbf{\gamma}_r$ may change when fit based on \kinMat or \kinMatStdLim, the sum of the term $\mathbf{1}_n \alpha + \mathbf{U}_r \mathbf{\gamma}_r$ will be approximately the same, as it is being chosen to minimize the least square error and the subspace is approximately the same, so the value of this solution must be approximately the same.
-Thus, the fit of the focal coefficient $\beta_i$ is approximately the same either way, and so is its evaluation of significance (the sum of square errors is also approximately the same).
-Therefore, the genetic association test is approximately unchanged when the eigenvectors of either \kinMat or \kinMatStdLim are included as covariates.
-
-\subsubsection{Theoretical justification for LMM genetic association}
-
-...
-
 \section{Discussion}
-
-The biased kinship matrix may be more desireable in PCA, from a numerical standoint, as the resulting eigenvectors are not only orthogonal to each other but also to the intercept (whereas the eigenvectors of the true kinship matrix are not orthogonal to the intercept; see our Lemma).
-
 
 ...
 
