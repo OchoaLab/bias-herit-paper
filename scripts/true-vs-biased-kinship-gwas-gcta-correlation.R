@@ -23,6 +23,7 @@ source('sim_geno_trait_k3.R')
 source('kinship_to_evd.R')
 source('gas_pca_optim.R')
 source('gas_lmm_gcta.R')
+source('kinship_gcta_limit.R')
 
 # get back to this subdirectory
 setwd( '../bias/scripts/' )
@@ -40,7 +41,7 @@ gcta_bin <- '/home/viiia/bin/gcta_1.93.2beta/gcta64'
 option_list = list(
     make_option(c("-n", "--n_ind"), type = "integer", default = 1000, 
                 help = "number of individuals", metavar = "int"),
-    make_option(c("-m", "--m_loci"), type = "integer", default = 100000, 
+    make_option(c("-m", "--m_loci"), type = "integer", default = 10000, 
                 help = "number of loci", metavar = "int"),
     make_option(c("-k", "--k_subpops"), type = "integer", default = 3, 
                 help = "admixture intermediate subpopulations", metavar = "int"),
@@ -118,11 +119,16 @@ write_phen(name_out, plink_data$fam, verbose = FALSE)
 ### KINSHIP ###
 ###############
 
-# There are 4 kinship matrices to consider
+# There are all of these kinship matrices to consider
 # - `kinship`: true kinship matrix of simulation
-# - `kinship_std_lim`: limit of biased "standard" estimator
-# - `kinship_std`: biased (and noisy) "standard" estimate from genotypes (same as GEMMAs)
+# - `kinship_std`: biased (and noisy) ROM version of "standard" estimate from genotypes
+# - `kinship_std_lim`: limit of biased ROM version of "standard" estimator
+# - `kinship_std_mor`: biased (and noisy) MOR version of "standard" estimate from genotypes (same as GEMMAs)
 # - `kinship_popkin`: unbaised (but noisy) estimate from genotypes
+# - `kinship_wg`: biased (and noisy) WG estimate from genotypes
+# - `kinship_wg_lim`: limit of biased WG estimator
+# - `kinship_gcta`: biased (and noisy) GCTA estimate from genotypes
+# - `kinship_gcta_lim`: limit of biased GCTA estimator
 
 # 1) true kinship (as given by simulation)
 
@@ -133,6 +139,7 @@ kinship_std_lim <- kinship_std_limit( kinship )
 # 3) compute biased "standard" kinship estimate
 # calculated with function kinship_std from package popkinsuppl
 kinship_std <- kinship_std( X )
+kinship_std_mor <- kinship_std( kinship, mean_of_ratios = TRUE )
 
 # 4) popkin estimate
 # need labels first
@@ -140,13 +147,60 @@ labs <- ceiling( ( 1 : n_ind ) / n_ind * 10 )
 # actual popkin estimate
 kinship_popkin <- popkin(X, labs)
 
+# 5) WG
+# limit of estimator
+kinship_wg_lim <- kinship_wg_limit( kinship )
+# estimate
+kinship_wg <- kinship_wg_limit( kinship_popkin )
+
+# 6) GCTA
+# actual estimate is given directly by GCTA, below
+# limit of estimator
+kinship_gcta_lim <- kinship_gcta_limit( kinship )
+
 ############
 ### GCTA ###
 ############
 
 message( "GCTA (default)" )
-# estimate kinship with GCTA's default methodd
+# estimate kinship with GCTA's default method
 gas_lmm_gcta_kin(gcta_bin, name_out)
+
+# read GCTA kinship into R
+kinship_gcta <- read_grm( name_out )$kinship
+
+# visualize all matrices for test
+plot_popkin(
+    inbr_diag(
+        list(
+            kinship,
+            kinship_popkin,
+            NULL,
+            kinship_std,
+            kinship_std_lim,
+            kinship_std_mor,
+            kinship_gcta,
+            kinship_gcta_lim,
+            NULL,
+            kinship_wg,
+            kinship_wg_lim
+        )
+    ),
+    titles = c(
+        'Truth',
+        'popkin',
+        'STD ROM est',
+        'STD ROM lim',
+        'STD MOR est',
+        'GCTA est',
+        'GCTA lim',
+        'WG est',
+        'WG lim'
+    ),
+    layout_rows = 4,
+    mar = c(0, 2)
+)
+
 # GWAS using that default kinship matrix
 obj_gcta_default <- gas_lmm_gcta(gcta_bin, name_out, m_loci = m_loci, threads = threads)
 # obj_gcta_default$pvals
