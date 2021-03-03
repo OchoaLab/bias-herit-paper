@@ -140,7 +140,7 @@ kinship_std_lim <- kinship_std_limit( kinship )
 # 3) compute biased "standard" kinship estimate
 # calculated with function kinship_std from package popkinsuppl
 kinship_std <- kinship_std( X )
-kinship_std_mor <- kinship_std( kinship, mean_of_ratios = TRUE )
+kinship_std_mor <- kinship_std( X, mean_of_ratios = TRUE )
 
 # 4) popkin estimate
 # need labels first
@@ -165,7 +165,7 @@ kinship_gcta_lim <- kinship_gcta_limit( kinship )
 gas_lmm_gcta_kin(gcta_bin, name_out)
 
 # read GCTA kinship into R
-kinship_gcta <- read_grm( name_out )$kinship
+kinship_gcta <- read_grm( name_out )$kinship / 2
 
 # visualize all matrices for test
 plot_popkin(
