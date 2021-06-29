@@ -84,30 +84,27 @@ Plan for finishing paper.
 Will pursue these items in this order:
 
 \begin{itemize}
-\item Add MOR (mean-of-ratios) version of standard kinship to empirical tests.
-  (Currently only ROM (ratio-of-means) is being tested, it'd be good to have both.
-  See \cref{eq:kinship_std_rom} and \cref{eq:kinship_std_mor}; both are implemented in my package popkinsuppl.)
-\item Add another kinship estimator (Weir-Goudet: WG) to empirical tests.
-  \textbf{Disclosure: WG is a competitor, so I'm hoping to show that this is worse.}
-  (See \cref{eq:wg,eq:wg_lim}, which will be implemented in popkinsuppl shortly.)
-\item If WG also performs like the true kinship matrix
-  \begin{itemize}
-  \item Prove WG equivalence just like for the standard kinship estimator.
-    NOTE: I couldn't come up with a transformation like the centering matrix that carries over easily to the matrix square root, so it may be challenging.
-    But this makes me think that it won't perform the same.
-  \end{itemize}
-\item If WG doesn't perform like the true kinship matrix
-  \begin{itemize}
-  \item Plot precision-recall curves for methods, to show if WG actually performs worse or about the same (on average?)
-  \item Bonus: prove theoretically that this will not be an equivalent model (looks hard, don't know where to start)
-  \end{itemize}
-\item Switch from admixture-simulated genotypes to real genotypes (1000 Genomes or HDGP), because there are huge differences between LMM and PCA in real data (but not in admixture simulation).
-  This also simplifies the methods.
+\item Prove WG equivalence just like for the standard kinship estimator.
+  NOTE: I couldn't come up with a transformation like the centering matrix that carries over easily to the matrix square root, so it may be challenging.
+  But this makes me think that it won't perform the same.
+\item Plot precision-recall curves for methods (or AUCs only), to show which methods actually perform.
+\item Switch from admixture-simulated genotypes to real genotypes (1000 Genomes or HDGP), because there are huge differences between LMM and PCA in real data (but not in admixture simulation; could also use a family simulation where there's also LMM-PCA gap).
+  This also simplifies the methods (for real only, not family sim).
   \begin{itemize}
   \item Only risk is that PCA ``approximation'' may fail in this real dataset (so that the true PCA and biased PCA models are no longer equivalent).
     In this case it might be worth showing both the admixture simulation and the real genotypes results.
   \end{itemize}
 \end{itemize}
+
+\noindent
+Done in code, missing in paper:
+\begin{itemize}
+\item Add MOR (mean-of-ratios) version of standard kinship.
+  See \cref{eq:kinship_std_rom} and \cref{eq:kinship_std_mor}.
+\item Add another kinship estimator (Weir-Goudet: WG).
+  See \cref{eq:wg,eq:wg_lim}.
+\end{itemize}
+
 
 \clearpage
 
