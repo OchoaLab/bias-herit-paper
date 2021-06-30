@@ -15,8 +15,8 @@
 \input{../../manuscripts/headerBiblatexHarvard.tex}
 \bibliography{../../manuscripts/zotero, ../../manuscripts/dummy} % biblatex wants this in the preamble...
 
-% path for figures
-\graphicspath{ {../data/} }
+% copied from PCA-GWAS paper
+\newcommand{\auc}{\text{AUC}_\text{PR}}
 
 \usepackage[noT]{kinshipsymbols}
 % % copy of \Fst from package `kinshipsymbols`
@@ -122,39 +122,93 @@ popkin is unbiased  \citep{ochoa_estimating_2021}.
 
 \subsection{Empirical demonstration of robustness to kinship bias in PCA and LMM genetic assocation studies}
 
-To quantify the effect of the various kinship matrix estimators, and their limiting biases, we calculated effect size coefficients and p-values for all variants of the PCA and LMM methods, and calculated correlation coefficients of these vectors across methods.
-To further differentiate methods, we reduced the number of loci in the simulation to $m=10,000$, which results in greater noise in all kinship matrix estimates (compared to a typical association study, which often contains millions of loci), which allows us to better distinguish that effect from the effect of bias (which remains in the limit of infinite loci).
+To quantify the effect of the various kinship matrix estimators, and their limiting biases, we simulated genotypes and a trait, and calculated association p-values for all kinship variants of the PCA and LMM methods.
+We first simulated an admixed population with $K=3$ ancestries, then simulated a 20-generation random pedigree from the admixed population as founders.
+This high-dimensinal admixed family scenario results in a large difference in performance between PCA and LMM approaches \citep{yao_testing_2019}.
+To further differentiate methods, we increase noise in kinship estimation by purposefully simulated a small number of loci, $m=10,000$.
 
-[NOTE: current results only include ROM (ratio-of-means) version of standard kinship estimator, which converges best to limit but is not what most people use.]
-
-We found that all the methods yield highly correlated values (for p-values in \cref{fig:all_pval}, effect sizes $\hat{\mathbf{\beta}}$ in \cref{fig:all_beta_hat}).
-However, while all PCA variants cluster together, LMM statistics do not cluster with each other.
-Instead, LMMs using the limiting kinship values cluster strongly with PCA, while LMMs that use estimated kinship matrices formed a separate clusted.
-This suggests that PCA is more robust to estimation noise than the LMM approach.
-Nevertheless, these effects are expected to be very small in real datasets, which typically have greater numbers of loci (recall we artificially reduced this number here to create greater differences between methods).
+% path for figures
+\graphicspath{ {../data/sim-admix-n1000-m10000-k3-f0.3-s0.5-mc100-h0.8-g20-inv/} }
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=3in]{all_pval.pdf}
+  \includegraphics[height=0.8\textheight]{kinship.pdf}
   \caption{
-    {\bf Heatmap and dendrogram for p-values of GCTA and PCA with different kinship matrices ($m=10,000$).}
+    {\bf Kinship estimates and their limits on the admixed family simulation.}
+    Each panel represents a kinship matrix as a heatmap, with each of the $n=1000$ individuals along both x and y axes, and the kinship value presented as color: positive estimates are in red, negative estimates in blue.
+    The estimators considered are Popkin, Standard, GCTA, and Weir-Goudet.
+    Each estimator has its limit in the first column (the limit of Popkin is Truth).
+    Standard has two variants: ROM (ratio of means) and MOR (mean of ratios).
+    Standard MOR does not have a closed-form limit, but in practice matches that of Standard ROM.
   }
-  \label{fig:all_pval}
+  \label{fig:kinship}
 \end{figure}
+
+The kinship estimates on this simulation, and the theoretical limits of these estimators, are shown in \cref{fig:kinship}.
+The true kinship matrix (\cref{fig:kinship}A) shows the family relatedness as high values concentrated near the diagonal and the ancestry-driven population structure as the broad patterns off-diagonal.
+This simulation illustrates the severity of the biases of these estimators, which were previously characterized theoretically \citep{ochoa_estimating_2021}.
+Only the Popkin estimator is unbiased (\cref{fig:kinship}B), the rest presenting large negative biases which in turn result in abundant negative estimates.
+The Standard kinship estimator (the mean-of-ratios, or MOR, version; \cref{fig:kinship}E), which is the most common estimator in these applications, and the closely related ratio-of-means (ROM) estimator (\cref{fig:kinship}D), both have severe biases that are not only overall downwardly biased, but these biases also vary for every pair of individuals.
+The limit of the Standard ROM estimator (\cref{fig:kinship}C), calculated from the true kinship matrix and its known functional form (see Methods), closely matches the previously mentioned estimates obtained from genotypes.
+The GCTA estimator equals the Standard MOR estimator except for the diagonal values, which also have a different bias (\cref{fig:kinship}F-G).
+Lastly, the Weir-Goudet estimator has a uniform downward bias (\cref{fig:kinship}H-I).
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=3in]{all_beta_hat.pdf}
+  \includegraphics[width=\textwidth]{auc.pdf}
   \caption{
-    {\bf Heatmap and dendrogram for $\hat{\mathbf{\beta}}$ of GCTA and PCA with different kinship matrices ($m=10,000$).}
+    {\bf Area Under the Precision-Recall Curves ($\auc$) for every combination of association model and kinship estimate.}
+    Results based on a single replicate of the random genotype matrix and trait vector.
+    Approaches appear to cluster primarily by association model (LMM vs PCA) and whether a kinship estimate was used or not, and do not depend much at all on the form of the bias.
   }
-  \label{fig:all_beta_hat}
+  \label{fig:auc}
 \end{figure}
+
+We then performed both LMM and PCA association tests in order to determine if the kinship biases carry over to association biases.
+Surprisingly, we found that none of these kinship biases have discernible effects on association performance, as summarized by the Area Under the Precision-Recall Curve ($\auc$; \cref{fig:auc}).
+The largest difference in performance is explained by the association model used (LMM vs PCA), as expected due to our use of a family simulation, where PCA is expected to perform less well than LMM.
+For PCA only, there are no clear differences between the performance of any of the kinship matrices.
+In contrast, the LMM results are relatively more sensitive to the use of noisy kinship estimates versus the (noiseless) limits of these estimates, a difference certainly increased by our deliberate use of a small number of simulated loci.
+Among the kinship estimator limits, use of the true kinship matrix, the limit of the Weir-Goudet estimator, or the limit of the Standard ROM estimator all result in practically the same performance, while the limit of the GCTA estimator shows a difference in performance.
+Similarly, among the estimates, the popkin, Weir-Goudet, and Standard ROM estimates result in the same performance, whereas the Standard MOR and GCTA estimates (which equals Standard MOR off-diagonal) have a slightly different performance.
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{pvals_cor.pdf}
+  \caption{
+    {\bf Correlation between p-values of different association models and kinship estimates.}
+    The association p-value vector (one value per tested locus) produced by each combination of association model (LMM vs PCA) and kinship matrix (x and y axes) was used to compute Pearson correlations (color).
+    P-values between all kinship matrices using the same association model (PCA or LMM) are highly correlated (including biased and unbiased estimates), and often the maximum correlation of 1 is achieved.
+  }
+  \label{fig:pvals_cor}
+\end{figure}
+
+To better understand the degree of agreement between the association results of the various kinship matrices, we next measured the agreement between methods at the level of the individual association p-values, summarized using pearson correlation coefficients ($\rho$; \cref{fig:pvals_cor}).
+We found that all the kinship matrices yield highly correlated p-values when applied to the same association model (LMM vs PCA), and otherwise mirroring our previous observations based on $\auc$.
+The minimum correlation among PCA methods was $0.86$, and among LMMs it was $0.84$.
+Within PCA, the cluster that excludes the true kinship matrix and the popkin estimate has nearly identical p-values ($\rho > 0.99$), and inclusion of popkin lowers the minimum correlation to $\rho > 0.93$.
+Among LMMs, the cluster that includes the true kinship and the Weir-Goudet and Standard ROM limits also results in practically identical p-values ($\rho \approx 1$), while including the GCTA limit lowers that to $\rho > 0.97$.
+The LMM cluster that includes the Popkin, Weir-Goudet, and Standard ROM estimators also has $\rho \approx 1$, and separately the cluster with the Standard MOR and GCTA estimators has $\rho \approx 1$, while the LMM cluster that includes all estimates has $\rho > 0.96$.
+Thus, several sets of kinship matrices with different biases result in identical association statistics, within both LMMs and PCA models, while differences are largely driven by the association model used and whether the kinship matrices were estimates or not.
+
+% \begin{figure}[bp!]
+%   \centering
+%   \includegraphics[width=3in]{betas_cor.pdf}
+%   \caption{
+%     {\bf Heatmap and dendrogram for $\hat{\mathbf{\beta}}$ of GCTA and PCA with different kinship matrices ($m=10,000$).}
+%   }
+%   \label{fig:betas_cor}
+% \end{figure}
 
 \subsection{Theoretical justification of empirical observations}
 
-Here, to eliminate random estimation noise from the analysis (which our empirical evaluations suggest play a minor role), we shall focus on the limiting bias of the standard kinship estimator.
-Therefore, our theoretical results only consider the true kinship matrix \kinMat and the limit of the standard kinship estimator (see \textbf{Methods}, \cref{eq:kinship_std_lim}), which can be stated in matrix notation as
+Our empirical observations suggested that the biases of the Standard kinship estimator do not alter association statistics whatsoever; here we provide proof that this is indeed the case.
+To eliminate random estimation noise from the analysis (which our empirical evaluations suggest play a minor role), we shall focus exclusively on the limiting bias of the Standard (ROM) kinship estimator.
+Our constructive proof identifies the exact conditions that allows the kinship bias to be compensated for, namely that population structure is modeled as a (fixed or random effect) covariate and an intercept term is fit jointly.
+More specifically, we find that the coefficients of the intercept and the random effect or PCs (for LMM and PCA, respectively) adapt to the bias, and no other coefficients change.
+This is fortunate, as the intercept and random effects or PCs coefficients are nuisance parameters that are most often unreported, while the focal genetic association coefficient and its p-value are completely unchanged by this precise bias.
+
+Our theoretical results only consider the true kinship matrix \kinMat and the limit of the standard kinship estimator (see \textbf{Methods}, \cref{eq:kinship_std_lim}), which can be stated in matrix notation as
 $$
 \kinMatStdLim
 =
@@ -162,15 +216,15 @@ $$
 \left(
   \kinMat
   + \bar{\varphi} \mathbf{J}
-  - \mathbf{\varphi} \mathbf{1}^\intercal 
-  - \mathbf{1} \mathbf{\varphi}^\intercal 
+  - \boldsymbol{\varphi} \mathbf{1}^\intercal 
+  - \mathbf{1} \boldsymbol{\varphi}^\intercal 
 \right)
 ,
 $$
 where
 $\mathbf{1}$ is a length-$n$ column vector of ones,
 $\mathbf{J} = \mathbf{1} \mathbf{1}^\intercal$ is the $n \times n$ matrix full of ones,
-$\mathbf{\varphi} = \frac{1}{n} \mathbf{1}^\intercal \kinMat$ is a length-$n$ vector of per-row mean kinship values, and
+$\boldsymbol{\varphi} = \frac{1}{n} \mathbf{1}^\intercal \kinMat$ is a length-$n$ vector of per-row mean kinship values, and
 $\bar{\varphi} = \frac{1}{n^2} \mathbf{1}^\intercal \kinMat \mathbf{1}$ is the overall mean kinship (scalar).
 The two kinship matrices are related more succinctly using the $n \times n$ centering matrix,
 $$
@@ -317,12 +371,12 @@ The LMM regression model is given by
   \label{eq:lmm_gwas}
   \mathbf{y}
   =
-  \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{s} + \mathbf{\epsilon}
+  \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{s} + \boldsymbol{\epsilon}
   ,
 \end{equation}
 where $\alpha$ is the intercept coefficient,
 $\beta$ is the genetic effect coefficient,
-$\mathbf{\epsilon}$ are random independent residuals ($\mathbf{\epsilon} \sim \text{Normal}(\mathbf{0}, \mathbf{I} \sigma^2_\epsilon)$ for some $\sigma^2_\epsilon$),
+$\boldsymbol{\epsilon}$ are random independent residuals ($\boldsymbol{\epsilon} \sim \text{Normal}(\mathbf{0}, \mathbf{I} \sigma^2_\epsilon)$ for some $\sigma^2_\epsilon$),
 and the random effect satisfies \citep{sul_population_2018}
 $$
 \mathbf{s} \sim \text{Normal} \left( \mathbf{0}, \sigma^2 \kinMat \right),
@@ -333,7 +387,7 @@ The dependence of the model on \kinMat is clearer by writing it equivalently as
   \label{eq:lmm_gwas2}
   \mathbf{y}
   =
-  \mathbf{1} \alpha + \mathbf{x}_i \beta + \sigma \kinMat^\frac{1}{2} \mathbf{r} + \mathbf{\epsilon}
+  \mathbf{1} \alpha + \mathbf{x}_i \beta + \sigma \kinMat^\frac{1}{2} \mathbf{r} + \boldsymbol{\epsilon}
   ,
 \end{equation}
 where $\mathbf{r} \sim \text{Normal} \left( \mathbf{0}, \mathbf{I} \right)$.
@@ -355,7 +409,7 @@ is satisfied by hypothesis.
 
 \subsubsection{Equivalent LMM fit under standard kinship bias}
 
-In the LMM of \cref{eq:lmm_gwas2}, $\mathbf{y}$, $\mathbf{x}_i$, and \kinMat are given, while the coefficients $\alpha$, $\beta$, $\sigma$, and the random effects $\mathbf{r}$ and $\mathbf{\epsilon}$ are fit to this data.
+In the LMM of \cref{eq:lmm_gwas2}, $\mathbf{y}$, $\mathbf{x}_i$, and \kinMat are given, while the coefficients $\alpha$, $\beta$, $\sigma$, and the random effects $\mathbf{r}$ and $\boldsymbol{\epsilon}$ are fit to this data.
 This data is typically fit using maximum likelihood (ML) or restricted maximum likelihood (REML) \citep{kang_efficient_2008}; our argument covers any likelihood-based approach, since we will establish a parameter map between both models that results in equal likelihoods for every parameter set in the map.
 
 We shall consider two model fits, one where \kinMat is given, while in the other we provide $\kinMat' = \kinMatStdLim$ instead.
@@ -363,16 +417,16 @@ The first fit will result in the unprimed variables below, while we distinguish 
 \begin{align*}
   \mathbf{y}
   &=
-    \mathbf{1} \alpha + \mathbf{x}_i \beta + \sigma \kinMat^\frac{1}{2} \mathbf{r} + \mathbf{\epsilon}
+    \mathbf{1} \alpha + \mathbf{x}_i \beta + \sigma \kinMat^\frac{1}{2} \mathbf{r} + \boldsymbol{\epsilon}
   \\
   &=
-    \mathbf{1} \alpha' + \mathbf{x}_i \beta' + \sigma' \left( \kinMat' \right)^\frac{1}{2} \mathbf{r}' + \mathbf{\epsilon}'
+    \mathbf{1} \alpha' + \mathbf{x}_i \beta' + \sigma' \left( \kinMat' \right)^\frac{1}{2} \mathbf{r}' + \boldsymbol{\epsilon}'
     .
 \end{align*}
 Now we shall construct coefficients for the second model that result in the same fit to the data, including the same likelihood, as the first model.
 We achieve this by first setting
 $\beta' = \beta$,
-$\mathbf{\epsilon}' = \mathbf{\epsilon}$,
+$\boldsymbol{\epsilon}' = \boldsymbol{\epsilon}$,
 and
 $\mathbf{r}' = \mathbf{r}$.
 Note that the previous equal random effects (including residuals) immediately results in the same likelihood for both models.
@@ -435,14 +489,14 @@ The PCA regression model is
   \label{eq:pca_gwas}
   \mathbf{y}
   =
-  \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{U}_d \mathbf{\gamma}_d + \mathbf{\epsilon}
+  \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{U}_d \boldsymbol{\gamma}_d + \boldsymbol{\epsilon}
   ,
 \end{equation}
 where
 $d$ is the number of principal components,
 $\mathbf{U}_d$ is the $n \times d$ matrix of top eigenvectors (often refered to as ``principal components'' in genetics),
-and $\mathbf{\gamma}_d$ is a length-$d$ vector of coefficients for each eigenvector.
-Note that the only difference from the LMM model (\cref{eq:lmm_gwas2}) is the replacement of $\sigma \kinMat^\frac{1}{2} \mathbf{r}$ with $\mathbf{U}_d \mathbf{\gamma}_d$ here.
+and $\boldsymbol{\gamma}_d$ is a length-$d$ vector of coefficients for each eigenvector.
+Note that the only difference from the LMM model (\cref{eq:lmm_gwas2}) is the replacement of $\sigma \kinMat^\frac{1}{2} \mathbf{r}$ with $\mathbf{U}_d \boldsymbol{\gamma}_d$ here.
 
 Before proceeding with our proof for invariance under the PCA model, to enhance our intuition of these two models, we present the relationship between eigendecomposition and matrix square roots, which helps us connect the PCA model firmly to the LMM.
 Denote the eigendecomposition of the true kinship matrix as
@@ -466,12 +520,12 @@ $$
 =
 \sigma \mathbf{U} \mathbf{\Lambda}^\frac{1}{2} \mathbf{r}
 =
-\mathbf{U} \mathbf{\gamma}
+\mathbf{U} \boldsymbol{\gamma}
 ,
 $$
-so that the length-$n$ vector $\mathbf{\gamma}$ of coefficients for all the $n$ eigenvectors is given by
+so that the length-$n$ vector $\boldsymbol{\gamma}$ of coefficients for all the $n$ eigenvectors is given by
 $
-\mathbf{\gamma} = \sigma \mathbf{\Lambda}^\frac{1}{2} \mathbf{r}
+\boldsymbol{\gamma} = \sigma \mathbf{\Lambda}^\frac{1}{2} \mathbf{r}
 $.
 Thus, the PCA model attempts to fit coefficients only for the top $d$ eigenvectors, whereas the LMM model effectively fits all of these coefficients by constraining them to a distribution.
 
@@ -488,29 +542,29 @@ The two model fits we are considering are
 \begin{align*}
   \mathbf{y}
   &=
-    \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{U}_d \mathbf{\gamma}_d + \mathbf{\epsilon}
+    \mathbf{1} \alpha + \mathbf{x}_i \beta + \mathbf{U}_d \boldsymbol{\gamma}_d + \boldsymbol{\epsilon}
   \\
   &=
-    \mathbf{1} \alpha' + \mathbf{x}_i \beta' + \mathbf{U}_d' \mathbf{\gamma}_d' + \mathbf{\epsilon}'
+    \mathbf{1} \alpha' + \mathbf{x}_i \beta' + \mathbf{U}_d' \boldsymbol{\gamma}_d' + \boldsymbol{\epsilon}'
     ,
 \end{align*}
-and we again assume that the focal parameter $\beta' = \beta$ and the residuals $\mathbf{\epsilon}' = \mathbf{\epsilon}$ are equal.
+and we again assume that the focal parameter $\beta' = \beta$ and the residuals $\boldsymbol{\epsilon}' = \boldsymbol{\epsilon}$ are equal.
 Eliminating the resulting shared terms, and replacing $\mathbf{U}_d' = \mathbf{C} \mathbf{U}_d$ (assuming that our approximation holds exactly) results in the remaining coefficients having to satisfy
 $$
-\mathbf{1} \alpha + \mathbf{U}_d \mathbf{\gamma}_d
+\mathbf{1} \alpha + \mathbf{U}_d \boldsymbol{\gamma}_d
 =
-\mathbf{1} \alpha' + \mathbf{C} \mathbf{U}_d \mathbf{\gamma}_d'.
+\mathbf{1} \alpha' + \mathbf{C} \mathbf{U}_d \boldsymbol{\gamma}_d'.
 $$
 We solve for the missing coefficients by left-multiplying by $\mathbf{C}$ and $\mathbf{1}^\intercal$ as before, which here ultimately results in
 \begin{align*}
-  \mathbf{\gamma}_d'
+  \boldsymbol{\gamma}_d'
   =
-    \mathbf{\gamma}_d
+    \boldsymbol{\gamma}_d
   ,
   \quad\quad
   \alpha'
   =
-    \alpha + \frac{1}{n} \mathbf{1}^\intercal \mathbf{U}_d \mathbf{\gamma}_d
+    \alpha + \frac{1}{n} \mathbf{1}^\intercal \mathbf{U}_d \boldsymbol{\gamma}_d
     .
 \end{align*}
 Thus, as for LMM, here the nuisance intercept coefficient compensates for the bias in the eigenvectors.
@@ -607,7 +661,7 @@ $
 
 \subsubsection{GCTA kinship estimator}
 
-The GCTA software \citep{yang_gcta:_2011} estimate what they refer to as a Genetic Relatedness Matrix (GRM), which is evidently twice a kinship matrix estimate due to the similarity to \cref{eq:kinship_std_mor}.
+The GCTA software \citep{yang_gcta:_2011} estimate what they refer to as a Genetic Relatedness Matrix (GRM), which is evidently twice a kinship matrix estimate due to the similarity to the Standard MOR kinship estimator \cref{eq:kinship_std_mor}.
 In fact, the GCTA kinship estimates for two different individuals is identical to \cref{eq:kinship_std_mor} (after taking into account the factor of 2):
 $$
 \ktHatNamed{GCTA} = \ktHatNamed{std-mor} \quad\quad \text{for} \quad\quad j \ne k.
@@ -709,20 +763,6 @@ where \Ajk is as in \cref{eq:popkin},
 \end{align*}
 Thus, the WG estimator resembles the popkin estimator in \cref{eq:popkin}, except it replaces \AMinHat with \AAvgHat and that results in a uniform downward bias given by $\tilde{\varphi}$, which is the mean kinship between all different individual pairs (it excludes the diagonal, or self-kinship values, compared to the $\bar{\varphi}$ that appears in the standard and GCTA estimators).
 
-\subsection{Software}
-
-TODO: state versions, download links, etc.
-
-GCTA \citep{yang_gcta:_2011}.
-
-PCA: implemented regression in R (function lm).
-p-values based on F-test.
-
-popkin is estimated with the popkin R package.
-
-All other estimators are calculated using the popkinsuppl R package.
-
-
 \subsection{Simulations}
 
 [TODO: heritability doesn't matter here, so we can probably shorten considerably.
@@ -731,7 +771,7 @@ Trait simulation is as in Yiqi's paper, can defer to that.]
 \subsubsection{Trait simulation algorithm}
 
 Suppose the genotype matrix $\mathbf{X}$ is available, and we have fixed values for the number of causal loci $m_1$, the trait mean, variance scale, and heritability ($\mu, \sigma^2, h^2$).
-The goal is to choose the intercept $\alpha$ and draw random effect sizes $\mathbf{\beta}$ that result in the desired trait parameters.
+The goal is to choose the intercept $\alpha$ and draw random effect sizes $\boldsymbol{\beta}$ that result in the desired trait parameters.
 First we randomly select $m_1$ loci to be causal, and subset the genotype matrix $\mathbf{X}$ and ancestral allele frequency vector $\mathbf{p}$ so that from this point on they contain only those causal loci (they now have dimensions $m_1 \times n$ and length $m_1$, respectively).
 
 Below we divide the algorithm into two steps: (1) scaling the effect sizes, and (2) centering the trait.
@@ -754,9 +794,9 @@ $$
 We obtain the desired variance by dividing each $\beta_i$ by $\sigma_0$ (which results in a variance of 1) and then multiply by $h \sigma$ (which results in the desired variance of $h^2 \sigma^2$).
 Combining both steps, the update is
 $$
-\mathbf{\beta}
+\boldsymbol{\beta}
 \leftarrow
-\mathbf{\beta} \frac{ h \sigma }{\sigma_0}
+\boldsymbol{\beta} \frac{ h \sigma }{\sigma_0}
 .
 $$
 
@@ -792,21 +832,21 @@ $$
 $$
 Therefore, assuming that this additional factor $(1 - \bar{\varphi})$ is known, the update
 $$
-\mathbf{\beta}
+\boldsymbol{\beta}
 \leftarrow
-\mathbf{\beta} \frac{ h \sigma \sqrt{1-\bar{\varphi}} }{\hat{\sigma}_0}
+\boldsymbol{\beta} \frac{ h \sigma \sqrt{1-\bar{\varphi}} }{\hat{\sigma}_0}
 $$
 results in the desired variance.
 
 \textbf{Centering the trait.}
-Here we consider the problem of selecting the intercept coefficient $\alpha$ that, together with the previous effect size coefficient vector $\mathbf{\beta}$, result in the desired trait mean $\mu$.
+Here we consider the problem of selecting the intercept coefficient $\alpha$ that, together with the previous effect size coefficient vector $\boldsymbol{\beta}$, result in the desired trait mean $\mu$.
 
 When ancestral allele frequencies are known, the trait can be centered precisely.
 Given our model, we obtain the desired overall trait mean $\mu$ by choosing the intercept coefficient to be
 $$
 \alpha 
 =
-\mu - 2 \mathbf{p}^\intercal \mathbf{\beta}
+\mu - 2 \mathbf{p}^\intercal \boldsymbol{\beta}
 .
 $$
 
@@ -814,7 +854,7 @@ When ancestral allele frequencies are unknown, the solution is to choose the int
 \begin{align*}
   \alpha 
   =
-  \mu - 2 \hat{\bar{p}} \mathbf{1}_{m_1}^\intercal \mathbf{\beta}
+  \mu - 2 \hat{\bar{p}} \mathbf{1}_{m_1}^\intercal \boldsymbol{\beta}
   , \quad\quad
   \hat{\bar{p}}
   =
@@ -827,9 +867,9 @@ When ancestral allele frequencies are unknown, the solution is to choose the int
 \end{align*}
 where $\mathbf{1}_{m_1}$ is a length-$m_1$ column vector of ones.
 Note that this overal mean allele frequency $\hat{\bar{p}}$ is computed among causal loci only.
-This works very well in practice since $\mathbf{\beta}$ is drawn randomly, so it is uncorrelated to $\mathbf{p}$ and therefore
+This works very well in practice since $\boldsymbol{\beta}$ is drawn randomly, so it is uncorrelated to $\mathbf{p}$ and therefore
 $$
-\frac{1}{m_1} \mathbf{p}^\intercal \mathbf{\beta}
+\frac{1}{m_1} \mathbf{p}^\intercal \boldsymbol{\beta}
 =
 \frac{1}{m_1} \sum_{i=1}^{m_1} \pit \beta_i
 \approx
@@ -838,7 +878,7 @@ $$
 =
 \frac{1}{m_1}
 \bar{p}
-\mathbf{1}_{m_1}^\intercal \mathbf{\beta}
+\mathbf{1}_{m_1}^\intercal \boldsymbol{\beta}
 $$
 is a good approximation.
 
@@ -846,13 +886,13 @@ Now we discuss why the more obvious naive approach, which would be to center the
 $
 \alpha 
 =
-\mu - 2 \mathbf{\hat{p}}^\intercal \mathbf{\beta}
+\mu - 2 \mathbf{\hat{p}}^\intercal \boldsymbol{\beta}
 ,
 $
 does not work.
 This approach is equivalent to centering genotypes at each locus as
 $$
-\mathbf{y} = \alpha \mathbf{1} + \sum_{i=1}^{m_1} (\mathbf{x}_i - 2 \pith \mathbf{1}) \beta_i + \mathbf{\epsilon}.
+\mathbf{y} = \alpha \mathbf{1} + \sum_{i=1}^{m_1} (\mathbf{x}_i - 2 \pith \mathbf{1}) \beta_i + \boldsymbol{\epsilon}.
 $$
 However, this operation introduces a distortion in the covariance of the genotypes \citep{ochoa_estimating_2021}: 
 $$
@@ -860,12 +900,12 @@ $$
 =
 \pit ( 1 - \pit ) \left( 
 \kinMat 
-+ \bar{\varphi} \mathbf{1} \mathbf{1}^\intercal 
-- \mathbf{\varphi} \mathbf{1}^\intercal 
-- \mathbf{1} \mathbf{\varphi}^\intercal 
++ \bar{\varphi} \mathbf{J}
+- \boldsymbol{\varphi} \mathbf{1}^\intercal 
+- \mathbf{1} \boldsymbol{\varphi}^\intercal 
 \right),
 $$
-where $\bar{\varphi}$ is the overall mean kinship, as before, and $\mathbf{\varphi} = \frac{1}{n} \kinMat \mathbf{1}$ is a length-$n$ column vector of per-row mean kinship values.
+where $\bar{\varphi}$ is the overall mean kinship, as before, and $\boldsymbol{\varphi} = \frac{1}{n} \kinMat \mathbf{1}$ is a length-$n$ column vector of per-row mean kinship values.
 These undesireable distortions propagate to the trait, which we confirmed in simulations (not shown).
 %It is not clear how to correct these distortions after centering the trait as shown above.
 Note that the intercept version we chose instead does not induce this genotype centering, which prevents the undesireable distortions in the trait covariance.
@@ -873,6 +913,26 @@ Note that the intercept version we chose instead does not induce this genotype c
 \subsubsection{Admixture simulation for genotype matrices}
 
 TODO: describe the BNPSD simulation.
+
+Also describe family structure.
+
+
+
+\subsection{Software}
+
+TODO: state versions, download links, etc.
+
+GCTA \citep{yang_gcta:_2011}.
+We pass $2 \mathbf{\Phi}$ for all kinship matrices tested.
+
+PCA: implemented regression in R (function lm).
+p-values based on F-test.
+Used $r=10$ in all cases.
+
+popkin is estimated with the popkin R package.
+
+All other estimators and limits are calculated using the popkinsuppl R package.
+
 
 
 
