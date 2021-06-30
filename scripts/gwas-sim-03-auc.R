@@ -1,7 +1,7 @@
 library(optparse) # for terminal options
 library(readr)    # to read tables
-library(popkin)   # to plot
 library(ochoalabtools) # for nice PDF
+library(simtrait) # pval_aucpr
 
 ############
 ### ARGV ###
@@ -61,86 +61,62 @@ dir_out <- paste0(
 kinship_methods <- read_tsv( 'kinship_methods.txt', col_types = 'cc' )
 n_kinship <- nrow( kinship_methods )
 
-# let's plot data in the order of the `kinship_methods` table
-# also, plot PCA first, LMM second
-method_codes <- c(
-    paste0( 'pca_', kinship_methods$code ),
-    paste0( 'lmm_', kinship_methods$code )
-)
-# same but human-readable
-method_nice <- c(
-    paste0( 'PCA, ', kinship_methods$nice ),
-    paste0( 'LMM, ', kinship_methods$nice )
-)
-
 # load pre-existing data
 setwd( '../data/' )
 #setwd( 'D:/3.Duke/research/alex_ochoa/1.reverse_regression/coding/mycode/true-vs-biased-kinship-gwas/results' )
 setwd( dir_out )
 
 # load tibbles
-pvals <- read_tsv( 'pvals.txt', col_types = cols( ) )
-betas <- read_tsv( 'betas.txt', col_types = cols( ) )
+pvals <- read_tsv( 'pvals.txt' )
+# and true causal info, for AUC
+load( 'simtrait.RData' )
 
-plot_cor <- function( data, name ) {
-    # reorder columns of data to be a manually-selected order
-    data <- data[ method_codes ]
-    # replace original codes with nice names
-    colnames( data ) <- method_nice
-    # compute correlation matrix
-    cor_data <- cor( data )
-    
-    # get nice max width for a journal
-    dim <- fig_width()
-    fig_start(
-        name,
-        width = dim,
-        height = dim * 0.84
-    )
-    plot_popkin(
-        cor_data,
-        names = TRUE,
-        names_cex = 0.7,
-        mar = 8,
-        ylab = 'Association Model, Kinship Estimate',
-        ylab_adj = 0.75,
-        leg_title = expression(bold(paste("Pearson Correlation ", (rho)))),
-        leg_width = 0.15
-    )
-    fig_end()
-
-    # return in same order, etc
-    return( cor_data )
+# let's plot data in the order of the `kinship_methods` table
+# also, plot PCA first, LMM second
+method_codes <- c(
+    paste0( 'pca_', kinship_methods$code ),
+    paste0( 'lmm_', kinship_methods$code )
+)
+# compute AUC for each case
+n_methods <- length( method_codes )
+stopifnot( ncol( pvals ) == n_methods )
+aucs <- vector( 'numeric', n_methods )
+# names as they appear on the plot
+# NOTE: no PCA/LMM marks (will be added to plot separately)
+names( aucs ) <- rep.int( kinship_methods$nice, 2 )
+# calculate AUCs in desired order
+for ( i in 1 : n_methods ) {
+    method_code <- method_codes[ i ]
+    aucs[i] <- pval_aucpr( pvals[[ method_code ]], causal_indexes)
 }
 
-cor_pvals <- plot_cor( pvals, 'pvals_cor' )
-cor_betas <- plot_cor( betas, 'betas_cor' )
-
-# pick out some values of particular importance
-# p-values only
-range_subset <- function( indexes ) {
-    # take subset
-    cor_pvals <- cor_pvals[ indexes, indexes ]
-    # be clear about what is being included:
-    message( 'Subset: ', toString( rownames( cor_pvals ) ) )
-    message( 'Range: ', toString( range( cor_pvals ) ) )
-}
-# these should be all PCA methods except for True and Popkin
-range_subset( c( 2:4, 6:9 ) )
-# include Popkin too
-range_subset( 2:9 )
-# include True too
-range_subset( 1:9 )
-# now LMM subsets
-# limits only except GCTA
-range_subset( 10:12 )
-# all limits only
-range_subset( 10:13 )
-# estimates ROM: popkin-wg-std
-range_subset( 14:16 )
-# estimates MOR: std-gcta
-range_subset( 17:18 )
-# all estimators only
-range_subset( 14:18 )
-# all LMM
-range_subset( 10:18 )
+# now make plot of data
+dims <- fig_scale( 2 )
+fig_start(
+    'auc',
+    width = dims[1],
+    height = dims[2],
+    mar_l = 10
+)
+## boxplot(
+##     aucs,
+##     horizontal = TRUE,
+##     las = 1,
+##     xlab = expression(bold(AUC[PR]))
+## )
+ys <- barplot(
+    rev( aucs ),
+    horiz = TRUE,
+    las = 1,
+    xlab = expression(bold(AUC[PR]))
+)
+# add separating lines
+x_line <- -c(0.19, 0.19)
+y_line1 <- ys[ c(1, n_kinship) ]
+y_line2 <- ys[ c(1, n_kinship) + n_kinship ]
+lines( x_line, y_line1, xpd = NA )
+lines( x_line, y_line2, xpd = NA )
+# and labels
+text( -0.2, mean( y_line2 ), 'PCA', xpd = NA, srt = 90 )
+text( -0.2, mean( y_line1 ), 'LMM', xpd = NA, srt = 90 )
+fig_end()

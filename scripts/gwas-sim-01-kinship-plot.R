@@ -99,14 +99,14 @@ plot_popkin(
     ),
     titles = c(
         'Truth',
-        'Popkin',
-        'STD ROM lim',
-        'STD ROM est',
-        'STD MOR est',
-        'GCTA lim',
-        'GCTA est',
-        'WG lim',
-        'WG est'
+        'Popkin est.',
+        'Standard ROM lim.',
+        'Standard ROM est.',
+        'Standard MOR est.',
+        'GCTA lim.',
+        'GCTA est.',
+        'Weir-Goudet lim.',
+        'Weir-Goudet est.'
     ),
     layout_rows = 4,
     mar = c(0, 2),

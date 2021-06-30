@@ -1,0 +1,10 @@
+code	nice
+true	True Kinship
+wg_lim	Weir-Goudet lim.
+std_rom_lim	Standard ROM lim.
+gcta_lim	GCTA lim.
+popkin	Popkin est.
+wg	Weir-Goudet est.
+std_rom	Standard ROM est.
+std_mor	Standard MOR est.
+gcta	GCTA est.

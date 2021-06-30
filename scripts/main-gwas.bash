@@ -4,6 +4,7 @@ time Rscript gwas-sim-00-mk-kinship-stats.R
 # 0m28.729s viiiaR5
 # 0m48.462s ideapad
 time Rscript gwas-sim-00-mk-kinship-stats.R --const_herit_loci
+# inv trait and family!  This is the only version shown in paper so far!!!
 time Rscript gwas-sim-00-mk-kinship-stats.R -g 20 --const_herit_loci
 # 1m18.739s ideapad
 
@@ -18,6 +19,28 @@ time Rscript gwas-sim-01-kinship-plot.R -g 20 --const_herit_loci
 Rscript gwas-sim-02-pval-beta-corr.R
 Rscript gwas-sim-02-pval-beta-corr.R --const_herit_loci
 Rscript gwas-sim-02-pval-beta-corr.R -g 20 --const_herit_loci
+# Subset: PCA, Weir-Goudet lim., PCA, Standard ROM lim., PCA, GCTA lim., PCA, Weir-Goudet est., PCA, Standard ROM est., PCA, Standard MOR est., PCA, GCTA est.
+# Range: 0.993603903743949, 1
+# Subset: PCA, Weir-Goudet lim., PCA, Standard ROM lim., PCA, GCTA lim., PCA, Popkin est., PCA, Weir-Goudet est., PCA, Standard ROM est., PCA, Standard MOR est., PCA, GCTA est.
+# Range: 0.929023104744879, 1
+# Subset: PCA, True Kinship, PCA, Weir-Goudet lim., PCA, Standard ROM lim., PCA, GCTA lim., PCA, Popkin est., PCA, Weir-Goudet est., PCA, Standard ROM est., PCA, Standard MOR est., PCA, GCTA est.
+# Range: 0.862819551210016, 1
+# Subset: LMM, True Kinship, LMM, Weir-Goudet lim., LMM, Standard ROM lim.
+# Range: 0.999999218154733, 1
+# Subset: LMM, True Kinship, LMM, Weir-Goudet lim., LMM, Standard ROM lim., LMM, GCTA lim.
+# Range: 0.967399027015973, 1
+# Subset: LMM, Popkin est., LMM, Weir-Goudet est., LMM, Standard ROM est.
+# Range: 0.999998793779187, 1
+# Subset: LMM, Standard MOR est., LMM, GCTA est.
+# Range: 1, 1
+# Subset: LMM, Popkin est., LMM, Weir-Goudet est., LMM, Standard ROM est., LMM, Standard MOR est., LMM, GCTA est.
+# Range: 0.955356726069029, 1
+# Subset: LMM, True Kinship, LMM, Weir-Goudet lim., LMM, Standard ROM lim., LMM, GCTA lim., LMM, Popkin est., LMM, Weir-Goudet est., LMM, Standard ROM est., LMM, Standard MOR est., LMM, GCTA est.
+# Range: 0.841479970808075, 1
+
+Rscript gwas-sim-03-auc.R
+Rscript gwas-sim-03-auc.R --const_herit_loci
+Rscript gwas-sim-03-auc.R -g 20 --const_herit_loci
 
 
 ### THEORY/OBSOLETE ###
