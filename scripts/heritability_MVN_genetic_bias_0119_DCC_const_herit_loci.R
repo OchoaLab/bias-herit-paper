@@ -16,7 +16,7 @@ dir_orig <- getwd() # remember where we are now
 setwd('./scripts')
 
 
-source('sim_geno_trait_k3_const_herit_loci.R')
+source('sim_geno_trait_k3.R')
 source('gas_lmm_gcta.R')
 source('kinship_gcta_limit.R')
 #source('herit_lmmlite.R')
