@@ -58,7 +58,7 @@ m_loci <- opt$m_loci
 k_subpops <- opt$k_subpops
 fst <- opt$fst
 bias_coeff <- opt$bias_coeff
-generations <- opt$generations
+G <- opt$generations
 m_causal <- opt$m_causal
 herit <- opt$herit
 threads <- opt$threads
@@ -73,7 +73,7 @@ name_out <- paste0(
     '-s', bias_coeff,
     '-mc', m_causal,
     '-h', herit,
-    '-g', generations,
+    '-g', G,
     '-r', rep
 )
 
@@ -87,13 +87,13 @@ obj <- sim_pop(
     k_subpops = k_subpops,
     bias_coeff = bias_coeff,
     fst = fst,
-    generations = generations,
-#    iterations = 100,
+    G = G,
     verbose = TRUE
 )
 admix_proportions <- obj$admix_proportions
 inbr_subpops <- obj$inbr_subpops
-parents <- obj$parents
+famG <- obj$fam
+ids <- obj$ids
 kinship <- obj$kinship
 
 # There are 6 kinship matrices to consider
@@ -186,8 +186,9 @@ for ( rep_i in 1 : rep ) {
     obj <- sim_geno(
         admix_proportions = admix_proportions,
         inbr_subpops = inbr_subpops,
-        generations = generations,
-        parents = parents,
+        G = G,
+        fam = famG,
+        ids = ids,
         m_loci = m_loci,
         verbose = TRUE
     )

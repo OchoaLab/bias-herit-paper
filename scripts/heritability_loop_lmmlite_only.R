@@ -73,7 +73,7 @@ m_loci <- opt$m_loci
 k_subpops <- opt$k_subpops
 fst <- opt$fst
 bias_coeff <- opt$bias_coeff
-generations <- opt$generations
+G <- opt$generations
 m_causal <- opt$m_causal
 herit <- opt$herit
 threads <- opt$threads
@@ -89,7 +89,7 @@ name_out <- paste0(
   '-s', bias_coeff,
   '-mc', m_causal,
   '-h', herit,
-  '-g', generations
+  '-g', G
 )
 
 # initialize result matrix
@@ -113,7 +113,7 @@ obj <- sim_geno_trait_k3(
   m_causal = m_causal,
   k_subpops = k_subpops,
   bias_coeff = bias_coeff,
-  generations = generations,
+  G = G,
   herit = herit,
   verbose = TRUE,
   fst = fst

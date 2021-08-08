@@ -12,9 +12,7 @@ library(bnpsd)    # simulate admixed population (structured population)
 library(popkinsuppl) # for centering true kinship matrix (limit of biased standard kinship estimator)
 library(popkin)   # plot_popkin
 library(Matrix)   # rankMatrix
-
-# sim_children_generations_* code
-source('../../scripts/draw_geno_child.R')
+library(simfam)   # for simulating family structures
 
 ############
 ### ARGV ###
@@ -42,10 +40,9 @@ n_ind <- opt$n_ind
 k_subpops <- opt$k_subpops
 fst <- opt$fst
 bias_coeff <- opt$bias_coeff
-generations <- opt$generations
+G <- opt$generations
 
 # hardcoded params
-iterations <- 100 # GENERATIONS number of iterations until "pairing" code gives up and restarts pairing simulation at an earlier generation (in small populations there may be no solution as there are not enough sufficiently unrelated individuals)
 verbose <- TRUE # to print messages
 
 ############################
@@ -75,22 +72,23 @@ if (verbose)
 coancestry <- coanc_admix(admix_proportions, inbr_subpops) # the coancestry matrix
 kinship <- coanc_to_kinship(coancestry) # kinship matrix
 
-if ( generations > 1 ) {
+if ( G > 1 ) {
     # simulate realistic generations of families
 
+    # simulate pedigree first
     if (verbose)
-        message('sim_children_generations_kinship')
-    # defines parents semi-randomly based on avoidance of close relatives
-    # but otherwise with strong assortative mating to preserve population structure
-    data_G <- sim_children_generations_kinship(
-        G = generations,
-        kinship = kinship,
-#        n = n_ind,
-        iterations = iterations,
-        verbose = verbose
-    )
-    parents <- data_G$parents # list with a matrix per generation
-    kinship <- data_G$kinship # final kinship matrix
+        message('sim_pedigree')
+    data_simfam <- sim_pedigree( n_ind, G )
+    fam <- data_simfam$fam # the pedigree itself
+    ids <- data_simfam$ids # to filter generations later
+
+    if (verbose)
+        message('kinship_fam')
+    # label founders in matrix
+    rownames( kinship ) <- ids[[ 1 ]]
+    colnames( kinship ) <- ids[[ 1 ]]
+    # now calculate total kinship in final generation
+    kinship <- kinship_last_gen( kinship, fam, ids )
 }
 
 # now test whether centering and low-dimensional approximation commute

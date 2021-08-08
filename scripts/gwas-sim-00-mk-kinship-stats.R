@@ -66,7 +66,7 @@ m_loci <- opt$m_loci
 k_subpops <- opt$k_subpops
 fst <- opt$fst
 bias_coeff <- opt$bias_coeff
-generations <- opt$generations
+G <- opt$generations
 m_causal <- opt$m_causal
 herit <- opt$herit
 const_herit_loci <- opt$const_herit_loci
@@ -83,7 +83,7 @@ dir_out <- paste0(
     '-s', bias_coeff,
     '-mc', m_causal,
     '-h', herit,
-    '-g', generations,
+    '-g', G,
     if ( const_herit_loci ) '-inv' else '-rand'
 )
 
@@ -105,7 +105,7 @@ obj <- sim_geno_trait_k3(
     m_causal = m_causal,
     k_subpops = k_subpops,
     bias_coeff = bias_coeff,
-    generations = generations,
+    G = G,
     herit = herit,
     const_herit_loci = const_herit_loci,
     verbose = TRUE,
