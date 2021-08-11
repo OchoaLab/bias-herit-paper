@@ -51,8 +51,8 @@ option_list = list(
                 help = "heritability", metavar = "double"),
     make_option("--m_causal", type = "integer", default = 100, 
                 help = "num causal loci", metavar = "int"),
-    make_option("--const_herit_loci", action = "store_true", default = FALSE, 
-                help = "Causal coefficients constructed to result in constant per-locus heritability"),
+    make_option("--fes", action = "store_true", default = FALSE, 
+                help = "Use FES instead of RC trait model"),
     make_option(c("-t", "--threads"), type = "integer", default = 0, 
                 help = "number of threads (affects GCTA only)", metavar = "int")
 )
@@ -69,7 +69,7 @@ bias_coeff <- opt$bias_coeff
 G <- opt$generations
 m_causal <- opt$m_causal
 herit <- opt$herit
-const_herit_loci <- opt$const_herit_loci
+fes <- opt$fes
 threads <- opt$threads
 
 
@@ -84,7 +84,7 @@ dir_out <- paste0(
     '-mc', m_causal,
     '-h', herit,
     '-g', G,
-    if ( const_herit_loci ) '-inv' else '-rand'
+    if ( fes ) '-fes' else '-rc'
 )
 
 
@@ -107,7 +107,7 @@ obj <- sim_geno_trait_k3(
     bias_coeff = bias_coeff,
     G = G,
     herit = herit,
-    const_herit_loci = const_herit_loci,
+    fes = fes,
     verbose = TRUE,
     fst = fst
 )

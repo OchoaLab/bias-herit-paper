@@ -252,7 +252,7 @@ for ( m_loci in loci_test  ) {
         herit = herit,
         p_anc = p_anc,
         verbose = TRUE,
-        const_herit_loci = TRUE
+        fes = TRUE
     )
     # since we have two traits, differentiate in names
     trait_X1 <- obj$trait
@@ -264,18 +264,18 @@ for ( m_loci in loci_test  ) {
         herit = herit,
         p_anc = p_anc,
         verbose = TRUE,
-        const_herit_loci = FALSE
+        fes = FALSE
     )
     # since we have two traits, differentiate in names
     trait_X2 <- obj2$trait
     
     
-    # write phenotype file (this one is the true genetic const_herit_loci )
+    # write phenotype file (this one is the true genetic FES)
     fam$pheno <- trait_X1
     name_pheno_X1 <- paste0(name_out, '.pheno_X1')
     write_phen(name_pheno_X1, fam)
     
-    # write phenotype file (this one is the true genetic trait random_herit_loci)
+    # write phenotype file (this one is the true genetic RC)
     fam$pheno <- trait_X2
     name_pheno_X2 <- paste0(name_out, '.pheno_X2')
     write_phen(name_pheno_X2, fam)
