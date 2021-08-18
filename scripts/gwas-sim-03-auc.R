@@ -67,7 +67,7 @@ setwd( '../data/' )
 setwd( dir_out )
 
 # load tibbles
-pvals <- read_tsv( 'pvals.txt' )
+pvals <- read_tsv( 'pvals.txt', show_col_types = FALSE )
 # and true causal info, for AUC
 load( 'simtrait.RData' )
 
