@@ -24,7 +24,6 @@ source('sim_geno_trait_k3.R')
 source('kinship_to_evd.R')
 source('gas_pca_optim.R')
 source('gas_lmm_gcta.R')
-source('kinship_gcta_limit.R')
 
 source('herit_lmmlite.R')
 

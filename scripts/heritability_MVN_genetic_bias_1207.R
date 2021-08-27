@@ -15,7 +15,6 @@ setwd( 'D:/3.Duke/research/alex_ochoa/1.reverse_regression/coding/gas-rgls/scrip
 
 source('sim_geno_trait_k3.R')
 source('gas_lmm_gcta.R')
-source('kinship_gcta_limit.R')
 #source('herit_lmmlite.R')
 #source('paths.R')
 setwd( dir_orig ) # go back to where we were

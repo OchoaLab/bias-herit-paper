@@ -23,7 +23,6 @@ source('sim_geno_trait_k3.R')
 source('kinship_to_evd.R')
 source('gas_pca_optim.R')
 source('gas_lmm_gcta.R')
-source('kinship_gcta_limit.R')
 
 # get back to this subdirectory
 setwd( '../bias/scripts/' )
@@ -168,9 +167,6 @@ message( "GCTA (default)" )
 # estimate kinship with GCTA's default methodd
 gas_lmm_gcta_kin(gcta_bin, name_out)
 
-# GWAS using that default kinship matrix
-#obj_gcta_default <- gas_lmm_gcta(gcta_bin, name_out, m_loci = m_loci, threads = threads)
-
 obj1 <- herit_lmm_gcta(gcta_bin, name_out, threads = threads)
 herit_all[i,1]<-obj1$herit
 rm(obj1)
@@ -194,14 +190,6 @@ write_grm(
   fam = plink_data$fam,
   verbose = FALSE
 )
-# GWAS
-# obj_gcta_true <- gas_lmm_gcta(
-#   gcta_bin,
-#   name_out,
-#   name_grm = name_kinship_true,
-#   m_loci = m_loci,
-#   threads = threads
-# )
 
 obj1 <- herit_lmm_gcta(gcta_bin, name_out,name_grm = name_kinship_true, threads = threads)
 herit_all[i,2]<-obj1$herit
@@ -221,14 +209,6 @@ write_grm(
   fam = plink_data$fam,
   verbose = FALSE
 )
-# GWAS
-# obj_gcta_popkin <- gas_lmm_gcta(
-#   gcta_bin,
-#   name_out,
-#   name_grm = name_kinship_popkin,
-#   m_loci = m_loci,
-#   threads = threads
-# )
 
 
 obj1 <- herit_lmm_gcta(gcta_bin, name_out,name_grm = name_kinship_popkin, threads = threads)
@@ -252,14 +232,6 @@ write_grm(
   fam = plink_data$fam,
   verbose = FALSE
 )
-# GWAS
-# obj_gcta_std_lim <- gas_lmm_gcta(
-#   gcta_bin,
-#   name_out,
-#   name_grm = name_kinship_std_lim,
-#   m_loci = m_loci,
-#   threads = threads
-# )
 
 obj1 <- herit_lmm_gcta(gcta_bin, name_out,name_grm = name_kinship_std_lim, threads = threads)
 herit_all[i,4]<-obj1$herit
@@ -285,14 +257,6 @@ write_grm(
   M = M,
   fam = plink_data$fam,
   verbose = FALSE
-)
-# GWAS
-obj_gcta_std <- gas_lmm_gcta(
-  gcta_bin,
-  name_out,
-  name_grm = name_kinship_std,
-  m_loci = m_loci,
-  threads = threads
 )
 
 
