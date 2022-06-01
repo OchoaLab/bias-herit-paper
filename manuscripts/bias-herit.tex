@@ -11,9 +11,8 @@
 \usepackage[utf8]{inputenc}
 
 % import biblatex with prefered settings
-% reuse code and library from LIGERA paper in the same repository
-\input{../../manuscripts/headerBiblatexHarvard.tex}
-\bibliography{../../manuscripts/zotero, ../../manuscripts/dummy} % biblatex wants this in the preamble...
+\input{headerBiblatexHarvard.tex}
+\bibliography{zotero} % biblatex wants this in the preamble...
 
 % path for figures
 \graphicspath{ {../data/} }
@@ -99,7 +98,7 @@ There are alternative approaches for estimating heritability, such as LD Score R
 Suppose there are $m$ biallelic loci and $n$ diploid individuals.
 The genotype $\xij \in \{0,1,2\}$ at a locus $i$ of individual $j$ is encoded as the number of reference alleles, for a preselected but otherwise arbitrary reference allele per locus.
 These genotypes can be treated as random variables structured according to relatedness.
-If \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{ochoa_fst1,ochoa_estimating_2021} the expectation and covariance are given by
+If \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{ochoa_estimating_2021} the expectation and covariance are given by
 \begin{align*}
   \E[\mathbf{X}]
   =
@@ -112,7 +111,7 @@ If \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is th
     ,
 \end{align*}
 where $\mathbf{x}_i$ is the length-$n$ column vector of genotypes at locus $i$, $\mathbf{X} = (\mathbf{x}_i^\intercal)$ is the complete $m \times n$ genotype matrix, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, $\mathbf{p} = (\pit)$ is a length-$m$ column vector of ancestral allele frequencies, $\mathbf{1}_n = (1)$ is a length-$n$ column vector where every element is 1, and the $\intercal$ superscript denotes matrix transposition.
-Both kinship ($\kinMat$) and ancestral allele frequencies ($\mathbf{p}$) are parameters that depend on the choice of ancestral population, for which the Most Recent Common Ancestor (MRCA) population is the most sensible choice \citep{ochoa_fst1,ochoa_estimating_2021}.
+Both kinship ($\kinMat$) and ancestral allele frequencies ($\mathbf{p}$) are parameters that depend on the choice of ancestral population, for which the Most Recent Common Ancestor (MRCA) population is the most sensible choice \citep{ochoa_estimating_2021}.
 In this work, to simplify notation, we omit cumbersome notation that marks this dependence of parameters on the choice of ancestral population, not do we explicitly condition on the ancestral population when calculating expectations and covariances as done in previous work, although it is done implicitly.
 This and later notation is summarized in \cref{tab:notation}.
 
