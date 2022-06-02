@@ -47,3 +47,11 @@ time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 1
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2
 # and version of plot actually used in MIRA proposal
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2 --grant
+
+# separate analyses
+
+# confirm that kinship estimation noise leads to bias, is reduced to zero as number of loci increase (absent all other sources of bias)
+time Rscript test-kinship-noise.R
+# 9m9.047s/62m39.499s viiiaR5
+time Rscript test-kinship-noise.R -g 2
+# not yet run
