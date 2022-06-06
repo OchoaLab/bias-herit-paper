@@ -7,15 +7,6 @@ library(genio)       # to write files for external software
 library(popkin)      # for popkin
 library(popkinsuppl) # for kinship_std estimator
 
-# switch to main scripts directory
-dir_orig <- getwd() # remember where we are now
-setwd( '../../scripts/' )
-source('sim_geno_trait_k3.R')
-source('gas_lmm_gcta.R')
-#source('herit_lmmlite.R')
-source('paths.R')
-setwd( dir_orig ) # go back to where we were
-
 # now move to data location
 setwd( '../data/' )
 
@@ -86,10 +77,9 @@ obj <- sim_pop(
     k_subpops = k_subpops,
     bias_coeff = bias_coeff,
     fst = fst,
-    G = G,
-    verbose = TRUE
+    G = G
 )
-admix_proportions <- obj$admix_proportions
+admix_proportions_1 <- obj$admix_proportions_1
 inbr_subpops <- obj$inbr_subpops
 famG <- obj$fam
 ids <- obj$ids
@@ -125,8 +115,7 @@ my_write_grm <- function( name_out, kinship ) {
         name_out,
         kinship = 2 * kinship,
         M = M,
-        fam = fam,
-        verbose = TRUE
+        fam = fam
     )
 }
 
@@ -183,13 +172,11 @@ for ( rep_i in 1 : rep ) {
 
     # simulate new genotypes for each replicate
     obj <- sim_geno(
-        admix_proportions = admix_proportions,
+        admix_proportions_1 = admix_proportions_1,
         inbr_subpops = inbr_subpops,
-        G = G,
         fam = famG,
         ids = ids,
-        m_loci = m_loci,
-        verbose = TRUE
+        m_loci = m_loci
     )
     X <- obj$X
     p_anc <- obj$p_anc
@@ -203,8 +190,7 @@ for ( rep_i in 1 : rep ) {
         X = X,
         m_causal = m_causal,
         herit = herit,
-        p_anc = p_anc,
-        verbose = TRUE
+        p_anc = p_anc
     )
     # since we have two traits, differentiate in names
     trait_X <- obj$trait
@@ -296,7 +282,7 @@ for ( rep_i in 1 : rep ) {
     # get estimates
     # another wrapper to avoid mistakes in these loops
     my_herit_lmm_gcta <- function ( name_pheno, name_kinship ) {
-        herit_lmm_gcta(gcta_bin, name_pheno, name_grm = name_kinship, threads = threads)$herit
+        gcta_reml( name_pheno, name_grm = name_kinship, threads = threads )$herit
     }
 
     # first using trait from genotypes
@@ -351,8 +337,10 @@ for ( rep_i in 1 : rep ) {
     delete_files_grm(name_kinship_std)
     delete_files_grm(name_kinship_gcta)
     # herit output and log files (only two, they get overwritten for every GRM tested)
-    delete_files_gcta(name_pheno_X, herit = TRUE)
-    delete_files_gcta(name_pheno_N, herit = TRUE)
+    delete_files_gcta_hsq( name_pheno_N )
+    delete_files_log( name_pheno_N )
+    delete_files_gcta_hsq( name_pheno_X )
+    delete_files_log( name_pheno_X )
 }
 
 ######################
