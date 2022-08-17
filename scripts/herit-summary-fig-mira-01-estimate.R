@@ -6,6 +6,9 @@ library(readr)       # to write data
 library(genio)       # to write files for external software
 library(popkin)      # for popkin
 library(popkinsuppl) # for kinship_std estimator
+library(simgenphen)  # wrapper for various simulation packages
+library(simtrait)    # for sim_trait_mvn (not in simgenphen)
+library(genbin)      # for running external binaries
 
 # now move to data location
 setwd( '../data/' )
@@ -194,19 +197,26 @@ for ( rep_i in 1 : rep ) {
     )
     # since we have two traits, differentiate in names
     trait_X <- obj$trait
-    causal_indexes <- obj$causal_indexes
-    causal_coeffs <- obj$causal_coeffs
+    # causal_indexes <- obj$causal_indexes # unused
+    # causal_coeffs <- obj$causal_coeffs # unused
+
+    # clear memory
+    rm( obj )
+    rm( p_anc )
     
     # write phenotype file (this one is the true genetic trait)
     fam$pheno <- trait_X
     name_pheno_X <- paste0(name_out, '.pheno_X')
     write_phen(name_pheno_X, fam)
 
+    # clear memory
+    rm( trait_X )
+    
     # and write MVN trait too
     fam$pheno <- traits_mvn[ rep_i, ]
     name_pheno_N <- paste0(name_out, '.pheno_N')
     write_phen(name_pheno_N, fam)
-    
+
     # write BED version for external code
     write_plink(name_out, X)
     
@@ -217,16 +227,17 @@ for ( rep_i in 1 : rep ) {
     # estimates that get redone at every replicate
 
     # 4) popkin estimate
-    # need labels first
-    labs <- ceiling( ( 1 : n_ind ) / n_ind * 10 )
     # actual popkin estimate
     message( 'popkin' )
-    kinship_popkin <- popkin(X, labs)
-
+    kinship_popkin <- popkin( X )
+    
     # 5) compute biased "standard" kinship estimate
     # calculated with function kinship_std from package popkinsuppl
     message( 'kinship_std' )
     kinship_std <- kinship_std( X )
+
+    # done with X, clear memory!
+    rm( X )
 
     # SAVE as GRM files
     name_kinship_popkin <- paste0(name_out, '.kinship_popkin')
@@ -235,46 +246,16 @@ for ( rep_i in 1 : rep ) {
     name_kinship_std <- paste0(name_out, '.kinship_std')
     my_write_grm( name_kinship_std, kinship_std )
 
+    # clear more memory
+    rm( kinship_popkin )
+    rm( kinship_std )
+
     # 6) GCTA is created by its own software
     name_kinship_gcta <- paste0(name_out, '.kinship_gcta')
-    gas_lmm_gcta_kin(gcta_bin, name = name_out, name_out = name_kinship_gcta, threads = threads)
+    gcta_grm( name = name_out, name_out = name_kinship_gcta, threads = threads )
     # cleanup
     delete_files_log(name_kinship_gcta)
     
-    ## #########################
-    ## ### LMMLITE PREROTATE ###
-    ## #########################
-
-    ## message( 'herit_lmmlite_prerotate...' )
-
-    ## # saves time factoring an eigendecomposition for LMMLITE
-    ## prerot_kinship <- herit_lmmlite_prerotate( kinship )
-    ## prerot_kinship_std <- herit_lmmlite_prerotate( kinship_std )
-    ## prerot_kinship_std_lim <- herit_lmmlite_prerotate( kinship_std_lim )
-    ## prerot_kinship_popkin <- herit_lmmlite_prerotate( kinship_popkin )
-
-    ## ###############
-    ## ### lmmlite ###
-    ## ###############
-
-    ## for ( i in 1 : rep ) {
-    ##     trait <- traits[ i, ]
-    
-    ##     message( "lmmlite (true kinship)" )
-    ##     herit_all[i,1] <- herit_lmmlite(trait, prerot_kinship, prerotated = TRUE)
-
-    ##     message( "lmmlite (popkin kinship)" )
-    ##     herit_all[i,2] <- herit_lmmlite(trait, prerot_kinship_popkin, prerotated = TRUE)
-
-    ##     #lmmlite with limit of biased "standard" kinship estimate
-    ##     message( "lmmlite (std lim kinship)" )
-    ##     herit_all[i,3] <- herit_lmmlite(trait, prerot_kinship_std_lim, prerotated = TRUE)
-
-    ##     # lmmlite with biased "standard" kinship estimate
-    ##     message( "lmmlite (std kinship)" )
-    ##     herit_all[i,4] <- herit_lmmlite(trait, prerot_kinship_std, prerotated = TRUE)
-    ## }
-
     ############
     ### GCTA ###
     ############
