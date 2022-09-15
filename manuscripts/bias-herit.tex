@@ -343,6 +343,126 @@ where $S_u$ are subpopulations that partition individuals.
 This estimator is accurate ($\ktHatNew \toas \kt$) under the assumption that \AMinHat is calculated over individual pairs whose true kinship is zero.
 In other words, the two subpopulations $S_u$ and $S_v$ with the minimum mean \Ajk value should have its true mean kinship value \kt be zero.
 
+\subsection{Estimation bias due to kinship bias}
+
+In our recent work we characterized the theoretical relationship between variance component estimates of a biased kinship matrix and its unbiased counterpart.
+Let the estimates derived from the unbiased kinship matrix be $\hat{\sigma}^2_g, \hat{\sigma}^2_e$, so that the heritability estimate is
+\begin{align*}
+  \hat{h}^2
+  &=
+    \frac{
+    \hat{\sigma}^2_g
+    }{
+    \hat{\sigma}^2_g + \hat{\sigma}^2_e
+    }
+  .
+\end{align*}
+Now, denote the estimates derived from the biased kinship matrix as
+$\hat{\sigma}^{2\prime}_g, \hat{\sigma}^{2\prime}_e$.
+We found that the relationship between these estimates is algebraically given by
+\begin{align*}
+  \hat{\sigma}^{2\prime}_g
+  &=
+    (1 - \bar{\varphi}) \hat{\sigma}^2_g
+    , \\
+  \hat{\sigma}^{2\prime}_e
+  &=
+    \hat{\sigma}^2_e
+    ,
+\end{align*}
+where $\bar{\varphi}$ is the mean value of the unbiased kinship matrix [cite bias-assoc].
+Therefore, after noting that
+\begin{align*}
+  % \hat{h}^2 ( \hat{\sigma}^2_g + \hat{\sigma}^2_e )
+  % &=
+  %   \hat{\sigma}^2_g
+  %   , \\
+  % \hat{\sigma}^2_e
+  % &=
+  %   \hat{\sigma}^2_g \frac{ 1 - \hat{h}^2 }{ \hat{h}^2 }
+  %   , \\
+  \hat{\sigma}^2_e
+  &=
+    \left( \frac{ 1 }{ \hat{h}^2 } - 1 \right) \hat{\sigma}^2_g 
+    ,
+\end{align*}
+and substituting this and the values of the biased parameters, we find a form for the biased heritability estimate in terms of the unbiased estimate and the mean kinship:
+\begin{align*}
+  \hat{h}^{2\prime}
+  &=
+    \frac{
+    \hat{\sigma}^{2\prime}_g
+    }{
+    \hat{\sigma}^{2\prime}_g + \hat{\sigma}^{2\prime}_e
+    }
+  % \\
+  % &=
+  %   \frac{
+  %   (1 - \bar{\varphi}) \hat{\sigma}^2_g
+  %   }{
+  %   (1 - \bar{\varphi}) \hat{\sigma}^2_g
+  %   + \hat{\sigma}^2_e
+  %   }
+  \\
+  &=
+    \frac{
+    (1 - \bar{\varphi}) \hat{\sigma}^2_g
+    }{
+    (1 - \bar{\varphi}) \hat{\sigma}^2_g
+    + \left( \frac{ 1 }{ \hat{h}^2 } - 1 \right) \hat{\sigma}^2_g 
+    }
+  % \\
+  % &=
+  %   \frac{
+  %   1 - \bar{\varphi}
+  %   }{
+  %   1 - \bar{\varphi}
+  %   + \frac{ 1 }{ \hat{h}^2 } - 1
+  %   }
+  % \\
+  % &=
+  %   \frac{
+  %   1 - \bar{\varphi}
+  %   }{
+  %   \frac{ 1 }{ \hat{h}^2 } - \bar{\varphi}
+  %   }
+  \\
+  &=
+    \hat{h}^2
+    \frac{
+    1 - \bar{\varphi}
+    }{
+    1 - \bar{\varphi} \hat{h}^2
+    }
+    .
+\end{align*}
+Note that the bias factor satisfies
+\begin{align*}
+  0 <
+  \frac{
+  1 - \bar{\varphi}
+  }{
+  1 - \bar{\varphi} \hat{h}^2
+  }
+  &\le
+    1
+  %   ,\\
+  % 1 - \bar{\varphi}
+  % &\le
+  %   1 - \bar{\varphi} \hat{h}^2
+  %   ,\\
+  % \bar{\varphi} \hat{h}^2
+  % &\le
+  %   \bar{\varphi}
+  %   ,\\
+  % \hat{h}^2
+  % &\le
+  %   1
+  %   ,
+\end{align*}
+since $0 < \bar{\varphi} \le 1$ and $0 \le \hat{h}^2 \le 1$, so heritability estimates are always smaller when using a biased kinship matrix compared to those of the unbiased kinship.
+%Furthermore, estimation is always biased since $\bar{\varphi}$ is never zero.
+
 \subsection{Software}
 
 TODO: state versions, download links, etc.
@@ -525,7 +645,8 @@ Many of the overestimates across kinship variants and trait simulation types res
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=6in]{{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g1-r10}.pdf}
+  [FIG EXCLUDED BECAUSE NOT REDONE YET]
+  %\includegraphics[width=6in]{{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g1-r10}.pdf}
   \caption{
     {\bf Heritability estimation by GCTA with various kinship matrices and trait simulation types, admixture structure only.}
     Oracle kinship matrices rely on the true kinship matrix being known (unknown in practice), while estimated kinship matrices are obtained from observed genotypes and are what is used in practice.
