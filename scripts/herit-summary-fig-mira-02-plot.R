@@ -71,6 +71,11 @@ data <- read_tsv(
     paste0( name_out, '.txt' )
 )
 
+# also load mean kinship, which predicts bias
+mean_kinship <- as.numeric( read_lines( paste0( name_out, '_mean-kinship.txt' ) ) )
+# actually predict biased herit value from formula
+herit_biased <- herit * ( 1 - mean_kinship ) / ( 1 - ( mean_kinship * herit ) )
+
 # a map from internal codes to nice names
 # first most straightforward map
 codes <- c('tru', 'pop', 'slm', 'std', 'glm', 'gct')
@@ -141,11 +146,19 @@ if (!grant) {
         cex = 0.7
     )
 }
-abline( h = herit, lty = 2, col = 'red' )
+abline( h = herit, lty = 2, col = 'blue' )
+abline( h = herit_biased, lty = 2, col = 'red' )
 text(
     x = 0.5, # if ( generations == 1 ) ncol(data) + 0.5 else 0.5,
     y = herit,
     labels = "True\nHeritability",
+    col = 'blue',
+    adj = 0, # if ( generations == 1 ) 1 else 0
+)
+text(
+    x = 0.5, # if ( generations == 1 ) ncol(data) + 0.5 else 0.5,
+    y = herit_biased,
+    labels = "Biased\nHeritability",
     col = 'red',
     adj = 0, # if ( generations == 1 ) 1 else 0
 )

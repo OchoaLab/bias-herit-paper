@@ -88,6 +88,10 @@ famG <- obj$fam
 ids <- obj$ids
 kinship <- obj$kinship
 
+# next plot needs mean kinship to predict bias, so save that here
+# (note it is same value, and same kinship matrix overall, for all replicates!)
+write_lines( mean( kinship ), paste0( name_out, '_mean-kinship.txt' ) )
+
 # There are 6 kinship matrices to consider
 # 1- `kinship`: true kinship matrix of simulation
 # 2- `kinship_std_lim`: limit of biased "standard" estimator
