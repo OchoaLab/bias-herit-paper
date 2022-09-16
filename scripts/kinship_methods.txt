@@ -1,0 +1,10 @@
+code	nice	type	short
+true	True Kinship	ROM lim.	True Kinship
+wg_rom_lim	Weir-Goudet ROM lim.	ROM lim.	Weir-Goudet
+std_rom_lim	Standard ROM lim.	ROM lim.	Standard
+popkin_rom	Popkin ROM est.	ROM est.	Popkin
+wg_rom	Weir-Goudet ROM est.	ROM est.	Weir-Goudet
+std_rom	Standard ROM est.	ROM est.	Standard
+popkin_mor	Popkin MOR est.	MOR est.	Popkin
+wg_mor	Weir-Goudet MOR est.	MOR est.	Weir-Goudet
+std_mor	Standard MOR est.	MOR est.	Standard

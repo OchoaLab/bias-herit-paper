@@ -1,52 +1,45 @@
 # empirical heritability bias analysis
 
-# not rerun since last simtrait/simfam updates
-# # admixture case only
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 1000
-# # 6m7.481s ideapad
-# # add minimal family structure (just siblings, so it's fast to generate)
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 1000 -g 2
-# # 7m30.000s ideapad
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 1000 -g 4
-# # 10m49.391s ideapad
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 1000 -g 6
-# # 14m14.933s ideapad
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 1000 -g 10
-# # 21m6.778s ideapad
-# # viiiaX6 has more memory, increased n there only
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 2000
-# # 47m16.487s viiiaX6
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 2000 -g 2
-# # 39m28.551s viiiaX6
-# # n=3000 died in viiiaX6, moved to labbyDuke for rest
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 3000 
-# # 48m2.400s labbyDuke
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 3000 -g 2
-# # 50m7.732s labbyDuke
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 4000 
-# # 93m9.443s labbyDuke
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 4000 -g 2
-# # 95m43.280s labbyDuke
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 5000 
-# # 177m44.662s labbyDuke
+n=5000
+g=2
+# base name for simulation (structure only)
+name=sim-n$n-k3-f0.3-s0.5-g$g
+# fuller name for genotypes and phenotypes
+name2=$name/m100000-mc100-h0.8
+
+# create overall population structure params
+time Rscript 00-sim-pop.R -n $n -g $g
+# 0m15.793s viiiaR5
+
+for rep in {1..10}; do
+    # simulate replicate genotypes and phenotypes
+    # NOTE: old code looped inside but ran out of memory (OOM) consistently, but only after one iteration.  This solution of looping outside of R successfully fixed OOM problems!
+    time Rscript 01-sim-gen-phen.R --name $name -r $rep
+    # 0m54.031s/4m41.821s viiiaR5
+
+    # estimate all kinship matrices to test
+    time Rscript 02-kinship-est.R --name $name2 -r $rep
+    # 2m32.873s/7m47.149s viiiaR5
+
+for rep in {2..10}; do
+    # calculate heritability estimates!
+    time Rscript 03-herit-est.R --name $name2 -r $rep
+    # 34m56.756s/54m31.964s viiiaR5
+done
+
+# boxplot of heritability estimates!
+time Rscript 04-herit-boxplots.R --name $name2 --n_rep 10
+
+
+
+### OLD VERSION that recalculated everything each time and did other weird things (MVN traits, incorrect GCTA limit)
+
 # time Rscript herit-summary-fig-mira-01-estimate.R -n 5000 -g 2
 # # 161m4.862s labbyDuke
 sbatch herit.q # same as last above but on DCC
 # 1042m54.307s/1156m26.282s DCC
 
 # plot versions take the same arguments
-# time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 1
-# time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 2
-# time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 4
-# time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 6
-# time Rscript herit-summary-fig-mira-02-plot.R -n 1000 -g 10
-# time Rscript herit-summary-fig-mira-02-plot.R -n 2000 -g 1
-# time Rscript herit-summary-fig-mira-02-plot.R -n 2000 -g 2
-# time Rscript herit-summary-fig-mira-02-plot.R -n 3000 -g 1
-# time Rscript herit-summary-fig-mira-02-plot.R -n 3000 -g 2
-# time Rscript herit-summary-fig-mira-02-plot.R -n 4000 -g 1
-# time Rscript herit-summary-fig-mira-02-plot.R -n 4000 -g 2
-# time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 1
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2
 # and version of plot actually used in MIRA proposal
 time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2 --grant
