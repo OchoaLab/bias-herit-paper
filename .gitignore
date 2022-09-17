@@ -1,6 +1,13 @@
 *~
 unpub
 
+# boring temp/sim data to ignore
+# some specific directories to ignore (simulated, boring params)
+/data/*/kinship/
+/data/*/simpop.RData
+# ignore all data inside replicates (important data is gathered outside them)
+/data/*/*/rep-*/
+
 # we should never commit data here, so let's forbid the bed/bim/fam/phen extensions
 *.bed
 *.bim
