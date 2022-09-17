@@ -11,7 +11,7 @@ name2=$name/m100000-mc100-h0.8
 time Rscript 00-sim-pop.R -n $n -g $g
 # 0m15.793s viiiaR5
 
-for rep in {1..10}; do
+for rep in {1..50}; do
     # simulate replicate genotypes and phenotypes
     # NOTE: old code looped inside but ran out of memory (OOM) consistently, but only after one iteration.  This solution of looping outside of R successfully fixed OOM problems!
     time Rscript 01-sim-gen-phen.R --name $name -r $rep
@@ -21,14 +21,14 @@ for rep in {1..10}; do
     time Rscript 02-kinship-est.R --name $name2 -r $rep
     # 2m32.873s/7m47.149s viiiaR5
 
-for rep in {2..10}; do
     # calculate heritability estimates!
     time Rscript 03-herit-est.R --name $name2 -r $rep
     # 34m56.756s/54m31.964s viiiaR5
 done
 
 # boxplot of heritability estimates!
-time Rscript 04-herit-boxplots.R --name $name2 --n_rep 10
+# creates smaller "grant" version as well (no separate flag in this case)
+time Rscript 04-herit-boxplots.R --name $name2 --n_rep 50
 
 
 

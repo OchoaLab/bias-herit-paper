@@ -42,8 +42,13 @@ herit <- as.numeric( sub( '.*-h', '', dir_out ) )
 # also calculate mean kinship for each original mat, to predict bias?
 # just focus on the real one?
 mean_kinship_true <- mean( read_grm( '../kinship/true' )$kinship / 2 )
+# for non-truth, should technically use every rep, though here we'll assume this is a stable value
+mean_kinship_popkin_rom <- mean( read_grm( 'rep-1/kinship/popkin_rom' )$kinship / 2 )
+mean_kinship_popkin_mor <- mean( read_grm( 'rep-1/kinship/popkin_mor' )$kinship / 2 )
 # actually predict biased herit value from formula
-herit_biased <- herit * ( 1 - mean_kinship_true ) / ( 1 - ( mean_kinship_true * herit ) )
+herit_biased_true <- herit * ( 1 - mean_kinship_true ) / ( 1 - ( mean_kinship_true * herit ) )
+herit_biased_popkin_rom <- herit * ( 1 - mean_kinship_popkin_rom ) / ( 1 - ( mean_kinship_popkin_rom * herit ) )
+herit_biased_popkin_mor <- herit * ( 1 - mean_kinship_popkin_mor ) / ( 1 - ( mean_kinship_popkin_mor * herit ) )
 
 # tibble to grow
 data <- NULL
@@ -79,12 +84,22 @@ boxplot(
     data_list,
     names = NA, # individual labels will be plotted with rest
     xaxt = 'n',
-    ylab = 'Heritability'
+    ylab = 'Heritability estimate'
 )
-mtext( 'Kinship Estimate', side = 1, line = 6 )
+mtext( 'Kinship estimate', side = 1, line = 6 )
 
+# lines and legend
 abline( h = herit, lty = 2, col = 'blue' )
-abline( h = herit_biased, lty = 2, col = 'red' )
+abline( h = herit_biased_true, lty = 2, col = 'red' )
+abline( h = herit_biased_popkin_rom, lty = 2, col = 'pink' )
+abline( h = herit_biased_popkin_mor, lty = 2, col = 'green' )
+legend(
+    'bottomleft',
+    c('Truth', 'Bias ROM lim.', 'Bias ROM est.', 'Bias MOR est.'),
+    lty = 2,
+    col = c('blue', 'red', 'pink', 'green'),
+    cex = 0.7
+)
 
 # this hack makes it all more symmetrical!
 kinship_methods$short[1] <- 'Popkin'
@@ -109,3 +124,44 @@ popkin:::print_labels_multi(
 fig_end()
 
 
+# make smaller "grant proposal" version with fewer data
+# define what to keep
+codes_small <- c('true', 'popkin_rom', 'popkin_mor', 'std_mor')
+indexes <- kinship_methods$code %in% codes_small
+data_list_small <- data_list[ indexes ]
+kinship_methods_small <- kinship_methods[ indexes, ]
+# edit names some more (space is precious)
+kinship_methods_small$nice[ kinship_methods_small$code == 'true' ] <- 'True'
+kinship_methods_small$nice <- sub( ' est.', '', kinship_methods_small$nice )
+# here we'll go with normal names under boxplots
+names( data_list_small ) <- kinship_methods_small$nice
+
+fig_start(
+    'herit-small',
+    width = 2.5, # way smaller than full fig, for grant
+    height = 4,
+    mar_b = 5.5
+)
+# to control labels underneath plot
+par_orig <- par( las = 3, cex.axis = 0.7 )
+# actual plot
+boxplot(
+    data_list_small,
+    ylab = 'Heritability estimate'
+)
+# restore `las` and anything else that might have gotten messed up
+par( par_orig )
+mtext( 'Kinship estimate', side = 1, line = 4.5 )
+
+# lines and legend
+abline( h = herit, lty = 2, col = 'blue' )
+abline( h = herit_biased_popkin_mor, lty = 2, col = 'red' )
+legend(
+    'bottomleft',
+    c('Truth', 'Predicted bias'),
+    lty = 2,
+    col = c('blue', 'red'),
+    cex = 0.7
+)
+
+fig_end()
