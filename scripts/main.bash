@@ -26,9 +26,13 @@ for rep in {1..50}; do
     # 34m56.756s/54m31.964s viiiaR5
 done
 
+# gather all small rep tables into a single big one
+time Rscript 04-table.R --name $name2 --n_rep 50
+# 0m0.874s viiiaR5
+
 # boxplot of heritability estimates!
 # creates smaller "grant" version as well (no separate flag in this case)
-time Rscript 04-herit-boxplots.R --name $name2 --n_rep 50
+time Rscript 05-herit-boxplots.R --name $name2
 
 
 

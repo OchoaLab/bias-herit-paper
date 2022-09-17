@@ -12,9 +12,7 @@ library(genio) # read_grm, to get true mean kinship
 # define options
 option_list = list(
     make_option("--name", type = "character", default = NA, 
-                help = "Base name for genotype and phenotype simulation", metavar = "character"),
-    make_option("--n_rep", type = "integer", default = NA, 
-                help = "Total number of replicates", metavar = "int")
+                help = "Base name for genotype and phenotype simulation", metavar = "character")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -22,9 +20,6 @@ opt <- parse_args(opt_parser)
 
 # get values
 dir_out <- opt$name
-n_rep <- opt$n_rep
-if ( is.na( n_rep ) )
-    stop( 'Option `--n_rep` is required!' )
 
 # before switching away from "scripts", load a table located there
 kinship_methods <- read_tsv( 'kinship_methods.txt', col_types = 'cccc' )
@@ -50,27 +45,12 @@ herit_biased_true <- herit * ( 1 - mean_kinship_true ) / ( 1 - ( mean_kinship_tr
 herit_biased_popkin_rom <- herit * ( 1 - mean_kinship_popkin_rom ) / ( 1 - ( mean_kinship_popkin_rom * herit ) )
 herit_biased_popkin_mor <- herit * ( 1 - mean_kinship_popkin_mor ) / ( 1 - ( mean_kinship_popkin_mor * herit ) )
 
-# tibble to grow
-data <- NULL
-
 # load pre-calculated herit estimates
-for ( rep in 1 : n_rep ) {
-    file_rep <- paste0( 'rep-', rep, '/herit.txt.gz' )
-    data_rep <- read_tsv( file_rep, col_types = 'icd' )
-    data <- bind_rows( data, data_rep )
-}
+data <- read_tsv( 'herit.txt.gz', col_types = 'icd' )
 
 # reorganize data for boxplots
 # will appear in desired order (from kinship_methods)
-data_list <- lapply( kinship_methods$code, function( x ) {
-    # subset tibble to data from this kinship method only
-    auc_x <- data[ data$kinship == x, ]
-    # validate number of replicates
-    stopifnot( nrow( auc_x ) == n_rep )
-    stopifnot( all( auc_x$rep %in% 1 : n_rep ) )
-    # just keep column of interest, only values of interest
-    return( auc_x$herit )
-})
+data_list <- lapply( kinship_methods$code, function( x ) data$herit[ data$kinship == x ] )
 
 # now make plot of data
 dims <- fig_scale( 1.5 ) # w/h
