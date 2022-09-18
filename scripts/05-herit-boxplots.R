@@ -119,7 +119,7 @@ names( data_list_small ) <- kinship_methods_small$nice
 fig_start(
     'herit-small',
     width = 2.5, # way smaller than full fig, for grant
-    height = 4,
+    height = 3.5,
     mar_b = 5.5
 )
 # to control labels underneath plot
