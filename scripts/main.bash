@@ -36,17 +36,10 @@ time Rscript 05-herit-boxplots.R --name $name2
 
 
 
-### OLD VERSION that recalculated everything each time and did other weird things (MVN traits, incorrect GCTA limit)
+### OLDER
 
-# time Rscript herit-summary-fig-mira-01-estimate.R -n 5000 -g 2
-# # 161m4.862s labbyDuke
-sbatch herit.q # same as last above but on DCC
-# 1042m54.307s/1156m26.282s DCC
-
-# plot versions take the same arguments
-time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2
-# and version of plot actually used in MIRA proposal
-time Rscript herit-summary-fig-mira-02-plot.R -n 5000 -g 2 --grant
+# left this as a sample DCC submission script, but it's not currently used
+sbatch herit.q
 
 # separate analyses
 
