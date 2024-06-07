@@ -85,5 +85,4 @@ write_grm( 'true', 2 * kinship )
 # limit of biased "standard" estimator (from package popkinsuppl)
 write_grm( 'std_rom_lim', 2 * kinship_std_limit( kinship ) )
 
-# WG limit
-write_grm( 'wg_rom_lim', 2 * kinship_wg_limit( kinship ) )
+

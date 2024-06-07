@@ -81,7 +81,7 @@ setwd( 'kinship' )
 # for additional ease, add links of limits shared across reps
 softlink_limits( 'true' )
 softlink_limits( 'std_rom_lim' )
-softlink_limits( 'wg_rom_lim' )
+
 
 # biased "standard" kinship estimate, ROM only (because MOR == GCTA)
 write_grm_softlinks( 'std_rom', kinship_std( X ) )
@@ -92,6 +92,4 @@ write_grm_softlinks( 'popkin_rom', kinship_popkin_rom )
 kinship_popkin_mor <- popkin( X, mean_of_ratios = TRUE )
 write_grm_softlinks( 'popkin_mor', kinship_popkin_mor )
 
-# WG estimate
-write_grm_softlinks( 'wg_rom', kinship_wg_limit( kinship_popkin_rom ) )
-write_grm_softlinks( 'wg_mor', kinship_wg_limit( kinship_popkin_mor ) )
+

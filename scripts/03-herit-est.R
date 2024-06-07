@@ -29,7 +29,11 @@ option_list = list(
     make_option(c("-r", "--rep"), type = "integer", default = 1, 
                 help = "replicate number", metavar = "int"),
     make_option(c("-t", "--threads"), type = "integer", default = 0, 
-                help = "number of threads (affects GCTA only)", metavar = "int")
+                help = "number of threads (affects GCTA only)", metavar = "int"),
+    make_option("--herit", type = "double", default = 0.8, 
+                help = "heritability", metavar = "double"),
+    make_option("--m_causal", type = "integer", default = 100, 
+                help = "num causal loci", metavar = "int")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -39,6 +43,8 @@ opt <- parse_args(opt_parser)
 dir_out <- opt$name
 rep <- opt$rep
 threads <- opt$threads
+m_causal <- opt$m_causal
+herit <- opt$herit
 
 # now move to data location
 setwd( '../data/' )
@@ -48,13 +54,22 @@ setwd( dir_out )
 # dir must already exist since we need genotypes present!
 setwd( paste0( 'rep-', rep ) )
 
+# output path for gen/phen data
+dir_out <- paste0(
+  'mc', m_causal,
+  '-h', herit
+)
+
+setwd( dir_out )
+
+
 ############
 ### GCTA ###
 ############
 
 # wrapper for sapply "loop"
 my_herit_lmm_gcta <- function ( name ) {
-    name <- paste0( 'kinship/', name )
+    name <- paste0( '../kinship/', name )
     herit <- gcta_reml(
         name, # kinship and output
         name_phen = name_phen,
@@ -70,7 +85,9 @@ my_herit_lmm_gcta <- function ( name ) {
 data <- tibble(
     rep = rep,
     kinship = kinship_methods$code,
-    herit = sapply( kinship_methods$code, my_herit_lmm_gcta )
+    herit = herit,
+    m_causal = m_causal,
+    herit_est = sapply( kinship_methods$code, my_herit_lmm_gcta )
 )
 
 # save data
