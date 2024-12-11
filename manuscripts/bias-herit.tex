@@ -20,6 +20,21 @@
 \usepackage[noT]{kinshipsymbols}
 % % copy of \Fst from package `kinshipsymbols`
 
+\newcommand{\beginsupplement}{%
+  \setcounter{table}{0}
+  \renewcommand{\thetable}{S\arabic{table}}%
+  \setcounter{figure}{0}
+  \renewcommand{\thefigure}{S\arabic{figure}}%
+  \setcounter{section}{0}
+  \renewcommand{\thesection}{S\arabic{section}}%
+  \setcounter{equation}{0}
+  \renewcommand{\theequation}{S\arabic{equation}}%
+  \setcounter{page}{1}
+  \renewcommand{\thepage}{S\arabic{page}}%
+}
+
+
+
 % some more definitions
 \newcommand{\kinMat}{%
   \ensuremath{%
@@ -30,6 +45,13 @@
 \newcommand{\kinMatStdLim}{%
   \ensuremath{%
     \mathbf{\hat{\Phi}}^\text{std-lim}
+  }%
+  \xspace%
+}%
+
+\newcommand{\kinMatEstNamed}[1]{%
+  \ensuremath{%
+    \mathbf{\hat{\Phi}}^\text{#1}
   }%
   \xspace%
 }%
@@ -48,7 +70,7 @@
 % spacing smaller than double
 \renewcommand{\baselinestretch}{1.2}
 
-\title{\Large \textbf{The effect of population kinship estimation bias in heritability estimation}}
+\title{\Large \textbf{Kinship estimation bias carries over to heritability estimation bias using variance components}}
 \author{Zhuoran Hou$^1$, Alejandro Ochoa$^{1,2,*}$}
 \date{}
 
@@ -62,11 +84,7 @@ $^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
 
 
 \begin{abstract}
-  Population kinship matrices are estimated for a variety of applications, including estimation of heritability from population data.
-  Recent work found that the most common kinship estimators can be severely biased.
-  In this work, we investigate the effect of this kinship bias on the downstream application of heritability estimation.
-  We present a novel trait simulation strategy that accurately parametrizes heritability, even when utilizing real genotypes.
-  Using these simulations, we find that heritability estimation becomes biased when using such biased kinship matrices.
+Heritability is a fundamental parameter of diseases and other traits, quantifying the contribution of genetics to that trait as opposed to non-genetic environmental factors. Heritability is reflected in the extent to which relatives have similar phenotypes. The estimation of kinship matrices, also known as Genetic Relatedness Matrices or “GRMs”, is required for heritability estimation with many common approaches based on variant components. However, the most common “standard” kinship estimator employed by these approaches, including the popular GCTA package, can be severely biased in structured populations. In this study, we first characterize the theoretically predicted heritability estimation bias in the GCTA model due to kinship bias. Heritability estimation in this model requires unbiased estimates of the random effect coefficient, which we find is biased when the standard kinship estimator is used, and this bias depends only on the mean kinship value and the true heritability. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. The simulation results validate our theoretical prediction of the bias of the standard GCTA approach and show that our unbiased kinship matrices result in unbiased heritability estimates. A further complication is that upweighting rare variants in these kinship estimates, which is common practice, introduces an additional bias that has not been characterized in closed form.  Then we apply various kinship matrices to several real datasets, such as the San Antonio Family Study and a Nephrotic Syndrome multiethnic cohort, to further characterize the source of biases and illustrate their extent in practice. We find that the heritability estimations using our unbiased kinship matrices lead to higher values, which are more consistent with previously published estimates in unstructured populations. Overall, we find that the most commonly used kinship estimator downwardly bias heritability estimation when there is population structure, and using an unbiased kinship estimator addresses this source of bias. 
 \end{abstract}
 
 % \clearpage
@@ -77,82 +95,63 @@ $^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
 	
 \section{Introduction}
 
-% direct copy from Part II
-Kinship is utilized in principal components analyses and linear-mixed effects models to correct for structure in Genome-Wide Association Studies (GWAS) \citep{xie_combining_1998,yu_unified_2006, aulchenko_genomewide_2007, price_principal_2006, astle_population_2009,kang_efficient_2008, kang_variance_2010, zhou_genome-wide_2012, loh_efficient_2015, sul_population_2018} and to estimate genome-wide heritability \citep{yang_common_2010, yang_gcta:_2011, speed_improved_2012}.
-The most commonly-used kinship estimator \citep{price_principal_2006, astle_population_2009, rakovski_kinship-based_2009, thornton_roadtrips:_2010, yang_common_2010, yang_gcta:_2011, zhou_genome-wide_2012, speed_improved_2012, speed_relatedness_2015, loh_efficient_2015, wang_efficient_2017, sul_population_2018} was recently determined to have a complex bias \citep{ochoa_estimating_2021, weir_unified_2017}.
+Heritability is an important parameter of diseases and other traits, quantifying the contribution of genetics to that trait as opposed to non-genetic environmental factors \citep{lush1949heritability}. Heritability is reflected in the extent to which relatives have similar phenotypes \citep{visscher2008heritability}. In addition, heritability is closely related to the polygenic risk score (PRS) method, an estimate of genetic liability to a trait for individuals, as it defines the upper bound of the performance of PRS \citep{choi2020tutorial}. 
 
-Heritability has long been estimated from the trait correlation between close relatives, particularly identical and fraternal twins, or siblings \citep{falconer_introduction_1996}.
-These initial estimation approaches were based on a regression model \citep{falconer_introduction_1996}.
-A different model was needed to achieve accurate estimates when estimating on more distant relatives, such as the variance component model of the SOLAR approach \citep{almasy_multipoint_1998}, which is based on estimating kinship from pedigrees.
-This idea was extended from pedigrees to populations with the GCTA approach \citep{yang_common_2010, yang_gcta:_2011}, which has spawned much research \citep{visscher_commentary_2010, speed_improved_2012, krishna_kumar_limitations_2016, yang_gcta-greml_2016, jiang_high-dimensional_2016}.
-However, we previously found that the most common family of kinship estimators employed by these approaches for populations can be severely biased \citep{ochoa_estimating_2021}.
-\citet{speed_improved_2012} focused on some biases related to other assumptions of the multivariate normal heritability model, but biases in kinship estimation were not known or included in these evaluations.
+Heritability has long been estimated from close relatives, such as twins or siblings \citep{falconer1996introduction}, or more complex pedigrees \citep{almasy_multipoint_1998}. The variance component model of the SOLAR approach, which is based on estimating kinship from pedigrees, enables the use of more distant relatives \citep{almasy_multipoint_1998}. GCTA extended the last approach to population data, which was used to demonstrate that SNPs likely explain the majority of missing heritability for height \citep{yang_common_2010,yang_gcta:_2011}. Alternative approaches for estimating heritability, such as LD Score Regression \citep{bulik2015ld,luo2021estimating} and SumHer \citep{speed2019sumher}, work with GWAS summary data and enable partitioning heritability within gene sets. We will consider LDSC in Aim 3, but not here since it is not based on kinship matrices and LMMs.
 
-There are alternative approaches for estimating heritability, such as LD Score Regression \citep{bulik-sullivan_ld_2015} and SumHer \citep{speed_sumher_2019}, which we do not consider in this work since they are not based on kinship matrices.
+Accurate kinship estimation is crucial for heritability estimation based on LMMs, such as GCTA. However, the most common kinship estimator employed by these approaches can be severely biased in structured populations \citep{ochoa_estimating_2021}.  In Aim 1 we showed, empirically and theoretically, that association tests are invariant to the use of common biased kinship estimators compared with an unbiased estimator \citep{hou2023genetic}. However, heritability estimation requires unbiased estimates of the random effect coefficient, which is biased when the standard kinship estimator is used. 
+
+In this study, we first characterize the theoretically predicted heritability estimation bias due to kinship bias, following the derivation in Aim 1. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. Then we apply various kinship matrices to several real datasets to further characterize the source of biases and their extent.
 
 
 \section{Methods}
 
 \subsection{Genetic model}
 
-Suppose there are $m$ biallelic loci and $n$ diploid individuals.
-The genotype $\xij \in \{0,1,2\}$ at a locus $i$ of individual $j$ is encoded as the number of reference alleles, for a preselected but otherwise arbitrary reference allele per locus.
-These genotypes can be treated as random variables structured according to relatedness.
-If \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{ochoa_estimating_2021} the expectation and covariance are given by
-\begin{align*}
-  \E[\mathbf{X}]
+Suppose that there are $m$ biallelic loci and $n$ diploid individuals.
+The genotype $\xij \in \{0,1,2\}$ at a locus $i$ of the individual $j$ is encoded as the number of reference alleles, for a pre-selected but otherwise arbitrary reference allele per locus.
+\kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{malecot_mathematiques_1948, wright_genetical_1949, jacquard_structures_1970, astle_population_2009, ochoa_estimating_2021} the expectation and covariance are given by
+\begin{equation}
+  \label{eq:model0}
+  \E \left[ \mathbf{x}_i  \right]
   =
-    2 \mathbf{p} \mathbf{1}_n^\intercal
+    2 \pit \mathbf{1}
   ,
   \quad\quad
-  \Cov(\mathbf{x}_i)
+  \Cov \left(\mathbf{x}_i  \right)
   =
-    4 \pit (1-\pit) \kinMat
+    4 \pit \left( 1 - \pit \right) \kinMat
     ,
-\end{align*}
-where $\mathbf{x}_i$ is the length-$n$ column vector of genotypes at locus $i$, $\mathbf{X} = (\mathbf{x}_i^\intercal)$ is the complete $m \times n$ genotype matrix, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, $\mathbf{p} = (\pit)$ is a length-$m$ column vector of ancestral allele frequencies, $\mathbf{1}_n = (1)$ is a length-$n$ column vector where every element is 1, and the $\intercal$ superscript denotes matrix transposition.
-Both kinship ($\kinMat$) and ancestral allele frequencies ($\mathbf{p}$) are parameters that depend on the choice of ancestral population, for which the Most Recent Common Ancestor (MRCA) population is the most sensible choice \citep{ochoa_estimating_2021}.
-In this work, to simplify notation, we omit cumbersome notation that marks this dependence of parameters on the choice of ancestral population, not do we explicitly condition on the ancestral population when calculating expectations and covariances as done in previous work, although it is done implicitly.
-This and later notation is summarized in \cref{tab:notation}.
+\end{equation}
+where $\mathbf{x}_i = (\xij)$ is the vector of genotypes at locus $i$, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, and $\mathbf{1}$ is a vector of ones.
 
-\begin{table}[b!]
-  \centering
-  \caption{\textbf{Mathematical notation.}}
-  \label{tab:notation}
-  \begin{tabular}{lll}
-    \hline
-    Variable                     & Dimensions   & Description                  \\
-    \hline
-    $m$                          & $1$          & Number of loci               \\
-    $n$                          & $1$          & Number of individuals        \\
-    $i$                          & $1$          & Locus (variant) index        \\
-    $j,k$                        & $1$          & Individual indexes           \\
-    $\mu$                        & $1$          & Trait mean                   \\
-    $\sigma^2$                   & $1$          & Trait variance scale         \\
-    $h^2$                        & $1$          & (Narrow-sense) Heritability  \\
-    $\mathbf{X} = (\xij)$        & $m \times n$ & Genotype matrix              \\
-    $\mathbf{x}_i = (\xij)$      & $n \times 1$ & Genotype vector at locus $i$ \\
-    $\mathbf{y}$                 & $n \times 1$ & Trait vetor                  \\
-    $\alpha$                     & $1$          & Intercept                    \\
-    $\mathbf{\beta} = (\beta_i)$ & $m \times 1$ & Effect size coefficients     \\
-    $\mathbf{\epsilon}$          & $n \times 1$ & Non-genetic random effect    \\
-    $\mathbf{p} = (\pit)$        & $m \times 1$ & Ancestral allele frequencies \\
-    $\kinMat = (\kt)$      & $n \times n$ & Kinship matrix               \\
-    $\mathbf{1}_n$               & $n \times 1$ & Vector of ones               \\
-    $\mathbf{I}_n$               & $n \times n$ & Identity matrix              \\
-    \hline
-  \end{tabular}
-\end{table}
 
-The length-$n$ quantitative trait vector $\mathbf{y}$ for all individuals is assumed to follow a linear polygenic model,
+The quantitative trait vector $\mathbf{y}$ for all individuals is assumed to follow a linear polygenic model,
 \begin{equation}
   \label{eq:trait}
   \mathbf{y}
   =
-  \mathbf{1}_n \alpha + \mathbf{X}^\intercal \mathbf{\beta}  + \mathbf{\epsilon},
+  \mathbf{1}_n \alpha + \mathbf{X}' \mathbf{\beta}  + \mathbf{\epsilon},
 \end{equation}
-where $\alpha$ is the intercept coefficient, $\mathbf{\beta} = (\beta_i)$ is a length-$m$ column vector of effect size coefficients for each locus $i$ (which may be zero), and $\mathbf{\epsilon}$ is a length-$n$ column vector of non-genetic effects.
-To analyze the covariance structure of the trait, we shall treat $\alpha$ and $\mathbf{\beta}$ are fixed parameters, while $\mathbf{X}$ and $\mathbf{\epsilon}$ are random.
+where $\alpha$ is the intercept, $\mathbf{\beta} = (\beta_i)$ is a vector of genetic effect coefficients for each locus $i$, and $\mathbf{\epsilon}$ is a vector of non-genetic effects.
+
+Let us shift the mean of genotypes to the intercept and denote $\mathbf{s}=\mathbf{X}' \mathbf{\beta}$, then:
+\begin{align*}
+     \mathbf{y}  &=
+  \mathbf{1}_n \alpha + \mathbf{s}  + \mathbf{\epsilon},
+   \\
+  \mathbf{s} 
+    \sim
+    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat \right), \quad
+    \mathbf{\epsilon} &
+    \sim
+    \text{Normal} \left( \mathbf{0}, \sigma^{2}_e \mathbf{I}_n  \right), 
+    \mathbf{s}  + \mathbf{\epsilon} 
+    \sim
+    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat +  \sigma^{2}_e \mathbf{I}_n  \right).
+\end{align*}
+
+To analyze the covariance structure of the trait, we treat $\alpha$ and $\mathbf{\beta}$ as fixed parameters, while $\mathbf{X}$ and $\mathbf{\epsilon}$ are random.
 The non-genetic effects are assumed to be independent with variance $(1-h^2) \sigma^2$ given by the total trait variance scale $\sigma^2$ and the narrow-sense heritability $h^2$:
 \begin{align*}
   \E[\mathbf{\epsilon}]
@@ -162,190 +161,122 @@ The non-genetic effects are assumed to be independent with variance $(1-h^2) \si
   \quad\quad
   \Cov(\mathbf{\epsilon})
   =
-  (1-h^2) \sigma^2 \mathbf{I}_n
+   \sigma^{2}_e \mathbf{I}_n
   ,
+  \\
+    \mathbf{X}' \mathbf{\beta}  + \mathbf{\epsilon}
+    \sim
+    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat +  \sigma^{2}_e \mathbf{I}_n  \right).
 \end{align*}
-where $\mathbf{0}_n$ is a length-$n$ column vector of zeroes.
-The expectation of the trait is therefore
+Then the narrow-sense heritability $h^2$ is defined as:
 \begin{align*}
-  \E[\mathbf{y}]
-  = \alpha \mathbf{1}_n + \E \left[ \mathbf{X}^\intercal \right] \mathbf{\beta} + \E[\mathbf{\epsilon}]
-%  = \alpha \mathbf{1}_n + 2 \mathbf{1}_n \mathbf{p}^\intercal \mathbf{\beta}
-  = \mu \mathbf{1}_n
-  , \quad\quad \text{where} \quad\quad
-  \mu 
-  =
-  \alpha + 2 \mathbf{p}^\intercal \mathbf{\beta}
-  .
+    h^{2}  =
+    \frac{
+    \sigma^{2}_g
+    }{
+    \sigma^{2}_g + \sigma^{2}_e
+    }.
 \end{align*}
-The covariance matrix of the trait is
-\begin{align*}
-  \Cov(\mathbf{y})
-  =
-  \left( \sum_{i=1}^m \Cov(\mathbf{x}_i) \beta_i^2 \right) + \Cov(\mathbf{\epsilon})
-  =
-  \kinMat \left( \sum_{i=1}^m 4 \pit (1-\pit) \beta_i^2 \right) + (1-h^2) \sigma^2 \mathbf{I}_n
-  .
-\end{align*}
-Therefore, we can write the covariance in terms of the heritability and the overall variance scale, in a formulation that matches previous work \citep{yang_common_2010, yang_gcta:_2011, speed_improved_2012}:
-\begin{equation*}
-  \Cov(\mathbf{y})
-  =
-  \sigma^2 \left( h^2 2 \kinMat  + (1-h^2) \mathbf{I}_n \right)
-  , \quad\quad \text{where} \quad\quad
-  \sigma^2 h^2 
-  = 
-  \sum_{i=1}^m 2 \pit (1-\pit) \beta_i^2
-  .
-\end{equation*}
-This last equation suggests a clear definition for the single-locus $i$ contribution to the heritability, given by
-\begin{equation}
-  \label{eq:herit_per_locus}
-  h^2_i
-  =
-  2 \pit (1-\pit) \beta_i^2 \sigma^{-2},
-\end{equation}
-which is such that the total heritability is a sum of these single-locus heritabilities: $h^2 = \sum_{i=1}^m h^2_i$.
-Since the earlier expectations and covariances are conditioned on the choice of ancestral population, and given in terms of parameters that depend on it (\pit and $\kinMat$), then the parameters $\mu, \sigma^2, h^2$ are all also dependent on the choice of ancestral population.
-
-The parametrization of our model is equivalent to setting separate absolute scales to the genetic and environment variance components, as $\sigma^2_G = h^2 \sigma^2$ and $\sigma^2_E = (1-h^2) \sigma^2$, respectively, which results in $\sigma^2_G + \sigma^2_E = \sigma^2$ and $\sigma^2_G / (\sigma^2_G + \sigma^2_E) = h^2$, as desired.
-
-The factor of two in front of $\kinMat$ is traditionally there so that for an unstructured population
-$2 \kinMat = \mathbf{I}_n$, in which case the trait covariance simplifies to
-$\Cov(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ for any value of $h^2$.
-More broadly, the variance of the trait for any outbred individual is $\sigma^2$ under this parametrization.
-In many previous presentations this factor of 2 does not appear there explicitly, but instead the kinship matrix is defined as $2 \kinMat$ \citep{yang_gcta:_2011, speed_improved_2012}.
-
-\subsection{Multivariate Normal estimation model}
-
-Here we focus on heritability estimation from the Multivariate Normal (MVN) variance component model, namely \citep{speed_improved_2012, yang_gcta:_2011}
-\begin{equation}
-  \label{eq:heritMVN}
-  \mathbf{y}
-  \sim
-  \text{MVN}
-  \left(
-    \mu \mathbf{1},
-    \sigma^2 \left(
-      2 h^2 \kinMat
-      + (1-h^2) \mathbf{I}_n
-      \right)
-  \right)
-  .
-\end{equation}
-Note that, by construction, the above trait vector has the same mean and covariance matrix of the genetic trait model in \cref{eq:trait}.
-However, the trait in \cref{eq:heritMVN} is not drawn from genotypes anymore, but solely from the kinship matrix; for this reason we refer to this as a \textit{MVN} trait, in contrast to the \textit{genetic} trait model in \cref{eq:trait}.
-
-This MVN trait model (from \cref{eq:heritMVN}) is justified as arising from the genetic trait model (from \cref{eq:trait}) in the limiting case of infinite causal locus effects, each with equal per-locus variance (heritability) according to \cref{eq:herit_per_locus} (equal $\pit (1-\pit) \beta_i^2$ for all $i$), the condition under which the genetic trait approaches the MVN distribution as a consequence of the multivariate central limit theorem.
-However, convergence may be slower in practice since both effect sizes ($\beta_i$) and ancestral allele frequencies (\pit) vary for realistic causal loci, so the product $\pit (1-\pit) \beta_i^2$ is not expected to be the same at all causal loci $i$.
-Another way of stating the difference is that \cref{eq:trait} and \cref{eq:heritMVN} agree in the first two moments, but disagree in higher moments.
 
 \subsection{Kinship estimation}
-
+Each estimator bias type has two locus weight types called \textit{ratio-of-means} (ROM) and \textit{mean-of-ratios} (MOR) \citep{bhatia_estimating_2013, ochoa_estimating_2021}.
+Only ROM estimators have closed-form limits.
+Below
+$
+\pith
+=
+\frac{1}{2n} \mathbf{x}_i' \mathbf{1}
+$
+is the standard ancestral allele frequency estimator,
+where the prime ($'$) denotes matrix transposition,
+and
+$\kinMatEstNamed{name} = (\ktHatNamed{name})$
+relates the scalar and matrix formulas of each named kinship estimator.
 \subsubsection{Standard kinship estimator}
 
-The ``standard'' kinship estimator is the most common estimator employed across various applications for population structure \citep{astle_population_2009, speed_relatedness_2015, wang_efficient_2017}, including
+The ``standard'' kinship estimator is the most widely used estimator in various applications of population structure \citep{astle_population_2009, speed_relatedness_2015, wang_efficient_2017}, including
 heritability estimation \citep{speed_improved_2012, speed_relatedness_2015, speed_reevaluation_2017}
 and genetic association tests based on PCA \citep{price_principal_2006},
-LMMs \citep{astle_population_2009, zhou_genome-wide_2012, loh_efficient_2015, sul_population_2018}
+LMM \citep{astle_population_2009, zhou_genome-wide_2012, loh_efficient_2015, sul_population_2018},
 and other models \citep{rakovski_kinship-based_2009, thornton_roadtrips:_2010}.
-The popular heritability estimation approach GCTA \citep{yang_common_2010, yang_gcta:_2011} employs a variant of this estimator detailed in the next paragraph.
-The standard estimator, and its almost sure limit as the number of loci $m$ and number of individuals $n$ go to infinity \citep{ochoa_estimating_2021}, are given by
+The popular heritability estimation approach GCTA \citep{yang_common_2010, yang_gcta:_2011} employs a variant of this estimator that is detailed in the next paragraph.
+
+
+The ROM and MOR versions of the standard kinship estimator are, respectively,
+
 \begin{align}
-  \label{eq:kinship_std}
-  \ktHatStd
+  \label{eq:kinship_std_rom}
+  \ktHatNamed{std-ROM}
   &=
-    \frac{1}{m} \sum\limits_{i=1}^m \frac{\left( \xij - 2 \pith \right) \left( \xij[k] - 2 \pith \right)}{4 \pith \left( 1-\pith \right)}
-  \\
+    \frac{
+    \sum\limits_{i=1}^m \left( \xij - 2 \pith \right) \left( \xij[k] - 2 \pith \right)
+    }{
+    \sum\limits_{i=1}^m 4 \pith \left( 1-\pith \right)
+    }
+    , \\
+  \label{eq:kinship_std_mor}
+  \ktHatNamed{std-MOR}
+  &=
+    \frac{1}{m} \sum\limits_{i=1}^m \frac{\left( \xij - 2 \pith \right) \left( \xij[k] - 2 \pith \right)}{4 \pith \left( 1-\pith \right)}    .
+\end{align}
+
+The ROM estimator has a biased limit, which is a function of the true kinship matrix \citep{ochoa_estimating_2021}:
+\begin{equation}
   \label{eq:kinship_std_lim}
-  &\toasNM
-    \frac{\kt -\bar{\varphi}_j -\bar{\varphi}_k + \bar{\varphi}}{1 - \bar{\varphi}}
-    ,
-\end{align}
-where \ktHatStd is the estimated kinship of individuals $j$ and $k$,
-$\pith = \frac{1}{2n} \sum_{j=1}^n \xij$ is the standard ancestral allele frequency estimator,
-$\bar{\varphi}_j = \frac{1}{n} \sum_{k=1}^n \kt$ is the mean kinship of individual $j$ with all others, and
-$\bar{\varphi} = \frac{1}{n^2} \sum_{j=1}^n \sum_{k=1}^n \kt$ is the overall mean kinship.
-This is a complex bias that varies for every pair of individuals, and which is on average a downward bias.
-(Note that the mean estimate, or $\frac{1}{n^2} \sum_{j=1}^n \sum_{k=1}^n \ktHatStd$, is algebraically zero, regardless of the true value of the mean kinship.)
-
-Variants of this approach that weigh loci according to linkage disequilibrium \citep{speed_reevaluation_2017, wang_efficient_2017} do not alter the bias calculated above, since the same bias is present in each individual locus \citep{ochoa_estimating_2021}.
-Our previous work also considered a more general form where the ancestral allele frequency estimator $\pith = \frac{1}{2} \sum_{j=1}^n w_j \xij$ is calculated with weights $w_j$ per individual $j$ (such that $\sum_{j=1}^n w_j = 1$), and found that these weights alter the values of the bias terms $\bar{\varphi}_j$ and $\bar{\varphi}$ to be weighted averages, but no choice of weights eliminates these biases \citep{ochoa_estimating_2021}.
-Such weighted \pith estimates encompass the best unbiased linear estimator \citep{astle_population_2009, thornton_roadtrips:_2010}, with weights corresponding to
-$
-\mathbf{w} = ( \mathbf{1}^\intercal \kinMat^{-1} \mathbf{1} )^{-1} \mathbf{1}^\intercal \kinMat^{-1}.
-$
-
-\subsubsection{GCTA kinship estimator}
-
-The GCTA software \citep{yang_gcta:_2011} estimate what they refer to as a Genetic Relatedness Matrix (GRM), which is evidently twice a kinship matrix estimate due to the similarity to \cref{eq:kinship_std} and due to the historical connection between kinship and heritability in \cref{eq:heritMVN} and in previous work \citep{falconer_introduction_1996}.
-In fact, the GCTA kinship estimates for two different individuals is identical to \cref{eq:kinship_std} (after taking into account the factor of 2 in \cref{eq:heritMVN}):
-$$
-\ktHatNamed{GCTA} = \ktHatStd \quad\quad \text{for} \quad\quad j \ne k.
-$$
-The GCTA kinship estimator differs from the standard estimator only for $j=k$ \citep{yang_gcta:_2011}, where the estimator and its limit are instead given by \citep{ochoa_estimating_2021}:
-% % copy from Part II:
-% The limits of the ratio-of-means versions of two more \ft estimators \citep{yang_gcta:_2011} are
-% \begin{equation}
-%   \label{eq:fHatsGcta}
-%   \begin{split}
-%     \ftHatStdII
-%     &= 1 - \frac{\sum\limits_{i=1}^m \xij(2-\xij)}{2 \sum\limits_{i=1}^m \pith \left( 1-\pith \right)}
-%     \toas \frac{\ft - \bar{\varphi}^T}{1 - \bar{\varphi}^T} , \\
-%     %%     
-%     \ftHatStdIII
-%     &= \frac{\sum\limits_{i=1}^m \xij^2 - \left( 1 + 2\pith \right) \xij + 2\left(\pith \right)^2}{2 \sum\limits_{i=1}^m \pith \left( 1-\pith \right)}
-%     \toas \frac{ \ft + \bar{\varphi}^T - 2 \bar{\varphi}_j^T }{1 - \bar{\varphi}^T}.
-%   \end{split}
-% \end{equation}
-% GCTA uses version III.
-% \begin{equation}
-%   \label{eq:kjjHatGctaROM}
-%   \begin{split}
-%     \ktHatNamed{GCTA}
-%     &= \frac{1}{2} + \frac{\sum\limits_{i=1}^m \xij^2 - \left( 1 + 2\pith \right) \xij + 2\left(\pith \right)^2}{4 \sum\limits_{i=1}^m \pith \left( 1-\pith \right)}
-%     \toas
-%     \frac{ \kt - \bar{\varphi}_j^T }{1 - \bar{\varphi}^T}.
-%   \end{split}
-% \end{equation}
-% This is the real MOR version, removed $T$s:
-\begin{align}
-  \label{eq:kinship_gcta_self}
-  \ktHatNamed[j]{GCTA}
-  &=
-    \frac{1}{2} + \frac{1}{m} \sum_{i=1}^m \frac{\xij^2 - \left( 1 + 2\pith \right) \xij + 2 \pith^2}{4 \pith \left( 1-\pith \right)}
-  \\
-  \label{eq:kinship_gcta_self_lim}
-  &\toasNM
-    \frac{ \kt[j] - \bar{\varphi}_j }{1 - \bar{\varphi}}
-    .
-\end{align}
+  \kinMatEstNamed{std-ROM}
+  \toas
+    \frac{1}{1 - \bar{\varphi}}
+  \left(
+    \kinMat
+    + \bar{\varphi} \mathbf{J}
+    - \boldsymbol{\varphi} \mathbf{1}' 
+    - \mathbf{1} \boldsymbol{\varphi}' 
+  \right)
+  ,
+\end{equation}
+where
+$\mathbf{J} = \mathbf{1} \mathbf{1}'$ is the $n \times n$ matrix of ones,
+$\boldsymbol{\varphi} = \frac{1}{n} \kinMat \mathbf{1}$ is a vector of per-row mean kinship values, and
+$\bar{\varphi} = \frac{1}{n^2} \mathbf{1}' \kinMat \mathbf{1}$ is the scalar overall mean kinship.
+The MOR estimator does not have a closed-form limit, but it is well approximated by Eq. (\ref{eq:kinship_std_lim}) in practice, especially when loci with small minor allele frequencies are excluded prior to calculating this estimate.
 
 \subsubsection{Popkin kinship estimator}
-
-The popkin (population kinship) estimator is given by \citep{ochoa_estimating_2021}
+The popkin (population kinship) estimator \citep{ochoa_estimating_2021}, generalized here to include locus weights $w_i$, is given by
 \begin{equation}
   \label{eq:popkin}
-  \begin{split}
-    \Ajk
-    &=
-    \frac{1}{m} \sum_{i=1}^m (\xij-1)(\xij[k]-1) - 1
-    , \\
-    \AMinHat
-    &=
-    \min_{u \ne v} \frac{1}{|S_u||S_v|} \sum_{j \in S_u} \sum_{k \in S_v} \Ajk
-    , \\
-    \ktHatNew
-    &= 1 - \frac{\Ajk}{\AMinHat},
-  \end{split}
+  \ktHatNamed{popkin}
+  =
+  1 - \frac{\Ajk}{\AMinHat}
+  , \quad\quad
+  \Ajk
+  =
+  \frac{1}{m} \sum_{i=1}^m w_i ( (\xij-1)(\xij[k]-1) - 1 )
+  ,
 \end{equation}
-where $S_u$ are subpopulations that partition individuals.
-This estimator is accurate ($\ktHatNew \toas \kt$) under the assumption that \AMinHat is calculated over individual pairs whose true kinship is zero.
-In other words, the two subpopulations $S_u$ and $S_v$ with the minimum mean \Ajk value should have its true mean kinship value \kt be zero.
+where in this work $\AMinHat = \min_{j \ne k} \Ajk$, and $w_i$ must be positive but need not add to 1.
+We consider two broad forms for this estimator.
+The original ROM estimator has $w_i = 1$ and has an unbiased almost sure limit as the number of loci $m$ goes to infinity,
 
-\subsection{Estimation bias due to kinship bias}
+$$
+\kinMatEstNamed{popkin-ROM} \toas \kinMat,
+% \ktHatNamed{popkin-ROM} \toas \kt,
+$$
+under the assumption that the true minimum kinship is zero.
+The MOR version, introduced here, outweighs rare variants using $w_i = \left( \pith \left( 1 - \pith \right) \right)^{-1}$; although it does not have a closed-form limit, it is approximately unbiased as well and is connected to the most common estimator, the standard MOR \citep{hou2023genetic}. 
 
-In our recent work we characterized the theoretical relationship between variance component estimates of a biased kinship matrix and its unbiased counterpart.
+\subsection{Heritability estimation bias due to kinship bias}
+\label{Estimation bias}
+
+In our recent work, we characterized the theoretical relationship between variance component estimates of a biased kinship matrix and its unbiased counterpart \citep{hou2023genetic}.
+For standard ROM estimator, 
+\begin{align*}
+  \label{eq:kin-std-lim-C}
+  \kinMatEstNamed{std-ROM}
+  =
+  \frac{1}{1 - \bar{\varphi}}
+  \mathbf{C} \kinMat \mathbf{C}  ,
+\end{align*}
+where $ \mathbf{C} = \mathbf{I} - \frac{1}{n} \mathbf{J}$ is the centering matrix.
 Let the estimates derived from the unbiased kinship matrix be $\hat{\sigma}^2_g, \hat{\sigma}^2_e$, so that the heritability estimate is
 \begin{align*}
   \hat{h}^2
@@ -358,19 +289,35 @@ Let the estimates derived from the unbiased kinship matrix be $\hat{\sigma}^2_g,
   .
 \end{align*}
 Now, denote the estimates derived from the biased kinship matrix as
-$\hat{\sigma}^{2\prime}_g, \hat{\sigma}^{2\prime}_e$.
-We found that the relationship between these estimates is algebraically given by
+$\hat{\sigma}^{2,\text{biased}}_g, \hat{\sigma}^{2,\text{biased}}_e$.
+Then, the model based on the biased kinship matrix is:
 \begin{align*}
-  \hat{\sigma}^{2\prime}_g
+\mathbf{y}  &=
+  \mathbf{1}_n \alpha ^{\text{biased}} + \mathbf{s}^{\text{biased}}  + \mathbf{\epsilon},
+  \\
+  \mathbf{s}^{\text{biased}} &= \mathbf{C} \mathbf{s}
+  \sim
+  \text{Normal} \left( \mathbf{0}, 2 \hat{\sigma}^{2,\text{biased}}_g \kinMatEstNamed{std-ROM} \right),
+  \\
+  \mathbf{s}^{\text{biased}} &= \mathbf{s} - \mathbf{1}_n \bar{\mathbf{s}},
+  \quad
+  \alpha ^{\text{biased}}=\alpha+ \bar{\mathbf{s}} ,
+  \quad
+    \bar{\mathbf{s}}\sim
+  \text{Normal} \left( 0,  \hat{\sigma}^{2}_g \bar{\varphi} \right),
+\end{align*}
+and we found that the relationship between these estimates is algebraically given by
+\begin{align*}
+  \hat{\sigma}^{2,\text{biased}}_g
   &=
     (1 - \bar{\varphi}) \hat{\sigma}^2_g
     , \\
-  \hat{\sigma}^{2\prime}_e
+  \hat{\sigma}^{2,\text{biased}}_e
   &=
     \hat{\sigma}^2_e
     ,
 \end{align*}
-where $\bar{\varphi}$ is the mean value of the unbiased kinship matrix [cite bias-assoc].
+where $\bar{\varphi}$ is the mean value of the unbiased kinship matrix \citep{hou2023genetic}.
 Therefore, after noting that
 \begin{align*}
   % \hat{h}^2 ( \hat{\sigma}^2_g + \hat{\sigma}^2_e )
@@ -388,21 +335,13 @@ Therefore, after noting that
 \end{align*}
 and substituting this and the values of the biased parameters, we find a form for the biased heritability estimate in terms of the unbiased estimate and the mean kinship:
 \begin{align*}
-  \hat{h}^{2\prime}
+  \hat{h}^{2,\text{biased}}
   &=
     \frac{
-    \hat{\sigma}^{2\prime}_g
+    \hat{\sigma}^{2,\text{biased}}_g
     }{
-    \hat{\sigma}^{2\prime}_g + \hat{\sigma}^{2\prime}_e
+    \hat{\sigma}^{2,\text{biased}}_g + \hat{\sigma}^{2,\text{biased}}_e
     }
-  % \\
-  % &=
-  %   \frac{
-  %   (1 - \bar{\varphi}) \hat{\sigma}^2_g
-  %   }{
-  %   (1 - \bar{\varphi}) \hat{\sigma}^2_g
-  %   + \hat{\sigma}^2_e
-  %   }
   \\
   &=
     \frac{
@@ -411,21 +350,6 @@ and substituting this and the values of the biased parameters, we find a form fo
     (1 - \bar{\varphi}) \hat{\sigma}^2_g
     + \left( \frac{ 1 }{ \hat{h}^2 } - 1 \right) \hat{\sigma}^2_g 
     }
-  % \\
-  % &=
-  %   \frac{
-  %   1 - \bar{\varphi}
-  %   }{
-  %   1 - \bar{\varphi}
-  %   + \frac{ 1 }{ \hat{h}^2 } - 1
-  %   }
-  % \\
-  % &=
-  %   \frac{
-  %   1 - \bar{\varphi}
-  %   }{
-  %   \frac{ 1 }{ \hat{h}^2 } - \bar{\varphi}
-  %   }
   \\
   &=
     \hat{h}^2
@@ -436,44 +360,28 @@ and substituting this and the values of the biased parameters, we find a form fo
     }
     .
 \end{align*}
-Note that the bias factor satisfies
-\begin{align*}
-  0 <
-  \frac{
-  1 - \bar{\varphi}
-  }{
-  1 - \bar{\varphi} \hat{h}^2
-  }
-  &\le
-    1
-  %   ,\\
-  % 1 - \bar{\varphi}
-  % &\le
-  %   1 - \bar{\varphi} \hat{h}^2
-  %   ,\\
-  % \bar{\varphi} \hat{h}^2
-  % &\le
-  %   \bar{\varphi}
-  %   ,\\
-  % \hat{h}^2
-  % &\le
-  %   1
-  %   ,
-\end{align*}
-since $0 < \bar{\varphi} \le 1$ and $0 \le \hat{h}^2 \le 1$, so heritability estimates are always smaller when using a biased kinship matrix compared to those of the unbiased kinship.
-%Furthermore, estimation is always biased since $\bar{\varphi}$ is never zero.
+We further plot this relationship between the true heritability and biased estimates in \cref{fig:h}. From this, we found that the bias becomes larger for the heritability ranging from 0.5 to 0.8 approximately while decreasing to 0 when the heritability is close to 0 or 1. In addition, the bias increases when $\bar{\varphi}$ increases.
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/h_both.png}
+  \caption{
+    {\bf Relationship between the true heritability and biased estimates.}
+    The left one plots the relationship between biased estimates and the true heritability, while the right one plots the relationship between the bias and true heritability.
+    }
+  \label{fig:h}
+\end{figure}
+
 
 \subsection{Software}
 
-TODO: state versions, download links, etc.
+Kinship estimates based on the Popkin method are computed using the popkin R package, while standard MOR kinship estimates are obtained with GCTA (version 1.93.2beta). All other kinship estimators are calculated using the popkinsuppl R package. Plink (version 1.90 and 2.00a3LM) is used to process genotype data.
 
-Outline:
-\begin{itemize}
-\item SOLAR-Eclipse \citep{almasy_multipoint_1998}.
-\item GCTA \citep{yang_gcta:_2011}.
-\end{itemize}
 
 \subsection{Simulations}
+To characterize the effect of kinship estimator bias in heritability estimation, we use simulated genotypes and traits and estimate kinship matrices from these genotypes. In particular, we consider the true kinship matrix of the simulation, the unbiased popkin estimator in \cref{eq:popkin}, the standard
+kinship estimator in \cref{eq:kinship_std_rom} and \cref{eq:kinship_std_mor}. Each scenario was replicated 50 times, in each case producing a new genotype matrix.
+
+To further explore how rare variants affect kinship estimation and trait simulations, we use genotypes from the 1000 Genome project and simulate traits using different filters ($maf=\{0,0.01,0.05\}$), and estimate the kinship matrix using genotypes based on different filters ($maf=\{0,0.01,0.05\}$) as well. 
 
 \subsubsection{Trait simulation algorithm}
 
@@ -619,103 +527,158 @@ Note that the intercept version we chose instead does not induce this genotype c
 
 \subsubsection{Admixture simulation for genotype matrices}
 
-TODO: describe the BNPSD simulation.
+An admixed family is simulated following previous work \citep{yao_limitations_2022}, except here only $K=3$ ancestries are simulated and $F_{ST}=0.3$ for the admixed individuals, which more closely resembles Hispanics and African Americans.
+Briefly, our admixture model first simulates $n=1000$ founder individuals with $m=100,000$ loci.
+Random ancestral allele frequencies \pit, subpopulation allele frequencies $p_i^{S_u}$, individual-specific allele frequencies $\pi_{ij}$, and genotypes \xij are drawn from this hierarchical model:
+
+\begin{align*}
+  \pit
+  &\sim
+    \text{Uniform}( 0.01, 0.5 )
+    , \\
+  p_i^{S_u} | \pit
+  &\sim
+    \text{Beta} \left(
+    \pit \left( \frac{1}{ \ft[S_u] } - 1 \right),
+    \left( 1 - \pit \right) \left( \frac{1}{ \ft[S_u] } - 1 \right)
+    \right)
+    , \\
+  \pi_{ij}
+  &=
+    \sum_{u = 1}^K q_{ju} p_i^{S_u}
+    , \\
+  \xij | \pi_{ij}
+  &\sim
+    \text{Binomial}(2, \pi_{ij})
+    ,
+\end{align*}
+
+where this Beta is the Balding-Nichols distribution \citep{balding_method_1995} with mean \pit and variance $\pit \left( 1 - \pit \right) \ft[S_u]$.
+We also include family structure in the simulation.
+20 generations are generated iteratively.
+
+\subsection{Real data analysis}
+
+We utilize the high-coverage NYGC version of the 1000 Genomes Project \citep{fairley_international_2020} filter using \texttt{plink2} \citep{chang_second-generation_2015}. We retain only autosomal biallelic SNP loci marked with the filter ``PASS''. The final dataset consists of $m=91,784,660$ loci and $n=2,504$ individuals.
+
+San Antonio Family Study (SAMAFS) is a complex pedigree-based study designed to identify low frequency or rare variants influencing susceptibility to T2D, conducted in 20 Mexican American T2D-enriched pedigrees from San Antonio, Texas  \citep{mitchell1996genetic}. We only use exome chip data for the SAMAFS. We use PLINK (version 1.90b4.9) \texttt{--autosome} to exclude all unplaced and non-autosomal variants, and further filter using \texttt{--maf 0.01 --hwe 1e-10} (version 2.00a3LM). The final dataset consists of $m=36,293$ loci and $n=914 $ individuals. We also include pedigree information for the estimation of kinship matrix for this data set. We adjust for age and sex in the heritability estimate.
+
+Hispanic Community Health Study / Study of Latinos (HCHS/SOL) is a multi-center study in Hispanic/Latino populations recruited through four centers in Miami, San Diego, Chicago, and the Bronx New York \citep{sorlie2010design}. Similarly, we filter genotypes using PLINK (version 2.00a3LM) \texttt{--maf 0.01 --hwe 1e-10}. The final dataset consists of $m=1,656,020 $ loci and $n=11,721 $ individuals. We adjust for age and sex in the heritability estimate.
+
+Nephrotic Syndrome (NS) multiethnic cohort is a multi-ancestry study exploring the etiology of nephrotic syndrome \citep{cason2023genetic}. We imputed the genotype and filter genotypes using PLINK (version 2.00a3LM) \texttt{--mac 20}. The final dataset consists of $m=16,605,628  $ loci and $n=1,981  $ individuals. We adjust for sex in the heritability estimate.
 
 \section{Results}
 
-\subsection{Empirical demonstration of biases in heritability estimation}
+\subsection{Simulation results}
 
-Here we consider the effect of kinship estimator bias in heritability estimation.
-We use simulated genotypes and traits, and either estimate kinship matrices from these genotypes or we show the effect of asymptotic estimator bias based on previously-calculated limits.
-In particular, we consider the true kinship matrix of the simulation,
-the unbiased popkin estimator in \cref{eq:popkin},
-the standard kinship estimator in \cref{eq:kinship_std}
-and its limit in \cref{eq:kinship_std_lim},
-and the GCTA estimator in \cref{eq:kinship_gcta_self} and its limit in \cref{eq:kinship_gcta_self_lim}.
-Lastly, we also consider two simulated trait types, namely the genetic trait in \cref{eq:trait} and the MVN trait (or infinitesimal approximation) in \cref{eq:heritMVN}.
-Each scenario was replicated 10 times, in each case producing a new genotype matrix as well as a new genetic and MVN traits.
+First, we considered a setting where there is only population structure (absence of family structure). We found that only popkin ROM results in unbiased heritability estimation while all estimates based on other kinship estimators are downwardly biased \cref{fig:Herit_sim}. To further illustrate the trend of the biases, we plot the biases for different kinship estimators. The trend is similar to the theoretical results in \cref{fig:h}. Then we consider a simulation including both population and family structure, the trend is similar to the first scenario while the variability of heritability estimation is much smaller.
 
-First we considered a setting where there is only population structure (absence of family structure).
-We find that all estimates based on the genetic trait are upwardly biased, including that based on the true kinship matrix of the simulation (\cref{fig:herit_estimation_g1}).
-In this case (genetic trait) the GCTA kinship estimates result in heritability estimates without an apparent bias, though its variance is very high.
-For the MVN trait case, the true kinship matrix results in unbiased estimation, as expected since here the model is fully specified correctly (the MVN trait assumption holds, and the true kinship matrix is used).
-The rest of the estimators and limits are biased for MVN traits too, although the direction varies for different cases:
-all kinship estimates underestimate heritability, while the GCTA limit overestimates it.
-Many of the overestimates across kinship variants and trait simulation types result in values near or at one.
+For the simulation based on the 1000 Genomes Project, we set the expected heritability to 0.8. When the traits are simulated based on all loci including rare ones, heritability estimations are all underestimated using different kinship estimators \cref{fig:tgp_sim}. When the traits are simulated based on loci after filtering out variants with allele frequency lower than 0.01 or 0.05, only heritability estimations using Popkin ROM generate unbiased results, while estimates based on Standard MOR underestimate the heritability. When kinship matrices are estimated filtering out more rare variants (maf=0.05), the heritability estimations differences is quite small using different kinship estimators.
+
 
 \begin{figure}[bp!]
   \centering
-  [FIG EXCLUDED BECAUSE NOT REDONE YET]
-  %\includegraphics[width=6in]{{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g1-r10}.pdf}
+  \includegraphics[width=\textwidth]{data/Herit_sim_both.png}
   \caption{
-    {\bf Heritability estimation by GCTA with various kinship matrices and trait simulation types, admixture structure only.}
-    Oracle kinship matrices rely on the true kinship matrix being known (unknown in practice), while estimated kinship matrices are obtained from observed genotypes and are what is used in practice.
-    Genetic traits are simulated from genotypes, whereas MVN traits are simulated from the Multivariate Normal model, which is itself used to infer heritability but is unrealistic since it does not depend on any genotypes.
-    Genotypes and traits were simulated for $n = 5000$ individuals, $m = 100000$ loci, for 10 replicates, from an admixture simulation ($K = 3$ ancestral subpopulations, $\Fst = 0.3$ for admixed individuals, bias coefficient of $s = 0.5$), no family structure, and the traits had a true heritability of $h^2 = 0.8$ and $m_1 = 100$ causal loci).
-  }
-  \label{fig:herit_estimation_g1}
+    {\bf Heritability estimation simulation by GCTA with various kinship matrices.}
+    The upper and lower rows show simulation results for admixture structure only and admixture plus family structure, respectively.
+    }
+  \label{fig:Herit_sim}
 \end{figure}
-
-Since traditional heritability estimation is based on family structure, we decided to consider a simulation including both population and family structure.
-Simply adding siblings results in striking changes in estimation biases (\cref{fig:herit_estimation_g2}).
-Most versions of this analysis yield estimates with lower variance and bias when siblings are included, and the proportion of estimates close to 1 is sharply reduced.
-Another large differences is for the GCTA kinship limit, which is near one in the absence of siblings, and are instead downwardly biased when siblings are present.
-We still observe that all estimates on the genetic trait are upwardly biased.
-Moreover, although the GCTA estimated kinship appeared to ahve low bias in the absence of siblings, the inclusion of siblings reduces their variance and reveals an updard bias in these estimates too.
-For the MVN trait, now all estimates are downwardly biased, except for the true kinship matrix (which is expected to be unbiased), and possibly the limit of the standard kinship estimator.
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=6in]{{herit-estimates-n5000-m100000-k3-f0.3-s0.5-mc100-h0.8-g2-r10}.pdf}
+  \includegraphics[width=\textwidth]{data/tgp_sim.png}
   \caption{
-    {\bf Heritability estimation by GCTA with various kinship matrices and trait simulation types, admixture plus family structure (siblings).}
-    Like \cref{fig:herit_estimation_g1}, but proximal individuals (with the most similar ancestries) were mated to simulate siblings, and only the second generation (the siblings) were used to estimate heritability.
-  }
-  \label{fig:herit_estimation_g2}
+    {\bf Heritability estimation simulation based on 1000 Genomes Project with various kinship matrices using different rare variants filters.}
+    }
+  \label{fig:tgp_sim}
 \end{figure}
 
-In all these cases (\cref{fig:herit_estimation_g1,fig:herit_estimation_g2}) we find that kinship estimates do not result in the same estimates, on average, as their limits (expected as the number of loci goes to infinity).
-In all but one of these cases, heritability estimates are downwardly biased when estimated kinship matrices are used compared to the limits of their respective kinship estimators.
-This suggests that kinship estimation variance results in an additional downward bias in heritability estimation, compared to the bias due to kinship estimator bias.
-We also find that estimation from proper, genetic traits, is biased under the MVN model on which GCTA's inference is based.
-Although MVN traits result in unbiased estimation under the true kinship matrix, this is an impractical scenario since the true kinship matrix is never known and true traits are never MVN.
 
-Overall, since true traits are more like our genetic trait simulation, we expect there to be a heritability upward bias due to performing inference with the misspecified MVN model, and a separate downward bias due to the noise in kinship estimation.
-These biases must be further characterized in order to understand when they are problematic, and doing so may lead to new strategies for correction of these biases.
+\subsection{Real data applications}
 
-[INTERNAL NOTES:]
-However, these results are currently limited as only 10 replicates were simulated.
-These genotype simulations are expensive, but we should aim to speed them up to scale better as the number of individuals increases.
+To further validate our results on real datasets, we estimate heritability using the popkin ROM estimator (the unbiased kinship estimator) and standard kinship MOR estimator (the commonly used biased kinship estimator) on three real datasets: San Antonio Family Study (SAMAFS), Hispanic Community Health Study / Study of Latinos (HCHS/SOL) and  Nephrotic Syndrome (NS) multiethnic cohort.
 
-\subsubsection{Next steps}
+For both SAMAFS and HCHS/SOL, heritabilities estimated from popkin ROM estimator are higher for most traits while there are some exceptions (\cref{fig:T2D,fig:HCHS}). This is because our theoretical justification in \ref{Estimation bias} holds only for estimators that weigh loci the same way (both ROM or both MOR), while there is some additional bias that has not yet been characterized when we compare results from popkin ROM to standard MOR (\cref{fig:est_relationship}).
 
-\begin{enumerate}
-\item The above suggests that heritability estimates from kinship estimates should approach those of their limits as the number of loci goes to infinity.
-  We should come up with simulations where the number of loci is increased.
-  However, the current code requires a lot of memory, so we may need to use the cluster and optimize the code.
-  For simplicity, we could focus on a single estimator, such as ``popkin'', and can also add a step where kinship estimates are perfectly unbiased regardless of number of loci, to eliminate that confounding issue.
-  This is because popkin is only unbiased as long as \AMinHat in \cref{eq:popkin} is estimated perfectly, and I know for a fact that in our simulations there is a small bias in how \AMinHat, but that small bias may ultimately have an effect too and it'd be interesting to look at it separately.
-  Anyway, the experiment could verify that kinship estimation noise does go to zero as the number of loci goes to infinity; that could help us determine the relationship between the number of loci and the bias, which could be used to correct the bias.
-  Alternatively, should the experiment fail, we need to think about what other explanations there are for the observed biases (not sure what that would be yet).
-\item Another prediction is that genetic traits should converge to MVN traits as the number of causal loci goes to infinity.
-  More narrowly, heritability estimates from genetic traits (for simplicity, lets stick with the true kinship matrix) should approach the unbiased heritability estimates of MVN traits as the number of causal loci goes to infinity.
-  A theoretical problem with this convergence is that right now the effect sizes, or per-locus heritabilities, vary randomly per causal locus, whereas convergence is only guaranteed when each per-locus heritability is equal.
-  So perhaps that is not happening here for that reason, and I can extend the simtrait code to simulate traits where effect sizes are exactly equal for every locus.
-  This issue is related to the assumptions on distribution of effect sizes discussed by \citet{speed_improved_2012}.
-  If the expected result is observed, then we can again figure out how the bias and the number of causal loci are related, and there may be other parameters that are important, such as the variance of effect sizes, though maybe it is not possible to fully characterize this bias.
-  On the other hand, if the expected result is not observed, one potential explanation is that ``simtrait'' has bugs.
-  I have performed several tests before that suggests that things are fine, but it remains a remote possibility.
-\item Can you think of other interesting questions or tests we should make?
-  Remember that our main simulation (based on the genetic trait, \cref{eq:trait}) and the inference model (MVN, \cref{eq:heritMVN}) disagree, so the inference model is misspecified, and the use of estimated kinship matrices makes the model additionally misspecified, so there are several potential explanations for the biases.
-  We should think more about what other explanations there are that I didn't list, or what other computational experiments can be informative towards understanding the problem better.
-\end{enumerate}
+For NS, we find that all heritabilities estimated from popkin ROM estimator are larger than the standard kinship MOR estimator \cref{fig:NS}. This is explained by the fact that this dataset has higher mean kinship values, which leads to larger biases as shown in \cref{fig:h}.
+
+% heights, compared with the published papers
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/Fig_T2D_maf001_agesex.png}
+  \caption{
+    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-1.}
+    The figure shows results from the San Antonio Family Study: Type 2 Diabetes (low mean kinship).
+    }
+  \label{fig:T2D}
+\end{figure}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/Fig_HCHS_All_maf001_agesex.png}
+  \caption{
+    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-2.}
+    The figure shows results from the Hispanic Community Health Study / Study of Latinos (middle mean kinship).
+    }
+  \label{fig:HCHS}
+\end{figure}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/Fig_NS_sex_array.png}
+  \caption{
+    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-3.}
+    The figure shows results from Nephrotic Syndrome: multiethnic cohort (high mean kinship).
+    }
+  \label{fig:NS}
+\end{figure}
+
+
 
 \section{Discussion}
 
+% summary of this whole paper
+Previous research found that commonly used kinship estimators are biased, and these kinship biases will not affect association test statistics. In this project, we explored how kinship estimation bias affects heritability, and found the bias carried away to heritability estimation.
+
+
+
+% ROM and MOR, 1000 genome results
+
+
+% rare variants simulation, and how it affects MOR
+
+
+% San Antonio Family Study pedigree
+
+% Binary traits
+
+
+
+
+
 ...
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/est_relationships.png}
+  \caption{
+    {\bf Relationships among popkin/standard ROM/MOR estimators.}
+    }
+  \label{fig:est_relationship}
+\end{figure}
+
+
+\newpage
 
 \printbibliography
 
+\newpage
 
+\beginsupplement
+
+\section{Supplemental figures}
+...
 
 \end{document}

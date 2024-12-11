@@ -1,3 +1,253 @@
+
+
+@article{astle_population_2009,
+  author =        {Astle, William and Balding, David J.},
+  journal =       {Statist. Sci.},
+  month =         nov,
+  note =          {Mathematical Reviews number (MathSciNet): MR2779337},
+  number =        {4},
+  pages =         {451--471},
+  title =         {Population {Structure} and {Cryptic} {Relatedness} in
+                   {Genetic} {Association} {Studies}},
+  volume =        {24},
+  year =          {2009},
+  abstract =      {We review the problem of confounding in genetic
+                   association studies, which arises principally because
+                   of population structure and cryptic relatedness. Many
+                   treatments of the problem consider only a simple
+                   “island” model of population structure. We take a
+                   broader approach, which views population structure
+                   and cryptic relatedness as different aspects of a
+                   single confounder: the unobserved pedigree defining
+                   the (often distant) relationships among the study
+                   subjects. Kinship is therefore a central concept, and
+                   we review methods of defining and estimating kinship
+                   coefficients, both pedigree-based and marker-based.
+                   In this unified framework we review solutions to the
+                   problem of population structure, including
+                   family-based study designs, genomic control,
+                   structured association, regression control, principal
+                   components adjustment and linear mixed models. The
+                   last solution makes the most explicit use of the
+                   kinships among the study subjects, and has an
+                   established role in the analysis of animal and plant
+                   breeding studies. Recent computational developments
+                   mean that analyses of human genetic association data
+                   are beginning to benefit from its powerful tests for
+                   association, which protect against population
+                   structure and cryptic kinship, as well as
+                   intermediate levels of confounding by the pedigree.},
+  doi =           {10.1214/09-STS307},
+  issn =          {0883-4237},
+  language =      {EN},
+  url =           {http://projecteuclid.org/euclid.ss/1271770342},
+}
+
+
+@article{yao_limitations_2022,
+  author =        {Yao, Yiqi and Ochoa, Alejandro},
+  institution =   {bioRxiv},
+  month =         mar,
+  note =          {Section: New Results Type: article},
+  pages =         {2022.03.25.485885},
+  title =         {Limitations of principal components in quantitative
+                   genetic association models for human studies},
+  year =          {2022},
+  abstract =      {Principal Component Analysis (PCA) and the Linear
+                   Mixed-effects Model (LMM), sometimes in combination,
+                   are the most common modern models for genetic
+                   association. Previous PCA-LMM comparisons give mixed
+                   results and unclear guidance, and have several
+                   limitations, including not varying the number of
+                   principal components (PCs), simulating overly simple
+                   population structures, and inconsistent use of real
+                   data and power evaluations. In this work, we
+                   thoroughly evaluate PCA and LMM both with varying
+                   number of PCs in new realistic genotype and complex
+                   trait simulations including admixed families, trees,
+                   and large real multiethnic human genotype datasets
+                   (1000 Genomes Project, the Human Genome Diversity
+                   Panel, and Human Origins) with simulated traits. We
+                   find that LMM without PCs performs best in all cases,
+                   with the largest effects in the family simulation and
+                   all real human datasets. We determined that the large
+                   gaps in PCA to LMM performance on the real human
+                   datasets is due to the high-dimensional family
+                   structure stemming from large numbers of distant
+                   relatives, and not from the smaller number of highly
+                   related pairs. While it was known that PCA fails on
+                   family data, here we report a strong effect on
+                   association of cryptic family relatedness in several
+                   genetically diverse human datasets, a problem that is
+                   not avoided with the common practice of pruning
+                   high-relatedness individual pairs. Overall, this work
+                   better characterizes the severe limitations of PCA
+                   compared to LMM in modeling the complex relatedness
+                   structures present in real multiethnic human data and
+                   its impact in association studies.},
+  doi =           {10.1101/2022.03.25.485885},
+  language =      {en},
+  url =           {https://www.biorxiv.org/content/10.1101/
+                  2022.03.25.485885v1},
+}
+
+
+@article{ochoa_estimating_2021,
+  author =        {Ochoa, Alejandro and Storey, John D.},
+  journal =       {PLoS Genet},
+  month =         jan,
+  number =        {1},
+  pages =         {e1009241},
+  title =         {Estimating {FST} and kinship for arbitrary population
+                   structures},
+  volume =        {17},
+  year =          {2021},
+  abstract =      {FST and kinship are key parameters often estimated in
+                   modern population genetics studies in order to
+                   quantitatively characterize structure and
+                   relatedness. Kinship matrices have also become a
+                   fundamental quantity used in genome-wide association
+                   studies and heritability estimation. The most
+                   frequently-used estimators of FST and kinship are
+                   method-of-moments estimators whose accuracies depend
+                   strongly on the existence of simple underlying forms
+                   of structure, such as the independent subpopulations
+                   model of non-overlapping, independently evolving
+                   subpopulations. However, modern data sets have
+                   revealed that these simple models of structure likely
+                   do not hold in many populations, including humans. In
+                   this work, we analyze the behavior of these
+                   estimators in the presence of arbitrarily-complex
+                   population structures, which results in an improved
+                   estimation framework specifically designed for
+                   arbitrary population structures. After generalizing
+                   the definition of FST to arbitrary population
+                   structures and establishing a framework for assessing
+                   bias and consistency of genome-wide estimators, we
+                   calculate the accuracy of existing FST and kinship
+                   estimators under arbitrary population structures,
+                   characterizing biases and estimation challenges
+                   unobserved under their originally-assumed models of
+                   structure. We then present our new approach, which
+                   consistently estimates kinship and FST when the
+                   minimum kinship value in the dataset is estimated
+                   consistently. We illustrate our results using
+                   simulated genotypes from an admixture model,
+                   constructing a one-dimensional geographic scenario
+                   that departs nontrivially from the independent
+                   subpopulations model. Our simulations reveal the
+                   potential for severe biases in estimates of existing
+                   approaches that are overcome by our new framework.
+                   This work may significantly improve future analyses
+                   that rely on accurate kinship and FST estimates.},
+  doi =           {10.1371/journal.pgen.1009241},
+  issn =          {1553-7404},
+  language =      {eng},
+}
+
+@article{bulik2015ld,
+  title={LD Score regression distinguishes confounding from polygenicity in genome-wide association studies},
+  author={Bulik-Sullivan, Brendan K and Loh, Po-Ru and Finucane, Hilary K and Ripke, Stephan and Yang, Jian and Schizophrenia Working Group of the Psychiatric Genomics Consortium and Patterson, Nick and Daly, Mark J and Price, Alkes L and Neale, Benjamin M},
+  journal={Nature genetics},
+  volume={47},
+  number={3},
+  pages={291--295},
+  year={2015},
+  publisher={Nature Publishing Group US New York}
+}
+
+@article{finucane2015partitioning,
+  title={Partitioning heritability by functional annotation using genome-wide association summary statistics},
+  author={Finucane, Hilary K and Bulik-Sullivan, Brendan and Gusev, Alexander and Trynka, Gosia and Reshef, Yakir and Loh, Po-Ru and Anttila, Verneri and Xu, Han and Zang, Chongzhi and Farh, Kyle and others},
+  journal={Nature genetics},
+  volume={47},
+  number={11},
+  pages={1228--1235},
+  year={2015},
+  publisher={Nature Publishing Group US New York}
+}
+
+@article{luo2021estimating,
+  title={Estimating heritability and its enrichment in tissue-specific gene sets in admixed populations},
+  author={Luo, Yang and Li, Xinyi and Wang, Xin and Gazal, Steven and Mercader, Josep Maria and Me Research Team and SIGMA Type 2 Diabetes Consortium and Neale, Benjamin M and Florez, Jose C and Auton, Adam and others},
+  journal={Human molecular genetics},
+  volume={30},
+  number={16},
+  pages={1521--1534},
+  year={2021},
+  publisher={Oxford University Press}
+}
+
+@article{lush1949heritability,
+  title={Heritability of quantitative characters in farm animals.},
+  author={Lush, Jay L and others},
+  journal={Heritability of quantitative characters in farm animals.},
+  year={1949}
+}
+
+@book{falconer1996introduction,
+  title={Introduction to quantitative genetics},
+  author={Falconer, Douglas Scott},
+  year={1996},
+  publisher={Pearson Education India}
+}
+
+@article{yang2010common,
+  title={Common SNPs explain a large proportion of the heritability for human height},
+  author={Yang, Jian and Benyamin, Beben and McEvoy, Brian P and Gordon, Scott and Henders, Anjali K and Nyholt, Dale R and Madden, Pamela A and Heath, Andrew C and Martin, Nicholas G and Montgomery, Grant W and others},
+  journal={Nature genetics},
+  volume={42},
+  number={7},
+  pages={565--569},
+  year={2010},
+  publisher={Nature Publishing Group US New York}
+}
+
+@article{yang_gcta:_2011,
+  title={GCTA: a tool for genome-wide complex trait analysis},
+  author={Yang, Jian and Lee, S Hong and Goddard, Michael E and Visscher, Peter M},
+  journal={The American Journal of Human Genetics},
+  volume={88},
+  number={1},
+  pages={76--82},
+  year={2011},
+  publisher={Elsevier}
+}
+
+@article{devlin_genomic_1999,
+	title = {Genomic {Control} for {Association} {Studies}},
+	volume = {55},
+	issn = {1541-0420},
+	url = {http://onlinelibrary.wiley.com/doi/10.1111/j.0006-341X.1999.00997.x/abstract},
+	doi = {10.1111/j.0006-341X.1999.00997.x},
+	abstract = {Summary.  A dense set of single nucleotide polymorphisms (SNP) covering the genome and an efficient method to assess SNP genotypes are expected to be available in the near future. An outstanding question is how to use these technologies efficiently to identify genes affecting liability to complex disorders. To achieve this goal, we propose a statistical method that has several optimal properties: It can be used with case-control data and yet, like family-based designs, controls for population heterogeneity; it is insensitive to the usual violations of model assumptions, such as cases failing to be strictly independent; and, by using Bayesian outlier methods, it circumvents the need for Bonferroni correction for multiple tests, leading to better performance in many settings while still constraining risk for false positives. The performance of our genomic control method is quite good for plausible effects of liability genes, which bodes well for future genetic analyses of complex disorders.},
+	language = {en},
+	number = {4},
+	urldate = {2015-06-16},
+	journal = {Biometrics},
+	author = {Devlin, B. and Roeder, Kathryn},
+	month = dec,
+	year = {1999},
+	keywords = {Bayesian inference, Case-control, Complex genetic disorder, Outliers, Population heterogeneity, Single nucleotide polymorphism genotypes},
+	pages = {997--1004},
+}
+
+@article{voight_confounding_2005,
+	title = {Confounding from {Cryptic} {Relatedness} in {Case}-{Control} {Association} {Studies}},
+	volume = {1},
+	issn = {1553-7404},
+	url = {https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0010032},
+	doi = {10.1371/journal.pgen.0010032},
+	abstract = {Case-control association studies are widely used in the search for genetic variants that contribute to human diseases. It has long been known that such studies may suffer from high rates of false positives if there is unrecognized population structure. It is perhaps less widely appreciated that so-called “cryptic relatedness” (i.e., kinship among the cases or controls that is not known to the investigator) might also potentially inflate the false positive rate. Until now there has been little work to assess how serious this problem is likely to be in practice. In this paper, we develop a formal model of cryptic relatedness, and study its impact on association studies. We provide simple expressions that predict the extent of confounding due to cryptic relatedness. Surprisingly, these expressions are functions of directly observable parameters. Our analytical results show that, for well-designed studies in outbred populations, the degree of confounding due to cryptic relatedness will usually be negligible. However, in contrast, studies where there is a sampling bias toward collecting relatives may indeed suffer from excessive rates of false positives. Furthermore, cryptic relatedness may be a serious concern in founder populations that have grown rapidly and recently from a small size. As an example, we analyze the impact of excess relatedness among cases for six phenotypes measured in the Hutterite population.},
+	language = {en},
+	number = {3},
+	urldate = {2019-11-20},
+	journal = {PLOS Genetics},
+	author = {Voight, Benjamin F. and Pritchard, Jonathan K.},
+	month = sep,
+	year = {2005},
+	keywords = {Simulation and modeling, Population size, Genetic loci, Genetics of disease, Population genetics, Inbreeding, Case-control studies, Chromosome pairs},
+	pages = {e32},
 }
 
 @article{xie_combining_1998,
@@ -171,48 +421,6 @@
   language =      {eng},
 }
 
-@article{astle_population_2009,
-  author =        {Astle, William and Balding, David J.},
-  journal =       {Statist. Sci.},
-  month =         nov,
-  note =          {Mathematical Reviews number (MathSciNet): MR2779337},
-  number =        {4},
-  pages =         {451--471},
-  title =         {Population {Structure} and {Cryptic} {Relatedness} in
-                   {Genetic} {Association} {Studies}},
-  volume =        {24},
-  year =          {2009},
-  abstract =      {We review the problem of confounding in genetic
-                   association studies, which arises principally because
-                   of population structure and cryptic relatedness. Many
-                   treatments of the problem consider only a simple
-                   “island” model of population structure. We take a
-                   broader approach, which views population structure
-                   and cryptic relatedness as different aspects of a
-                   single confounder: the unobserved pedigree defining
-                   the (often distant) relationships among the study
-                   subjects. Kinship is therefore a central concept, and
-                   we review methods of defining and estimating kinship
-                   coefficients, both pedigree-based and marker-based.
-                   In this unified framework we review solutions to the
-                   problem of population structure, including
-                   family-based study designs, genomic control,
-                   structured association, regression control, principal
-                   components adjustment and linear mixed models. The
-                   last solution makes the most explicit use of the
-                   kinships among the study subjects, and has an
-                   established role in the analysis of animal and plant
-                   breeding studies. Recent computational developments
-                   mean that analyses of human genetic association data
-                   are beginning to benefit from its powerful tests for
-                   association, which protect against population
-                   structure and cryptic kinship, as well as
-                   intermediate levels of confounding by the pedigree.},
-  doi =           {10.1214/09-STS307},
-  issn =          {0883-4237},
-  language =      {EN},
-  url =           {http://projecteuclid.org/euclid.ss/1271770342},
-}
 
 @article{kang_efficient_2008,
   author =        {Kang, Hyun Min and Zaitlen, Noah A. and
@@ -344,6 +552,45 @@
   language =      {eng},
 }
 
+@article{yang_advantages_2014,
+  author =        {Yang, Jian and Zaitlen, Noah A. and
+                   Goddard, Michael E. and Visscher, Peter M. and
+                   Price, Alkes L.},
+  journal =       {Nat Genet},
+  month =         feb,
+  number =        {2},
+  pages =         {100--106},
+  title =         {Advantages and pitfalls in the application of
+                   mixed-model association methods},
+  volume =        {46},
+  year =          {2014},
+  abstract =      {Mixed linear models are emerging as a method of
+                   choice for conducting genetic association studies in
+                   humans and other organisms. The advantages of the
+                   mixed-linear-model association (MLMA) method include
+                   the prevention of false positive associations due to
+                   population or relatedness structure and an increase
+                   in power obtained through the application of a
+                   correction that is specific to this structure. An
+                   underappreciated point is that MLMA can also increase
+                   power in studies without sample structure by
+                   implicitly conditioning on associated loci other than
+                   the candidate locus. Numerous variations on the
+                   standard MLMA approach have recently been published,
+                   with a focus on reducing computational cost. These
+                   advances provide researchers applying MLMA methods
+                   with many options to choose from, but we caution that
+                   MLMA methods are still subject to potential pitfalls.
+                   Here we describe and quantify the advantages and
+                   pitfalls of MLMA methods as a function of study
+                   design and provide recommendations for the
+                   application of these methods in practical settings.},
+  doi =           {10.1038/ng.2876},
+  issn =          {1061-4036},
+  language =      {en},
+  url =           {http://www.nature.com/ng/journal/v46/n2/full/ng.2876.html},
+}
+
 @article{loh_efficient_2015,
   author =        {Loh, Po-Ru and Tucker, George and
                    Bulik-Sullivan, Brendan K. and
@@ -413,132 +660,6 @@
                    models in the context of unmodeled factors.},
   doi =           {10.1371/journal.pgen.1007309},
   issn =          {1553-7404},
-  language =      {eng},
-}
-
-@article{yang_common_2010,
-  author =        {Yang, Jian and Benyamin, Beben and McEvoy, Brian P. and
-                   Gordon, Scott and Henders, Anjali K. and
-                   Nyholt, Dale R. and Madden, Pamela A. and
-                   Heath, Andrew C. and Martin, Nicholas G. and
-                   Montgomery, Grant W. and Goddard, Michael E. and
-                   Visscher, Peter M.},
-  journal =       {Nat. Genet.},
-  month =         jul,
-  number =        {7},
-  pages =         {565--569},
-  title =         {Common {SNPs} explain a large proportion of the
-                   heritability for human height},
-  volume =        {42},
-  year =          {2010},
-  abstract =      {SNPs discovered by genome-wide association studies
-                   (GWASs) account for only a small fraction of the
-                   genetic variation of complex traits in human
-                   populations. Where is the remaining heritability? We
-                   estimated the proportion of variance for human height
-                   explained by 294,831 SNPs genotyped on 3,925
-                   unrelated individuals using a linear model analysis,
-                   and validated the estimation method with simulations
-                   based on the observed genotype data. We show that
-                   45\% of variance can be explained by considering all
-                   SNPs simultaneously. Thus, most of the heritability
-                   is not missing but has not previously been detected
-                   because the individual effects are too small to pass
-                   stringent significance tests. We provide evidence
-                   that the remaining heritability is due to incomplete
-                   linkage disequilibrium between causal variants and
-                   genotyped SNPs, exacerbated by causal variants having
-                   lower minor allele frequency than the SNPs explored
-                   to date.},
-  doi =           {10.1038/ng.608},
-  issn =          {1546-1718},
-  language =      {eng},
-}
-
-@article{yang_gcta:_2011,
-  author =        {Yang, Jian and Lee, S. Hong and Goddard, Michael E. and
-                   Visscher, Peter M.},
-  journal =       {Am. J. Hum. Genet.},
-  month =         jan,
-  number =        {1},
-  pages =         {76--82},
-  title =         {{GCTA}: a tool for genome-wide complex trait
-                   analysis},
-  volume =        {88},
-  year =          {2011},
-  abstract =      {For most human complex diseases and traits, SNPs
-                   identified by genome-wide association studies (GWAS)
-                   explain only a small fraction of the heritability.
-                   Here we report a user-friendly software tool called
-                   genome-wide complex trait analysis (GCTA), which was
-                   developed based on a method we recently developed to
-                   address the "missing heritability" problem. GCTA
-                   estimates the variance explained by all the SNPs on a
-                   chromosome or on the whole genome for a complex trait
-                   rather than testing the association of any particular
-                   SNP to the trait. We introduce GCTA's five main
-                   functions: data management, estimation of the genetic
-                   relationships from SNPs, mixed linear model analysis
-                   of variance explained by the SNPs, estimation of the
-                   linkage disequilibrium structure, and GWAS
-                   simulation. We focus on the function of estimating
-                   the variance explained by all the SNPs on the X
-                   chromosome and testing the hypotheses of dosage
-                   compensation. The GCTA software is a versatile tool
-                   to estimate and partition complex trait variation
-                   with large GWAS data sets.},
-  doi =           {10.1016/j.ajhg.2010.11.011},
-  issn =          {1537-6605},
-  language =      {eng},
-}
-
-@article{speed_improved_2012,
-  author =        {Speed, Doug and Hemani, Gibran and
-                   Johnson, Michael R. and Balding, David J.},
-  journal =       {Am. J. Hum. Genet.},
-  month =         dec,
-  number =        {6},
-  pages =         {1011--1021},
-  title =         {Improved heritability estimation from genome-wide
-                   {SNPs}},
-  volume =        {91},
-  year =          {2012},
-  abstract =      {Estimation of narrow-sense heritability, h(2), from
-                   genome-wide SNPs genotyped in unrelated individuals
-                   has recently attracted interest and offers several
-                   advantages over traditional pedigree-based methods.
-                   With the use of this approach, it has been estimated
-                   that over half the heritability of human height can
-                   be attributed to the {\textasciitilde}300,000 SNPs on
-                   a genome-wide genotyping array. In comparison, only
-                   5\%-10\% can be explained by SNPs reaching
-                   genome-wide significance. We investigated via
-                   simulation the validity of several key assumptions
-                   underpinning the mixed-model analysis used in
-                   SNP-based h(2) estimation. Although we found that the
-                   method is reasonably robust to violations of four key
-                   assumptions, it can be highly sensitive to uneven
-                   linkage disequilibrium (LD) between SNPs:
-                   contributions to h(2) are overestimated from causal
-                   variants in regions of high LD and are underestimated
-                   in regions of low LD. The overall direction of the
-                   bias can be up or down depending on the genetic
-                   architecture of the trait, but it can be substantial
-                   in realistic scenarios. We propose a modified kinship
-                   matrix in which SNPs are weighted according to local
-                   LD. We show that this correction greatly reduces the
-                   bias and increases the precision of h(2) estimates.
-                   We demonstrate the impact of our method on the first
-                   seven diseases studied by the Wellcome Trust Case
-                   Control Consortium. Our LD adjustment revises
-                   downward the h(2) estimate for immune-related
-                   diseases, as expected because of high LD in the
-                   major-histocompatibility region, but increases it for
-                   some nonimmune diseases. To calculate our revised
-                   kinship matrix, we developed LDAK, software for
-                   computing LD-adjusted kinships.},
-  doi =           {10.1016/j.ajhg.2012.10.010},
-  issn =          {1537-6605},
   language =      {eng},
 }
 
@@ -641,6 +762,95 @@
   language =      {eng},
 }
 
+@article{yang_common_2010,
+  author =        {Yang, Jian and Benyamin, Beben and McEvoy, Brian P. and
+                   Gordon, Scott and Henders, Anjali K. and
+                   Nyholt, Dale R. and Madden, Pamela A. and
+                   Heath, Andrew C. and Martin, Nicholas G. and
+                   Montgomery, Grant W. and Goddard, Michael E. and
+                   Visscher, Peter M.},
+  journal =       {Nat. Genet.},
+  month =         jul,
+  number =        {7},
+  pages =         {565--569},
+  title =         {Common {SNPs} explain a large proportion of the
+                   heritability for human height},
+  volume =        {42},
+  year =          {2010},
+  abstract =      {SNPs discovered by genome-wide association studies
+                   (GWASs) account for only a small fraction of the
+                   genetic variation of complex traits in human
+                   populations. Where is the remaining heritability? We
+                   estimated the proportion of variance for human height
+                   explained by 294,831 SNPs genotyped on 3,925
+                   unrelated individuals using a linear model analysis,
+                   and validated the estimation method with simulations
+                   based on the observed genotype data. We show that
+                   45\% of variance can be explained by considering all
+                   SNPs simultaneously. Thus, most of the heritability
+                   is not missing but has not previously been detected
+                   because the individual effects are too small to pass
+                   stringent significance tests. We provide evidence
+                   that the remaining heritability is due to incomplete
+                   linkage disequilibrium between causal variants and
+                   genotyped SNPs, exacerbated by causal variants having
+                   lower minor allele frequency than the SNPs explored
+                   to date.},
+  doi =           {10.1038/ng.608},
+  issn =          {1546-1718},
+  language =      {eng},
+}
+
+@article{speed_improved_2012,
+  author =        {Speed, Doug and Hemani, Gibran and
+                   Johnson, Michael R. and Balding, David J.},
+  journal =       {Am. J. Hum. Genet.},
+  month =         dec,
+  number =        {6},
+  pages =         {1011--1021},
+  title =         {Improved heritability estimation from genome-wide
+                   {SNPs}},
+  volume =        {91},
+  year =          {2012},
+  abstract =      {Estimation of narrow-sense heritability, h(2), from
+                   genome-wide SNPs genotyped in unrelated individuals
+                   has recently attracted interest and offers several
+                   advantages over traditional pedigree-based methods.
+                   With the use of this approach, it has been estimated
+                   that over half the heritability of human height can
+                   be attributed to the {\textasciitilde}300,000 SNPs on
+                   a genome-wide genotyping array. In comparison, only
+                   5\%-10\% can be explained by SNPs reaching
+                   genome-wide significance. We investigated via
+                   simulation the validity of several key assumptions
+                   underpinning the mixed-model analysis used in
+                   SNP-based h(2) estimation. Although we found that the
+                   method is reasonably robust to violations of four key
+                   assumptions, it can be highly sensitive to uneven
+                   linkage disequilibrium (LD) between SNPs:
+                   contributions to h(2) are overestimated from causal
+                   variants in regions of high LD and are underestimated
+                   in regions of low LD. The overall direction of the
+                   bias can be up or down depending on the genetic
+                   architecture of the trait, but it can be substantial
+                   in realistic scenarios. We propose a modified kinship
+                   matrix in which SNPs are weighted according to local
+                   LD. We show that this correction greatly reduces the
+                   bias and increases the precision of h(2) estimates.
+                   We demonstrate the impact of our method on the first
+                   seven diseases studied by the Wellcome Trust Case
+                   Control Consortium. Our LD adjustment revises
+                   downward the h(2) estimate for immune-related
+                   diseases, as expected because of high LD in the
+                   major-histocompatibility region, but increases it for
+                   some nonimmune diseases. To calculate our revised
+                   kinship matrix, we developed LDAK, software for
+                   computing LD-adjusted kinships.},
+  doi =           {10.1016/j.ajhg.2012.10.010},
+  issn =          {1537-6605},
+  language =      {eng},
+}
+
 @article{speed_relatedness_2015,
   author =        {Speed, Doug and Balding, David J.},
   journal =       {Nat. Rev. Genet.},
@@ -706,59 +916,6 @@
                   genetics.116.197004},
 }
 
-@article{ochoa_estimating_2021,
-  author =        {Ochoa, Alejandro and Storey, John D.},
-  journal =       {PLoS Genet},
-  month =         jan,
-  number =        {1},
-  pages =         {e1009241},
-  title =         {Estimating {FST} and kinship for arbitrary population
-                   structures},
-  volume =        {17},
-  year =          {2021},
-  abstract =      {FST and kinship are key parameters often estimated in
-                   modern population genetics studies in order to
-                   quantitatively characterize structure and
-                   relatedness. Kinship matrices have also become a
-                   fundamental quantity used in genome-wide association
-                   studies and heritability estimation. The most
-                   frequently-used estimators of FST and kinship are
-                   method-of-moments estimators whose accuracies depend
-                   strongly on the existence of simple underlying forms
-                   of structure, such as the independent subpopulations
-                   model of non-overlapping, independently evolving
-                   subpopulations. However, modern data sets have
-                   revealed that these simple models of structure likely
-                   do not hold in many populations, including humans. In
-                   this work, we analyze the behavior of these
-                   estimators in the presence of arbitrarily-complex
-                   population structures, which results in an improved
-                   estimation framework specifically designed for
-                   arbitrary population structures. After generalizing
-                   the definition of FST to arbitrary population
-                   structures and establishing a framework for assessing
-                   bias and consistency of genome-wide estimators, we
-                   calculate the accuracy of existing FST and kinship
-                   estimators under arbitrary population structures,
-                   characterizing biases and estimation challenges
-                   unobserved under their originally-assumed models of
-                   structure. We then present our new approach, which
-                   consistently estimates kinship and FST when the
-                   minimum kinship value in the dataset is estimated
-                   consistently. We illustrate our results using
-                   simulated genotypes from an admixture model,
-                   constructing a one-dimensional geographic scenario
-                   that departs nontrivially from the independent
-                   subpopulations model. Our simulations reveal the
-                   potential for severe biases in estimates of existing
-                   approaches that are overcome by our new framework.
-                   This work may significantly improve future analyses
-                   that rely on accurate kinship and FST estimates.},
-  doi =           {10.1371/journal.pgen.1009241},
-  issn =          {1553-7404},
-  language =      {eng},
-}
-
 @article{weir_unified_2017,
   author =        {Weir, Bruce S. and Goudet, Jérôme},
   journal =       {Genetics},
@@ -817,24 +974,502 @@
   language =      {eng},
 }
 
-@book{falconer_introduction_1996,
-  address =       {Harlow},
-  author =        {Falconer, Douglas S. and Mackay, Trudy F. C.},
-  edition =       {4 edition},
+@article{the_1000_genomes_project_consortium_map_2010,
+  author =        {The 1000 Genomes Project Consortium},
+  journal =       {Nature},
+  month =         oct,
+  number =        {7319},
+  pages =         {1061--1073},
+  title =         {A map of human genome variation from population-scale
+                   sequencing},
+  volume =        {467},
+  year =          {2010},
+  abstract =      {The 1000 Genomes Project aims to provide a deep
+                   characterization of human genome sequence variation
+                   as a foundation for investigating the relationship
+                   between genotype and phenotype. Here we present
+                   results of the pilot phase of the project, designed
+                   to develop and compare different strategies for
+                   genome-wide sequencing with high-throughput
+                   platforms. We undertook three projects: low-coverage
+                   whole-genome sequencing of 179 individuals from four
+                   populations; high-coverage sequencing of two
+                   mother–father–child trios; and exon-targeted
+                   sequencing of 697 individuals from seven populations.
+                   We describe the location, allele frequency and local
+                   haplotype structure of approximately 15 million
+                   single nucleotide polymorphisms, 1 million short
+                   insertions and deletions, and 20,000 structural
+                   variants, most of which were previously undescribed.
+                   We show that, because we have catalogued the vast
+                   majority of common variation, over 95\% of the
+                   currently accessible variants found in any individual
+                   are present in this data set. On average, each person
+                   is found to carry approximately 250 to 300
+                   loss-of-function variants in annotated genes and 50
+                   to 100 variants previously implicated in inherited
+                   disorders. We demonstrate how these results can be
+                   used to inform association and functional studies.
+                   From the two trios, we directly estimate the rate of
+                   de novo germline base substitution mutations to be
+                   approximately 10−8 per base pair per generation. We
+                   explore the data with regard to signatures of natural
+                   selection, and identify a marked reduction of genetic
+                   variation in the neighbourhood of genes, due to
+                   selection at linked sites. These methods and public
+                   data will support the next phase of human genetic
+                   research. View full text},
+  doi =           {10.1038/nature09534},
+  issn =          {0028-0836},
+  language =      {en},
+  url =           {http://www.nature.com/nature/journal/v467/n7319/abs/
+                  nature09534.html},
+}
+
+@article{1000_genomes_project_consortium_integrated_2012,
+  author =        {{1000 Genomes Project Consortium} and
+                   Abecasis, Goncalo R. and Auton, Adam and
+                   Brooks, Lisa D. and DePristo, Mark A. and
+                   Durbin, Richard M. and Handsaker, Robert E. and
+                   Kang, Hyun Min and Marth, Gabor T. and
+                   McVean, Gil A.},
+  journal =       {Nature},
+  month =         nov,
+  number =        {7422},
+  pages =         {56--65},
+  title =         {An integrated map of genetic variation from 1,092
+                   human genomes},
+  volume =        {491},
+  year =          {2012},
+  abstract =      {By characterizing the geographic and functional
+                   spectrum of human genetic variation, the 1000 Genomes
+                   Project aims to build a resource to help to
+                   understand the genetic contribution to disease. Here
+                   we describe the genomes of 1,092 individuals from 14
+                   populations, constructed using a combination of
+                   low-coverage whole-genome and exome sequencing. By
+                   developing methods to integrate information across
+                   several algorithms and diverse data sources, we
+                   provide a validated haplotype map of 38 million
+                   single nucleotide polymorphisms, 1.4 million short
+                   insertions and deletions, and more than 14,000 larger
+                   deletions. We show that individuals from different
+                   populations carry different profiles of rare and
+                   common variants, and that low-frequency variants show
+                   substantial geographic differentiation, which is
+                   further increased by the action of purifying
+                   selection. We show that evolutionary conservation and
+                   coding consequence are key determinants of the
+                   strength of purifying selection, that rare-variant
+                   load varies substantially across biological pathways,
+                   and that each individual contains hundreds of rare
+                   non-coding variants at conserved sites, such as
+                   motif-disrupting changes in
+                   transcription-factor-binding sites. This resource,
+                   which captures up to 98\% of accessible single
+                   nucleotide polymorphisms at a frequency of 1\% in
+                   related populations, enables analysis of common and
+                   low-frequency variants in individuals from diverse,
+                   including admixed, populations.},
+  doi =           {10.1038/nature11632},
+  issn =          {1476-4687},
+  language =      {eng},
+}
+
+@article{fairley_international_2020,
+  author =        {Fairley, Susan and Lowy-Gallego, Ernesto and
+                   Perry, Emily and Flicek, Paul},
+  journal =       {Nucleic Acids Research},
+  month =         jan,
+  number =        {D1},
+  pages =         {D941--D947},
+  title =         {The {International} {Genome} {Sample} {Resource}
+                   ({IGSR}) collection of open human genomic variation
+                   resources},
+  volume =        {48},
+  year =          {2020},
+  abstract =      {To sustain and develop the largest fully open human
+                   genomic resources the International Genome Sample
+                   Resource (IGSR) (https://www.internationalgenome.org)
+                   was established. It is built on the foundation of the
+                   1000 Genomes Project, which created the largest
+                   openly accessible catalogue of human genomic
+                   variation developed from samples spanning five
+                   continents. IGSR (i) maintains access to 1000 Genomes
+                   Project resources, (ii) updates 1000 Genomes Project
+                   resources to the GRCh38 human reference assembly,
+                   (iii) adds new data generated on 1000 Genomes Project
+                   cell lines, (iv) shares data from samples with a
+                   similarly open consent to increase the number of
+                   samples and populations represented in the resources
+                   and (v) provides support to users of these resources.
+                   Among recent updates are the release of variation
+                   calls from 1000 Genomes Project data calculated
+                   directly on GRCh38 and the addition of high coverage
+                   sequence data for the 2504 samples in the 1000
+                   Genomes Project phase three panel. The data portal,
+                   which facilitates web-based exploration of the IGSR
+                   resources, has been updated to include samples which
+                   were not part of the 1000 Genomes Project and now
+                   presents a unified view of data and samples across
+                   almost 5000 samples from multiple studies. All data
+                   is fully open and publicly accessible.},
+  doi =           {10.1093/nar/gkz836},
+  issn =          {0305-1048},
+  url =           {https://doi.org/10.1093/nar/gkz836},
+}
+
+@article{speed_reevaluation_2017,
+  author =        {Speed, Doug and Cai, Na and {the UCLEB Consortium} and
+                   Johnson, Michael R. and Nejentsev, Sergey and
+                   Balding, David J.},
+  journal =       {Nat Genet},
+  month =         jul,
+  number =        {7},
+  pages =         {986--992},
+  title =         {Reevaluation of {SNP} heritability in complex human
+                   traits},
+  volume =        {49},
+  year =          {2017},
+  abstract =      {SNP heritability, the proportion of phenotypic
+                   variance explained by SNPs, has been reported for
+                   many hundreds of traits. Its estimation requires
+                   strong prior assumptions about the distribution of
+                   heritability across the genome, but current
+                   assumptions have not been thoroughly tested. By
+                   analyzing imputed data for a large number of human
+                   traits, we empirically derive a model that more
+                   accurately describes how heritability varies with
+                   minor allele frequency (MAF), linkage disequilibrium
+                   (LD) and genotype certainty. Across 19 traits, our
+                   improved model leads to estimates of common SNP
+                   heritability on average 43\% (s.d. 3\%) higher than
+                   those obtained from the widely used software GCTA and
+                   25\% (s.d. 2\%) higher than those from the recently
+                   proposed extension GCTA-LDMS. Previously, DNase I
+                   hypersensitivity sites were reported to explain 79\%
+                   of SNP heritability; using our improved heritability
+                   model, their estimated contribution is only 24\%.},
+  doi =           {10.1038/ng.3865},
+  issn =          {1061-4036},
+  language =      {en},
+  url =           {https://www.nature.com/ng/journal/v49/n7/full/ng.3865.html?
+                  WT.ec_id=NG-201707&spMailingID=54378901&
+                  spUserID=MTc2NTY0NzMxMAS2&spJobID=1184817594&
+                  spReportId=MTE4NDgxNzU5NAS2},
+}
+
+@article{balding_method_1995,
+  author =        {Balding, D. J. and Nichols, R. A.},
+  journal =       {Genetica},
+  number =        {1-2},
+  pages =         {3--12},
+  title =         {A method for quantifying differentiation between
+                   populations at multi-allelic loci and its
+                   implications for investigating identity and
+                   paternity},
+  volume =        {96},
+  year =          {1995},
+  abstract =      {A method is proposed for allowing for the effects of
+                   population differentiation, and other factors, in
+                   forensic inference based on DNA profiles. Much
+                   current forensic practice ignores, for example, the
+                   effects of coancestry and inappropriate databases and
+                   is consequently systematically biased against
+                   defendants. Problems with the 'product rule' for
+                   forensic identification have been highlighted by
+                   several authors, but important aspects of the
+                   problems are not widely appreciated. This arises in
+                   part because the match probability has often been
+                   confused with the relative frequency of the profile.
+                   Further, the analogous problems in paternity cases
+                   have received little attention. The proposed method
+                   is derived under general assumptions about the
+                   underlying population genetic processes.
+                   Probabilities relevant to forensic inference are
+                   expressed in terms of a single parameter whose values
+                   can be chosen to reflect the specific circumstances.
+                   The method is currently used in some UK courts and
+                   has important advantages over the 'Ceiling Principle'
+                   method, which has been criticized on a number of
+                   grounds.},
+  doi =           {https://doi.org/10.1007/BF01441146},
+  issn =          {0016-6707},
+  language =      {eng},
+}
+
+@article{chang_second-generation_2015,
+  author =        {Chang, Christopher C. and Chow, Carson C. and
+                   Tellier, Laurent CAM and Vattikuti, Shashaank and
+                   Purcell, Shaun M. and Lee, James J.},
+  journal =       {GigaScience},
   month =         feb,
-  publisher =     {Pearson},
-  title =         {Introduction to {Quantitative} {Genetics}},
-  year =          {1996},
-  abstract =      {The lastest edition of this classic text continues to
-                   provide the basis for understanding the genetic
-                   principles behind quantitative differences in
-                   phenotypes and how they apply to animal and plant
-                   improvement and evolution. It extends these concepts
-                   to the segregation of genes that cause genetic
-                   variation in quantitative traits. Key techniques and
-                   methods are also covered.},
-  isbn =          {978-0-582-24302-6},
+  number =        {1},
+  pages =         {7},
+  title =         {Second-generation {PLINK}: rising to the challenge of
+                   larger and richer datasets},
+  volume =        {4},
+  year =          {2015},
+  abstract =      {PMID: 25722852},
+  doi =           {10.1186/s13742-015-0047-8},
+  issn =          {2047-217X},
+  language =      {en},
+  url =           {http://www.gigasciencejournal.com/content/4/1/7/abstract},
+}
+
+@article{hoffman_correcting_2013,
+  author =        {Hoffman, Gabriel E.},
+  journal =       {PLoS ONE},
+  number =        {10},
+  pages =         {e75707},
+  title =         {Correcting for population structure and kinship using
+                   the linear mixed model: theory and extensions},
+  volume =        {8},
+  year =          {2013},
+  abstract =      {Population structure and kinship are widespread
+                   confounding factors in genome-wide association
+                   studies (GWAS). It has been standard practice to
+                   include principal components of the genotypes in a
+                   regression model in order to account for population
+                   structure. More recently, the linear mixed model
+                   (LMM) has emerged as a powerful method for
+                   simultaneously accounting for population structure
+                   and kinship. The statistical theory underlying the
+                   differences in empirical performance between modeling
+                   principal components as fixed versus random effects
+                   has not been thoroughly examined. We undertake an
+                   analysis to formalize the relationship between these
+                   widely used methods and elucidate the statistical
+                   properties of each. Moreover, we introduce a new
+                   statistic, effective degrees of freedom, that serves
+                   as a metric of model complexity and a novel low rank
+                   linear mixed model (LRLMM) to learn the
+                   dimensionality of the correction for population
+                   structure and kinship, and we assess its performance
+                   through simulations. A comparison of the results of
+                   LRLMM and a standard LMM analysis applied to GWAS
+                   data from the Multi-Ethnic Study of Atherosclerosis
+                   (MESA) illustrates how our theoretical results
+                   translate into empirical properties of the mixed
+                   model. Finally, the analysis demonstrates the ability
+                   of the LRLMM to substantially boost the strength of
+                   an association for HDL cholesterol in Europeans.},
+  doi =           {10.1371/journal.pone.0075707},
+  issn =          {1932-6203},
+  language =      {eng},
+}
+
+@book{hefferon_linear_2020,
+  author =        {Hefferon, Jim},
+  edition =       {4th},
+  month =         jun,
+  publisher =     {Leanpub},
+  title =         {Linear {Algebra}},
+  year =          {2020},
+  isbn =          {978-1-944325-11-4},
   language =      {English},
+  url =           {https://leanpub.com/linalgebra},
+}
+
+@article{emik_systematic_1949,
+	title = {Systematic procedures for calculating inbreeding coefficients},
+	volume = {40},
+	issn = {0022-1503},
+	url = {https://academic.oup.com/jhered/article/40/2/51/802925},
+	doi = {10.1093/oxfordjournals.jhered.a105986},
+	language = {en},
+	number = {2},
+	urldate = {2019-06-27},
+	journal = {J Hered},
+	author = {Emik, L. Otis and Terrill, Clair E.},
+	month = feb,
+	year = {1949},
+	pages = {51--55},
+}
+
+@book{malecot_mathematiques_1948,
+	title = {Mathématiques de l'hérédité},
+	url = {http://agris.fao.org/agris-search/search.do?recordID=US201300403470},
+	language = {fre},
+	urldate = {2014-10-09},
+	publisher = {Masson et Cie},
+	author = {Malécot, Gustave},
+	year = {1948},
+}
+
+@article{wright_coefficients_1922,
+	title = {Coefficients of {Inbreeding} and {Relationship}},
+	volume = {56},
+	issn = {0003-0147},
+	url = {http://www.jstor.org/stable/2456273},
+	number = {645},
+	urldate = {2014-10-09},
+	journal = {The American Naturalist},
+	author = {Wright, Sewall},
+	month = jul,
+	year = {1922},
+	pages = {330--338},
+}
+
+@book{jacquard_structures_1970,
+	address = {Paris},
+	title = {Structures génétiques des populations.},
+	language = {French},
+	publisher = {Masson et Cie},
+	author = {Jacquard, Albert},
+	year = {1970},
+}
+
+@article{garcia-cortes_novel_2015,
+	title = {A novel recursive algorithm for the calculation of the detailed identity coefficients},
+	volume = {47},
+	copyright = {2015 García-Cortés; licensee BioMed Central.},
+	issn = {1297-9686},
+	url = {https://gsejournal.biomedcentral.com/articles/10.1186/s12711-015-0108-6},
+	doi = {10.1186/s12711-015-0108-6},
+	abstract = {A recursive algorithm to calculate the fifteen detailed coefficients of identity is introduced. Previous recursive procedures based on the generalized coefficients of kinship provided the detailed coefficients of identity under the assumption that the two individuals were not an ancestor of each other. By using gametic relationships to include three, four or two pairs of gametes, we can obtain these coefficients for any pair of individuals. We have developed a novel linear transformation that allows for the calculation of pairwise detailed identity coefficients for any pedigree given the gametic relationships. We illustrate the procedure using the well-known pedigree of Julio and Mencha, which contains 20 Jicaque Indians of Honduras, to calculate their detailed coefficients. The proposed algorithm can be used to calculate the detailed identity coefficients of two or more individuals with any pedigree relationship.},
+	language = {En},
+	number = {1},
+	urldate = {2019-06-14},
+	journal = {Genetics Selection Evolution},
+	author = {García-Cortés, Luis Alberto},
+	month = dec,
+	year = {2015},
+	pages = {33},
+	file = {Full Text PDF:/home/viiia/.mozilla/firefox/viiia/zotero/storage/4AMXLHJX/García-Cortés - 2015 - A novel recursive algorithm for the calculation of.pdf:application/pdf;Snapshot:/home/viiia/.mozilla/firefox/viiia/zotero/storage/P5GA6M77/s12711-015-0108-6.html:text/html},
+}
+
+@article{bhatia_estimating_2013,
+	title = {Estimating and interpreting {FST}: the impact of rare variants},
+	volume = {23},
+	issn = {1549-5469},
+	shorttitle = {Estimating and interpreting {FST}},
+	doi = {10.1101/gr.154831.113},
+	abstract = {In a pair of seminal papers, Sewall Wright and Gustave Malécot introduced FST as a measure of structure in natural populations. In the decades that followed, a number of papers provided differing definitions, estimation methods, and interpretations beyond Wright's. While this diversity in methods has enabled many studies in genetics, it has also introduced confusion regarding how to estimate FST from available data. Considering this confusion, wide variation in published estimates of FST for pairs of HapMap populations is a cause for concern. These estimates changed-in some cases more than twofold-when comparing estimates from genotyping arrays to those from sequence data. Indeed, changes in FST from sequencing data might be expected due to population genetic factors affecting rare variants. While rare variants do influence the result, we show that this is largely through differences in estimation methods. Correcting for this yields estimates of FST that are much more concordant between sequence and genotype data. These differences relate to three specific issues: (1) estimating FST for a single SNP, (2) combining estimates of FST across multiple SNPs, and (3) selecting the set of SNPs used in the computation. Changes in each of these aspects of estimation may result in FST estimates that are highly divergent from one another. Here, we clarify these issues and propose solutions.},
+	language = {eng},
+	number = {9},
+	journal = {Genome Res.},
+	author = {Bhatia, Gaurav and Patterson, Nick and Sankararaman, Sriram and Price, Alkes L.},
+	month = sep,
+	year = {2013},
+	pmid = {23861382},
+	pmcid = {PMC3759727},
+	keywords = {Models, Genetic, Polymorphism, Single Nucleotide, Humans, Genome, Human, Population, HapMap Project, Sequence Analysis, DNA},
+	pages = {1514--1521},
+}
+
+@article{lippert_fast_2011,
+	title = {{FaST} linear mixed models for genome-wide association studies},
+	volume = {8},
+	issn = {1548-7105},
+	doi = {10.1038/nmeth.1681},
+	abstract = {We describe factored spectrally transformed linear mixed models (FaST-LMM), an algorithm for genome-wide association studies (GWAS) that scales linearly with cohort size in both run time and memory use. On Wellcome Trust data for 15,000 individuals, FaST-LMM ran an order of magnitude faster than current efficient algorithms. Our algorithm can analyze data for 120,000 individuals in just a few hours, whereas current algorithms fail on data for even 20,000 individuals (http://mscompbio.codeplex.com/).},
+	language = {eng},
+	number = {10},
+	journal = {Nat. Methods},
+	author = {Lippert, Christoph and Listgarten, Jennifer and Liu, Ying and Kadie, Carl M. and Davidson, Robert I. and Heckerman, David},
+	month = sep,
+	year = {2011},
+	pmid = {21892150},
+	keywords = {Algorithms, Software, Models, Genetic, genome-wide association study, Computer Simulation},
+	pages = {833--835},
+}
+
+@article{svishcheva_rapid_2012,
+	title = {Rapid variance components–based method for whole-genome association analysis},
+	volume = {44},
+	copyright = {2012 Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.},
+	issn = {1546-1718},
+	url = {https://www.nature.com/articles/ng.2410},
+	doi = {10.1038/ng.2410},
+	abstract = {Yurii Aulchenko and colleagues report a variance components–based method, GRAMMAR-Gamma, for genome-wide association studies including a large number of individuals and genetic markers. They demonstrate, using simulations as well as human and Arabidopsis thaliana data sets, that their method provides unbiased estimates of SNP effect and increases computational efficiency, which may facilitate analysis of human whole-genome resequencing studies.},
+	language = {en},
+	number = {10},
+	urldate = {2021-10-06},
+	journal = {Nat Genet},
+	author = {Svishcheva, Gulnara R. and Axenovich, Tatiana I. and Belonogova, Nadezhda M. and van Duijn, Cornelia M. and Aulchenko, Yurii S.},
+	month = oct,
+	year = {2012},
+	pages = {1166--1170},
+}
+
+@article{sherman_adjustment_1950,
+	title = {Adjustment of an {Inverse} {Matrix} {Corresponding} to a {Change} in {One} {Element} of a {Given} {Matrix}},
+	volume = {21},
+	issn = {0003-4851, 2168-8990},
+	url = {https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-21/issue-1/Adjustment-of-an-Inverse-Matrix-Corresponding-to-a-Change-in/10.1214/aoms/1177729893.full},
+	doi = {10.1214/aoms/1177729893},
+	abstract = {The Annals of Mathematical Statistics},
+	number = {1},
+	urldate = {2022-10-07},
+	journal = {The Annals of Mathematical Statistics},
+	author = {Sherman, Jack and Morrison, Winifred J.},
+	month = mar,
+	year = {1950},
+	note = {Publisher: Institute of Mathematical Statistics},
+	pages = {124--127},
+}
+
+@article{altschul_weights_1989,
+	title = {Weights for data related by a tree},
+	volume = {207},
+	issn = {0022-2836},
+	url = {http://www.sciencedirect.com/science/article/pii/0022283689902349},
+	doi = {10.1016/0022-2836(89)90234-9},
+	abstract = {How can one characterize a set of data collected from different biological species, or indeed any set of data related by an evolutionary tree? The structure imposed by the tree implies that the data are not independent, and for most applications this should be taken into account. We describe strategies for weighting the data that circumvent some of the problems of dependency.},
+	number = {4},
+	urldate = {2013-09-23},
+	journal = {Journal of Molecular Biology},
+	author = {Altschul, Stephen F. and Carroll, Raymond J. and Lipman, David J.},
+	month = jun,
+	year = {1989},
+	pages = {647--653},
+}
+
+@article{wright_genetical_1949,
+	title = {The {Genetical} {Structure} of {Populations}},
+	volume = {15},
+	issn = {2050-1439},
+	url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1469-1809.1949.tb02451.x},
+	doi = {10.1111/j.1469-1809.1949.tb02451.x},
+	abstract = {The articles published by the Annals of Eugenics (1925–1954) have been made available online as an historical archive intended for scholarly use. The work of eugenicists was often pervaded by prejudice against racial, ethnic and disabled groups. The online publication of this material for scholarly research purposes is not an endorsement of those views nor a promotion of eugenics in any way.},
+	language = {en},
+	number = {1},
+	urldate = {2022-04-04},
+	journal = {Annals of Eugenics},
+	author = {Wright, Sewall},
+	year = {1949},
+	note = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1469-1809.1949.tb02451.x},
+	pages = {323--354},
+}
+
+@article{jurczak_spectral_2017,
+	title = {Spectral analysis of high-dimensional sample covariance matrices with missing observations},
+	volume = {23},
+	issn = {1350-7265},
+	url = {https://projecteuclid.org/journals/bernoulli/volume-23/issue-4A/Spectral-analysis-of-high-dimensional-sample-covariance-matrices-with-missing/10.3150/16-BEJ815.full},
+	doi = {10.3150/16-BEJ815},
+	abstract = {We study high-dimensional sample covariance matrices based on independent random vectors with missing coordinates. The presence of missing observations is common in modern applications such as climate studies or gene expression micro-arrays. A weak approximation on the spectral distribution in the “large dimension \$d\$ and large sample size \$n\$” asymptotics is derived for possibly different observation probabilities in the coordinates. The spectral distribution turns out to be strongly influenced by the missingness mechanism. In the null case under the missing at random scenario where each component is observed with the same probability \$p\$, the limiting spectral distribution is a Marčenko–Pastur law shifted by \$(1-p)/p\$ to the left. As \$d/n{\textbackslash}rightarrow y{\textbackslash}in(0,1)\$, the almost sure convergence of the extremal eigenvalues to the respective boundary points of the support of the limiting spectral distribution is proved, which are explicitly given in terms of \$y\$ and \$p\$. Eventually, the sample covariance matrix is positive definite if \$p\$ is larger than {\textbackslash}[1-(1-{\textbackslash}sqrt\{y\}){\textasciicircum}\{2\},{\textbackslash}] whereas this is not true any longer if \$p\$ is smaller than this quantity.},
+	number = {4A},
+	urldate = {2022-11-03},
+	journal = {Bernoulli},
+	author = {Jurczak, Kamil and Rohde, Angelika},
+	month = nov,
+	year = {2017},
+	note = {Publisher: Bernoulli Society for Mathematical Statistics and Probability},
+	keywords = {almost sure convergence of extremal eigenvalues, characterization of positive definiteness, Limiting spectral distribution, sample covariance matrix with missing observations, Stieltjes transform},
+	pages = {2466--2532},
+}
+
+@article{hou2023genetic,
+  title={Genetic association models are robust to common population kinship estimation biases},
+  author={Hou, Zhuoran and Ochoa, Alejandro},
+  journal={Genetics},
+  volume={224},
+  number={1},
+  pages={iyad030},
+  year={2023},
+  publisher={Oxford University Press US}
 }
 
 @article{almasy_multipoint_1998,
@@ -882,260 +1517,68 @@
   language =      {eng},
 }
 
-@article{visscher_commentary_2010,
-  author =        {Visscher, Peter M. and Yang, Jian and
-                   Goddard, Michael E.},
-  journal =       {Twin Res Hum Genet},
-  month =         dec,
-  number =        {6},
-  pages =         {517--524},
-  title =         {A commentary on 'common {SNPs} explain a large
-                   proportion of the heritability for human height' by
-                   {Yang} et al. (2010)},
-  volume =        {13},
-  year =          {2010},
-  abstract =      {Recently a paper authored by ourselves and a number
-                   of co-authors about the proportion of phenotypic
-                   variation in height that is explained by common SNPs
-                   was published in Nature Genetics (Yang et al., 2010).
-                   Common SNPs explain a large proportion of the
-                   heritability for human height (Yang et al.). During
-                   the refereeing process (the paper was rejected by two
-                   other journals before publication in Nature Genetics)
-                   and following the publication of Yang et al. (2010)
-                   it became clear to us that the methodology we
-                   applied, the interpretation of the results and the
-                   consequences of the findings on the genetic
-                   architecture of human height and that for other
-                   traits such as complex disease are not well
-                   understood or appreciated. Here we explain some of
-                   these issues in a style that is different from the
-                   primary publication, that is, in the form of a number
-                   of comments and questions and answers. We also report
-                   a number of additional results that show that the
-                   estimates of additive genetic variation are not
-                   driven by population structure.},
-  doi =           {10.1375/twin.13.6.517},
-  issn =          {1832-4274},
-  language =      {eng},
+@article{choi2020tutorial,
+  title={Tutorial: a guide to performing polygenic risk score analyses},
+  author={Choi, Shing Wan and Mak, Timothy Shin-Heng and O’Reilly, Paul F},
+  journal={Nature protocols},
+  volume={15},
+  number={9},
+  pages={2759--2772},
+  year={2020},
+  publisher={Nature Publishing Group UK London}
 }
 
-@article{krishna_kumar_limitations_2016,
-  author =        {Krishna Kumar, Siddharth and Feldman, Marcus W. and
-                   Rehkopf, David H. and Tuljapurkar, Shripad},
-  journal =       {Proc. Natl. Acad. Sci. U.S.A.},
-  month =         jan,
-  number =        {1},
-  pages =         {E61--70},
-  title =         {Limitations of {GCTA} as a solution to the missing
-                   heritability problem},
-  volume =        {113},
-  year =          {2016},
-  abstract =      {Genome-wide association studies (GWASs) seek to
-                   understand the relationship between complex
-                   phenotype(s) (e.g., height) and up to millions of
-                   single-nucleotide polymorphisms (SNPs). Early
-                   analyses of GWASs are commonly believed to have
-                   "missed" much of the additive genetic variance
-                   estimated from correlations between relatives. A more
-                   recent method, genome-wide complex trait analysis
-                   (GCTA), obtains much higher estimates of heritability
-                   using a model of random SNP effects correlated
-                   between genotypically similar individuals. GCTA has
-                   now been applied to many phenotypes from
-                   schizophrenia to scholastic achievement. However,
-                   recent studies question GCTA's estimates of
-                   heritability. Here, we show that GCTA applied to
-                   current SNP data cannot produce reliable or stable
-                   estimates of heritability. We show first that GCTA
-                   depends sensitively on all singular values of a
-                   high-dimensional genetic relatedness matrix (GRM).
-                   When the assumptions in GCTA are satisfied exactly,
-                   we show that the heritability estimates produced by
-                   GCTA will be biased and the standard errors will
-                   likely be inaccurate. When the population is
-                   stratified, we find that GRMs typically have highly
-                   skewed singular values, and we prove that the many
-                   small singular values cannot be estimated reliably.
-                   Hence, GWAS data are necessarily overfit by GCTA
-                   which, as a result, produces high estimates of
-                   heritability. We also show that GCTA's heritability
-                   estimates are sensitive to the chosen sample and to
-                   measurement errors in the phenotype. We illustrate
-                   our results using the Framingham dataset. Our
-                   analysis suggests that results obtained using GCTA,
-                   and the results' qualitative interpretations, should
-                   be interpreted with great caution.},
-  doi =           {10.1073/pnas.1520109113},
-  issn =          {1091-6490},
-  language =      {eng},
+@article{visscher2008heritability,
+  title={Heritability in the genomics era—concepts and misconceptions},
+  author={Visscher, Peter M and Hill, William G and Wray, Naomi R},
+  journal={Nature reviews genetics},
+  volume={9},
+  number={4},
+  pages={255--266},
+  year={2008},
+  publisher={Nature Publishing Group UK London}
 }
 
-@article{yang_gcta-greml_2016,
-  author =        {Yang, Jian and Lee, S. Hong and Wray, Naomi R. and
-                   Goddard, Michael E. and Visscher, Peter M.},
-  journal =       {Proc. Natl. Acad. Sci. U.S.A.},
-  number =        {32},
-  pages =         {E4579--4580},
-  title =         {{GCTA}-{GREML} accounts for linkage disequilibrium
-                   when estimating genetic variance from genome-wide
-                   {SNPs}},
-  volume =        {113},
-  year =          {2016},
-  doi =           {10.1073/pnas.1602743113},
-  issn =          {1091-6490},
-  language =      {eng},
+@article{speed2019sumher,
+  title={SumHer better estimates the SNP heritability of complex traits from summary statistics},
+  author={Speed, Doug and Balding, David J},
+  journal={Nature genetics},
+  volume={51},
+  number={2},
+  pages={277--284},
+  year={2019},
+  publisher={Nature Publishing Group US New York}
 }
 
-@article{jiang_high-dimensional_2016,
-  author =        {Jiang, Jiming and Li, Cong and Paul, Debashis and
-                   Yang, Can and Zhao, Hongyu},
-  journal =       {Ann. Statist.},
-  month =         oct,
-  number =        {5},
-  pages =         {2127--2160},
-  title =         {On high-dimensional misspecified mixed model analysis
-                   in genome-wide association study},
-  volume =        {44},
-  year =          {2016},
-  abstract =      {We study behavior of the restricted maximum
-                   likelihood (REML) estimator under a misspecified
-                   linear mixed model (LMM) that has received much
-                   attention in recent genome-wide association studies.
-                   The asymptotic analysis establishes consistency of
-                   the REML estimator of the variance of the errors in
-                   the LMM, and convergence in probability of the REML
-                   estimator of the variance of the random effects in
-                   the LMM to a certain limit, which is equal to the
-                   true variance of the random effects multiplied by the
-                   limiting proportion of the nonzero random effects
-                   present in the LMM. The asymptotic results also
-                   establish convergence rate (in probability) of the
-                   REML estimators as well as a result regarding
-                   convergence of the asymptotic conditional variance of
-                   the REML estimator. The asymptotic results are fully
-                   supported by the results of empirical studies, which
-                   include extensive simulation studies that compare the
-                   performance of the REML estimator (under the
-                   misspecified LMM) with other existing methods, and
-                   real data applications (only one example is
-                   presented) that have important genetic implications.},
-  doi =           {10.1214/15-AOS1421},
-  issn =          {0090-5364, 2168-8966},
-  language =      {EN},
-  url =           {https://projecteuclid.org/euclid.aos/1473685271},
+@article{mitchell1996genetic,
+  title={Genetic and environmental contributions to cardiovascular risk factors in Mexican Americans: the San Antonio Family Heart Study},
+  author={Mitchell, Braxton D and Kammerer, Candace M and Blangero, John and Mahaney, Michael C and Rainwater, David L and Dyke, Bennett and Hixson, James E and Henkel, Richard D and Sharp, R Mark and Comuzzie, Anthony G and others},
+  journal={Circulation},
+  volume={94},
+  number={9},
+  pages={2159--2170},
+  year={1996},
+  publisher={Am Heart Assoc}
 }
 
-@article{bulik-sullivan_ld_2015,
-  author =        {Bulik-Sullivan, Brendan K. and Loh, Po-Ru and
-                   Finucane, Hilary K. and Ripke, Stephan and Yang, Jian and
-                     {Schizophrenia Working Group of the Psychiatric Genomics
-  Consortium} and Patterson, Nick and Daly, Mark J. and Price, Alkes L. and
-  Neale, Benjamin M.},
-  journal =       {Nat. Genet.},
-  month =         mar,
-  number =        {3},
-  pages =         {291--295},
-  title =         {{LD} {Score} regression distinguishes confounding
-                   from polygenicity in genome-wide association studies},
-  volume =        {47},
-  year =          {2015},
-  abstract =      {Both polygenicity (many small genetic effects) and
-                   confounding biases, such as cryptic relatedness and
-                   population stratification, can yield an inflated
-                   distribution of test statistics in genome-wide
-                   association studies (GWAS). However, current methods
-                   cannot distinguish between inflation from a true
-                   polygenic signal and bias. We have developed an
-                   approach, LD Score regression, that quantifies the
-                   contribution of each by examining the relationship
-                   between test statistics and linkage disequilibrium
-                   (LD). The LD Score regression intercept can be used
-                   to estimate a more powerful and accurate correction
-                   factor than genomic control. We find strong evidence
-                   that polygenicity accounts for the majority of the
-                   inflation in test statistics in many GWAS of large
-                   sample size.},
-  doi =           {10.1038/ng.3211},
-  issn =          {1546-1718},
-  language =      {eng},
+@article{sorlie2010design,
+  title={Design and implementation of the Hispanic community health study/study of Latinos},
+  author={Sorlie, Paul D and Avil{\'e}s-Santa, Larissa M and Wassertheil-Smoller, Sylvia and Kaplan, Robert C and Daviglus, Martha L and Giachello, Aida L and Schneiderman, Neil and Raij, Leopoldo and Talavera, Gregory and Allison, Matthew and others},
+  journal={Annals of epidemiology},
+  volume={20},
+  number={8},
+  pages={629--641},
+  year={2010},
+  publisher={Elsevier}
 }
 
-@article{speed_sumher_2019,
-  author =        {Speed, Doug and Balding, David J.},
-  journal =       {Nat. Genet.},
-  number =        {2},
-  pages =         {277--284},
-  title =         {{SumHer} better estimates the {SNP} heritability of
-                   complex traits from summary statistics},
-  volume =        {51},
-  year =          {2019},
-  abstract =      {We present SumHer, software for estimating
-                   confounding bias, SNP heritability, enrichments of
-                   heritability and genetic correlations using summary
-                   statistics from genome-wide association studies. The
-                   key difference between SumHer and the existing
-                   software LD Score Regression (LDSC) is that SumHer
-                   allows the user to specify the heritability model. We
-                   apply SumHer to results from 24 large-scale
-                   association studies (average sample size 121,000)
-                   using our recommended heritability model. We show
-                   that these studies tended to substantially
-                   over-correct for confounding, and as a result the
-                   number of genome-wide significant loci was
-                   under-reported by about a quarter. We also estimate
-                   enrichments for 24 categories of SNPs defined by
-                   functional annotations. A previous study using LDSC
-                   reported that conserved regions were 13-fold
-                   enriched, and found a further six categories with
-                   above threefold enrichment. By contrast, our analysis
-                   using SumHer finds that none of the categories have
-                   enrichment above twofold. SumHer provides an improved
-                   understanding of the genetic architecture of complex
-                   traits, which enables more efficient analysis of
-                   future genetic data.},
-  doi =           {10.1038/s41588-018-0279-5},
-  issn =          {1546-1718},
-  language =      {eng},
-}
-
-@article{speed_reevaluation_2017,
-  author =        {Speed, Doug and Cai, Na and {the UCLEB Consortium} and
-                   Johnson, Michael R. and Nejentsev, Sergey and
-                   Balding, David J.},
-  journal =       {Nat Genet},
-  month =         jul,
-  number =        {7},
-  pages =         {986--992},
-  title =         {Reevaluation of {SNP} heritability in complex human
-                   traits},
-  volume =        {49},
-  year =          {2017},
-  abstract =      {SNP heritability, the proportion of phenotypic
-                   variance explained by SNPs, has been reported for
-                   many hundreds of traits. Its estimation requires
-                   strong prior assumptions about the distribution of
-                   heritability across the genome, but current
-                   assumptions have not been thoroughly tested. By
-                   analyzing imputed data for a large number of human
-                   traits, we empirically derive a model that more
-                   accurately describes how heritability varies with
-                   minor allele frequency (MAF), linkage disequilibrium
-                   (LD) and genotype certainty. Across 19 traits, our
-                   improved model leads to estimates of common SNP
-                   heritability on average 43\% (s.d. 3\%) higher than
-                   those obtained from the widely used software GCTA and
-                   25\% (s.d. 2\%) higher than those from the recently
-                   proposed extension GCTA-LDMS. Previously, DNase I
-                   hypersensitivity sites were reported to explain 79\%
-                   of SNP heritability; using our improved heritability
-                   model, their estimated contribution is only 24\%.},
-  doi =           {10.1038/ng.3865},
-  issn =          {1061-4036},
-  language =      {en},
-  url =           {https://www.nature.com/ng/journal/v49/n7/full/ng.3865.html?
-                  WT.ec_id=NG-201707&spMailingID=54378901&
-                  spUserID=MTc2NTY0NzMxMAS2&spJobID=1184817594&
-                  spReportId=MTE4NDgxNzU5NAS2},
+@article{cason2023genetic,
+  title={Genetic risk variants for childhood nephrotic syndrome and corticosteroid response},
+  author={Cason, Rachel K and Chambers, Eileen and Tu, Tiffany and Chryst-Stangl, Megan and Huggins, Kinsie and Lane, Brandon M and Ochoa, Alejandro and Jackson, Annette M and Gbadegesin, Rasheed A},
+  journal={Frontiers in Pediatrics},
+  volume={11},
+  pages={1248733},
+  year={2023},
+  publisher={Frontiers Media SA}
 }
 
