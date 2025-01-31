@@ -39,12 +39,6 @@
 
 
 % some more definitions
-\newcommand{\kinMat}{%
-  \ensuremath{%
-    \mathbf{\Phi}
-  }%
-  \xspace%
-}%
 \newcommand{\kinMatStdLim}{%
   \ensuremath{%
     \mathbf{\hat{\Phi}}^\text{std-lim}
@@ -109,75 +103,98 @@ In this study, we first characterize the theoretically predicted heritability es
 
 \section{Methods}
 
-\subsection{Genetic model}
+\subsection{Genetic and trait models}
 
 Suppose that there are $m$ biallelic loci and $n$ diploid individuals.
 The genotype $\xij \in \{0,1,2\}$ at a locus $i$ of the individual $j$ is encoded as the number of reference alleles, for a pre-selected but otherwise arbitrary reference allele per locus.
-\kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{malecot_mathematiques_1948, wright_genetical_1949, jacquard_structures_1970, astle_population_2009, ochoa_estimating_2021} the expectation and covariance are given by
+Let \kt is the kinship coefficient of two individuals $j$ and $k$, and \pit is the ancestral allele frequency at locus $i$, then under the kinship model \citep{malecot_mathematiques_1948, wright_genetical_1949, jacquard_structures_1970, astle_population_2009, ochoa_estimating_2021} the expectation and covariance are given by
 \begin{equation}
   \label{eq:model0}
-  \E \left[ \mathbf{x}_i  \right]
+  \E \left[ \x  \right]
   =
-    2 \pit \mathbf{1}
+    2 \pit \mathbf{1}_n
   ,
   \quad\quad
-  \Cov \left(\mathbf{x}_i  \right)
+  \Cov \left(\x  \right)
   =
     4 \pit \left( 1 - \pit \right) \kinMat
     ,
 \end{equation}
-where $\mathbf{x}_i = (\xij)$ is the vector of genotypes at locus $i$, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, and $\mathbf{1}$ is a vector of ones.
-
+where $\x = (\xij)$ is the length-$n$ vector of genotypes at locus $i$, $\kinMat = (\kt)$ is the $n \times n$ kinship matrix, and $\mathbf{1}_n$ is a length-$n$ vector of ones.
+Note that the definition of kinship that we follow, which corresponds to a probability of identity by descent, is such that the maximum kinship of 1 is achieved for fully inbred individuals (who have only homozygote genotypes) in the case of self-kinship, or fully inbred twins for a pair of different individuals.
+In this definition, the self kinship of an outbred individual is 1/2, the kinship between a parent and their outbred child is 1/4, and so is the expected kinship between outbred siblings.
+In contrast, GCTA and related models typically define kinship as twice the value that we use, so that self kinship for an outbred individual is 1, and kinship between outbred parent and child or between siblings is 1/2 \citep{yang_common_2010,yang_gcta:_2011}.
 
 The quantitative trait vector $\mathbf{y}$ for all individuals is assumed to follow a linear polygenic model,
 \begin{equation}
   \label{eq:trait}
-  \mathbf{y}
-  =
-  \mathbf{1}_n \alpha + \mathbf{X}' \mathbf{\beta}  + \mathbf{\epsilon},
+  \begin{split}
+    \mathbf{y}
+    &=
+      \mathbf{1}_n \alpha + \mathbf{X}' \boldsymbol{\beta}  + \boldsymbol{\epsilon}
+      , \\
+    \boldsymbol{\epsilon}
+    &\sim
+      \text{Normal} \left( \mathbf{0}, \sigma^2_e \mathbf{I}_n  \right)
+      ,
+  \end{split}
 \end{equation}
-where $\alpha$ is the intercept, $\mathbf{\beta} = (\beta_i)$ is a vector of genetic effect coefficients for each locus $i$, and $\mathbf{\epsilon}$ is a vector of non-genetic effects.
+where $\alpha$ is the intercept coefficient,
+$\boldsymbol{\beta} = (\beta_i)$ is a length-$m$ vector of genetic effect coefficients for each locus $i$,
+$\boldsymbol{\epsilon}$ is a length-$n$ vector of non-genetic independent residual effects with zero mean and standard deviation $\sigma^2_e$, which is also identified as the environmental variance component, $\mathbf{I}_n$ is the $n \times n$ identity matrix,
+and the prime ($'$) denotes matrix transposition.
 
-Let us shift the mean of genotypes to the intercept and denote $\mathbf{s}=\mathbf{X}' \mathbf{\beta}$, then:
+We now derive the variance component model of interest from the previous genotype and trait models.
+As stated in those models, $\mathbf{X}$ and $\boldsymbol{\epsilon}$ are random, while we treat $\alpha$ and $\boldsymbol{\beta}$ as fixed parameters.
+Denote the genetic effect by $\mathbf{s} = \mathbf{X}' \boldsymbol{\beta}$.
+The covariance structure of the genetic effect is also a scaled version of the kinship matrix.
+In particular, assuming \cref{eq:model0} and independent loci, then
 \begin{align*}
-     \mathbf{y}  &=
-  \mathbf{1}_n \alpha + \mathbf{s}  + \mathbf{\epsilon},
-   \\
-  \mathbf{s} 
-    \sim
-    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat \right), \quad
-    \mathbf{\epsilon} &
-    \sim
-    \text{Normal} \left( \mathbf{0}, \sigma^{2}_e \mathbf{I}_n  \right), 
-    \mathbf{s}  + \mathbf{\epsilon} 
-    \sim
-    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat +  \sigma^{2}_e \mathbf{I}_n  \right).
-\end{align*}
-
-To analyze the covariance structure of the trait, we treat $\alpha$ and $\mathbf{\beta}$ as fixed parameters, while $\mathbf{X}$ and $\mathbf{\epsilon}$ are random.
-The non-genetic effects are assumed to be independent with variance $(1-h^2) \sigma^2$ given by the total trait variance scale $\sigma^2$ and the narrow-sense heritability $h^2$:
-\begin{align*}
-  \E[\mathbf{\epsilon}]
-  =
-  \mathbf{0}_n
-  ,
-  \quad\quad
-  \Cov(\mathbf{\epsilon})
-  =
-   \sigma^{2}_e \mathbf{I}_n
-  ,
+  \Cov( \mathbf{s} )
+  &=
+    \Cov \left( \sum_{i=1}^m \x \beta_i \right)
   \\
-    \mathbf{X}' \mathbf{\beta}  + \mathbf{\epsilon}
-    \sim
-    \text{Normal} \left( \mathbf{0}, 2 \sigma^{2}_g \kinMat +  \sigma^{2}_e \mathbf{I}_n  \right).
+  &=
+    \sum_{i=1}^m \Cov \left( \x \beta_i \right)
+  \\
+  &=
+    \sum_{i=1}^m \Cov \left( \x \right) \beta_i^2
+  \\
+  &=
+    \sum_{i=1}^m 4 \pit \left( 1 - \pit \right) \beta_i^2 \kinMat
+  \\
+  &=
+    2 \sigma^2_g \kinMat
+    , \\
+  \sigma^2_g
+  &=
+    \sum_{i=1}^m 2 \pit \left( 1 - \pit \right) \beta_i^2
+    .
 \end{align*}
-Then the narrow-sense heritability $h^2$ is defined as:
+This particular scale for the genetic variance component $\sigma^2_g$, which leaves a factor of two behind, is used traditionally so that $\sigma^2_g$ corresponds to the variance of outbred individuals, who have $\kt[j] = 1/2$.
+Further, as noted earlier, GCTA and other models define their kinship matrices as $2 \kinMat$ under our notation.
+Lastly, if we shift the mean of genotypes to the intercept, and assume that $\mathbf{s}$ is well approximated by a multivariate distribution with the above covariance, then
 \begin{align*}
-    h^{2}  =
+  \mathbf{y}
+  &=
+    \mathbf{1}_n \alpha + \mathbf{s} + \boldsymbol{\epsilon}
+    , \\
+  \mathbf{s} 
+  &\sim
+    \text{Normal} \left( \mathbf{0}, 2 \sigma^2_g \kinMat \right)
+    , \\
+  \mathbf{s}  + \boldsymbol{\epsilon} 
+  &\sim
+    \text{Normal} \left( \mathbf{0}, 2 \sigma^2_g \kinMat +  \sigma^{2}_e \mathbf{I}_n  \right)
+    .
+\end{align*}
+Lastly, the narrow-sense heritability $h^2$ is defined as the proportion of variance that corresponds to the genetic variance component:
+\begin{align*}
+    h^2  =
     \frac{
-    \sigma^{2}_g
+    \sigma^2_g
     }{
-    \sigma^{2}_g + \sigma^{2}_e
+    \sigma^2_g + \sigma^2_e
     }.
 \end{align*}
 
@@ -188,10 +205,9 @@ Below
 $
 \pith
 =
-\frac{1}{2n} \mathbf{x}_i' \mathbf{1}
+\frac{1}{2n} \x' \mathbf{1}_n
 $
 is the standard ancestral allele frequency estimator,
-where the prime ($'$) denotes matrix transposition,
 and
 $\kinMatEstNamed{name} = (\ktHatNamed{name})$
 relates the scalar and matrix formulas of each named kinship estimator.
@@ -296,7 +312,7 @@ $\hat{\sigma}^{2,\text{biased}}_g, \hat{\sigma}^{2,\text{biased}}_e$.
 Then, the model based on the biased kinship matrix is:
 \begin{align*}
 \mathbf{y}  &=
-  \mathbf{1}_n \alpha ^{\text{biased}} + \mathbf{s}^{\text{biased}}  + \mathbf{\epsilon},
+  \mathbf{1}_n \alpha ^{\text{biased}} + \mathbf{s}^{\text{biased}}  + \boldsymbol{\epsilon},
   \\
   \mathbf{s}^{\text{biased}} &= \mathbf{C} \mathbf{s}
   \sim
@@ -389,7 +405,7 @@ To further explore how rare variants affect kinship estimation and trait simulat
 \subsubsection{Trait simulation algorithm}
 
 Suppose the genotype matrix $\mathbf{X}$ is available, and we have fixed values for the number of causal loci $m_1$, the trait mean, variance scale, and heritability ($\mu, \sigma^2, h^2$).
-The goal is to choose the intercept $\alpha$ and draw random effect sizes $\mathbf{\beta}$ that result in the desired trait parameters.
+The goal is to choose the intercept $\alpha$ and draw random effect sizes $\boldsymbol{\beta}$ that result in the desired trait parameters.
 First we randomly select $m_1$ loci to be causal, and subset the genotype matrix $\mathbf{X}$ and ancestral allele frequency vector $\mathbf{p}$ so that from this point on they contain only those causal loci (they now have dimensions $m_1 \times n$ and length $m_1$, respectively).
 
 Below we divide the algorithm into two steps: (1) scaling the effect sizes, and (2) centering the trait.
@@ -412,9 +428,9 @@ $$
 We obtain the desired variance by dividing each $\beta_i$ by $\sigma_0$ (which results in a variance of 1) and then multiply by $h \sigma$ (which results in the desired variance of $h^2 \sigma^2$).
 Combining both steps, the update is
 $$
-\mathbf{\beta}
+\boldsymbol{\beta}
 \leftarrow
-\mathbf{\beta} \frac{ h \sigma }{\sigma_0}
+\boldsymbol{\beta} \frac{ h \sigma }{\sigma_0}
 .
 $$
 
@@ -423,7 +439,7 @@ First, sample estimates $\mathbf{\hat{p}} = (\pith)$ of the ancestral allele fre
 $$
 \pith
 =
-\frac{1}{2n} \mathbf{1}_n^\intercal \mathbf{x}_i
+\frac{1}{2n} \mathbf{1}_n^\intercal \x
 .
 $$
 Although this estimator is unbiased ($\E[\mathbf{\hat{p}}] = \mathbf{p}$), the resulting variance estimates of interest $\pith \left( 1-\pith \right)$ are downwardly biased \citep{ochoa_estimating_2021}:
@@ -450,21 +466,21 @@ $$
 $$
 Therefore, assuming that this additional factor $(1 - \bar{\varphi})$ is known, the update
 $$
-\mathbf{\beta}
+\boldsymbol{\beta}
 \leftarrow
-\mathbf{\beta} \frac{ h \sigma \sqrt{1-\bar{\varphi}} }{\hat{\sigma}_0}
+\boldsymbol{\beta} \frac{ h \sigma \sqrt{1-\bar{\varphi}} }{\hat{\sigma}_0}
 $$
 results in the desired variance.
 
 \textbf{Centering the trait.}
-Here we consider the problem of selecting the intercept coefficient $\alpha$ that, together with the previous effect size coefficient vector $\mathbf{\beta}$, result in the desired trait mean $\mu$.
+Here we consider the problem of selecting the intercept coefficient $\alpha$ that, together with the previous effect size coefficient vector $\boldsymbol{\beta}$, result in the desired trait mean $\mu$.
 
 When ancestral allele frequencies are known, the trait can be centered precisely.
 Given our model, we obtain the desired overall trait mean $\mu$ by choosing the intercept coefficient to be
 $$
 \alpha 
 =
-\mu - 2 \mathbf{p}^\intercal \mathbf{\beta}
+\mu - 2 \mathbf{p}^\intercal \boldsymbol{\beta}
 .
 $$
 
@@ -472,7 +488,7 @@ When ancestral allele frequencies are unknown, the solution is to choose the int
 \begin{align*}
   \alpha 
   =
-  \mu - 2 \hat{\bar{p}} \mathbf{1}_{m_1}^\intercal \mathbf{\beta}
+  \mu - 2 \hat{\bar{p}} \mathbf{1}_{m_1}^\intercal \boldsymbol{\beta}
   , \quad\quad
   \hat{\bar{p}}
   =
@@ -485,9 +501,9 @@ When ancestral allele frequencies are unknown, the solution is to choose the int
 \end{align*}
 where $\mathbf{1}_{m_1}$ is a length-$m_1$ column vector of ones.
 Note that this overal mean allele frequency $\hat{\bar{p}}$ is computed among causal loci only.
-This works very well in practice since $\mathbf{\beta}$ is drawn randomly, so it is uncorrelated to $\mathbf{p}$ and therefore
+This works very well in practice since $\boldsymbol{\beta}$ is drawn randomly, so it is uncorrelated to $\mathbf{p}$ and therefore
 $$
-\frac{1}{m_1} \mathbf{p}^\intercal \mathbf{\beta}
+\frac{1}{m_1} \mathbf{p}^\intercal \boldsymbol{\beta}
 =
 \frac{1}{m_1} \sum_{i=1}^{m_1} \pit \beta_i
 \approx
@@ -496,7 +512,7 @@ $$
 =
 \frac{1}{m_1}
 \bar{p}
-\mathbf{1}_{m_1}^\intercal \mathbf{\beta}
+\mathbf{1}_{m_1}^\intercal \boldsymbol{\beta}
 $$
 is a good approximation.
 
@@ -504,17 +520,17 @@ Now we discuss why the more obvious naive approach, which would be to center the
 $
 \alpha 
 =
-\mu - 2 \mathbf{\hat{p}}^\intercal \mathbf{\beta}
+\mu - 2 \mathbf{\hat{p}}^\intercal \boldsymbol{\beta}
 ,
 $
 does not work.
 This approach is equivalent to centering genotypes at each locus as
 $$
-\mathbf{y} = \alpha \mathbf{1}_n + \sum_{i=1}^{m_1} (\mathbf{x}_i - 2 \pith \mathbf{1}_n) \beta_i + \mathbf{\epsilon}.
+\mathbf{y} = \alpha \mathbf{1}_n + \sum_{i=1}^{m_1} (\x - 2 \pith \mathbf{1}_n) \beta_i + \boldsymbol{\epsilon}.
 $$
 However, this operation introduces a distortion in the covariance of the genotypes \citep{ochoa_estimating_2021}: 
 $$
-\Cov \left( \mathbf{x}_i - 2 \pith \mathbf{1}_n \right)
+\Cov \left( \x - 2 \pith \mathbf{1}_n \right)
 =
 \pit ( 1 - \pit ) \left( 
 \kinMat 
