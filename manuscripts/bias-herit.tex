@@ -5,6 +5,9 @@
 \usepackage{graphicx}
 \usepackage[capitalize]{cleveref}
 
+\usepackage{pdfpages} % Required to include PDFs
+
+
 % next three for UTF8 to work (for non-ASCII names to work without awkward codes)
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
@@ -15,7 +18,7 @@
 \bibliography{zotero} % biblatex wants this in the preamble...
 
 % path for figures
-\graphicspath{ {../data/} }
+\graphicspath{ {../} }
 
 \usepackage[noT]{kinshipsymbols}
 % % copy of \Fst from package `kinshipsymbols`
@@ -84,7 +87,7 @@ $^*$ Corresponding author: \texttt{alejandro.ochoa@duke.edu}
 
 
 \begin{abstract}
-Heritability is a fundamental parameter of diseases and other traits, quantifying the contribution of genetics to that trait as opposed to non-genetic environmental factors. Heritability is reflected in the extent to which relatives have similar phenotypes. The estimation of kinship matrices, also known as Genetic Relatedness Matrices or “GRMs”, is required for heritability estimation with many common approaches based on variant components. However, the most common “standard” kinship estimator employed by these approaches, including the popular GCTA package, can be severely biased in structured populations. In this study, we first characterize the theoretically predicted heritability estimation bias in the GCTA model due to kinship bias. Heritability estimation in this model requires unbiased estimates of the random effect coefficient, which we find is biased when the standard kinship estimator is used, and this bias depends only on the mean kinship value and the true heritability. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. The simulation results validate our theoretical prediction of the bias of the standard GCTA approach and show that our unbiased kinship matrices result in unbiased heritability estimates. A further complication is that upweighting rare variants in these kinship estimates, which is common practice, introduces an additional bias that has not been characterized in closed form.  Then we apply various kinship matrices to several real datasets, such as the San Antonio Family Study and a Nephrotic Syndrome multiethnic cohort, to further characterize the source of biases and illustrate their extent in practice. We find that the heritability estimations using our unbiased kinship matrices lead to higher values, which are more consistent with previously published estimates in unstructured populations. Overall, we find that the most commonly used kinship estimator downwardly bias heritability estimation when there is population structure, and using an unbiased kinship estimator addresses this source of bias. 
+Heritability is a fundamental parameter of diseases and other traits, quantifying the contribution of genetics to that trait as opposed to non-genetic environmental factors. Heritability is reflected in the extent to which relatives have similar phenotypes. The estimation of kinship matrices, also known as Genetic Relatedness Matrices or “GRMs”, is required for heritability estimation with many common approaches based on variant components. However, the most common “standard” kinship estimator employed by these approaches, including the popular GCTA package, can be severely biased in structured populations. In this study, we first characterize the theoretically predicted heritability estimation bias in the GCTA model due to kinship bias. Heritability estimation in this model requires unbiased estimates of the random effect coefficient, which we find is biased when the standard kinship estimator is used, and this bias depends only on the mean kinship value and the true heritability. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. The simulation results validate our theoretical prediction of the bias of the standard GCTA approach and show that our unbiased kinship matrices result in unbiased heritability estimates. A further complication is that upweighting rare variants in these kinship estimates, which is common practice, introduces an additional bias that has not been characterized in closed form.  Then we apply various kinship matrices to several real datasets, such as the San Antonio Family Study, the Hispanic Community Health Study / Study of Latinos, and a Nephrotic Syndrome multiethnic cohort, to further characterize the source of biases and illustrate their extent in practice. We find that the heritability estimations using our unbiased kinship matrices lead to higher values, which are more consistent with previously published estimates in unstructured populations. Overall, we find that the most commonly used kinship estimators bias heritability estimates downward when population structure is present, whereas using unbiased kinship estimators can address this source of bias.
 \end{abstract}
 
 % \clearpage
@@ -97,11 +100,11 @@ Heritability is a fundamental parameter of diseases and other traits, quantifyin
 
 Heritability is an important parameter of diseases and other traits, quantifying the contribution of genetics to that trait as opposed to non-genetic environmental factors \citep{lush1949heritability}. Heritability is reflected in the extent to which relatives have similar phenotypes \citep{visscher2008heritability}. In addition, heritability is closely related to the polygenic risk score (PRS) method, an estimate of genetic liability to a trait for individuals, as it defines the upper bound of the performance of PRS \citep{choi2020tutorial}. 
 
-Heritability has long been estimated from close relatives, such as twins or siblings \citep{falconer1996introduction}, or more complex pedigrees \citep{almasy_multipoint_1998}. The variance component model of the SOLAR approach, which is based on estimating kinship from pedigrees, enables the use of more distant relatives \citep{almasy_multipoint_1998}. GCTA extended the last approach to population data, which was used to demonstrate that SNPs likely explain the majority of missing heritability for height \citep{yang_common_2010,yang_gcta:_2011}. Alternative approaches for estimating heritability, such as LD Score Regression \citep{bulik2015ld,luo2021estimating} and SumHer \citep{speed2019sumher}, work with GWAS summary data and enable partitioning heritability within gene sets. We will consider LDSC in Aim 3, but not here since it is not based on kinship matrices and LMMs.
+Heritability has long been estimated from close relatives, such as twins or siblings \citep{falconer1996introduction}, or more complex pedigrees \citep{almasy_multipoint_1998}. The variance component model of the SOLAR approach, which is based on estimating kinship from pedigrees, enables the use of more distant relatives \citep{almasy_multipoint_1998}. GCTA extended the last approach to population data, which was used to demonstrate that SNPs likely explain the majority of missing heritability for height \citep{yang_common_2010,yang_gcta:_2011}. Alternative approaches for estimating heritability, such as LD Score Regression \citep{bulik2015ld,luo2021estimating} and SumHer \citep{speed2019sumher}, work with GWAS summary data and enable partitioning heritability within gene sets. 
 
-Accurate kinship estimation is crucial for heritability estimation based on LMMs, such as GCTA. However, the most common kinship estimator employed by these approaches can be severely biased in structured populations \citep{ochoa_estimating_2021}.  In Aim 1 we showed, empirically and theoretically, that association tests are invariant to the use of common biased kinship estimators compared with an unbiased estimator \citep{hou2023genetic}. However, heritability estimation requires unbiased estimates of the random effect coefficient, which is biased when the standard kinship estimator is used. 
+Accurate kinship estimation is crucial for heritability estimation based on LMMs, such as GCTA. However, the most common kinship estimator employed by these approaches can be severely biased in structured populations \citep{ochoa_estimating_2021}. Previous study showed, empirically and theoretically, that association tests are invariant to the use of common biased kinship estimators compared with an unbiased estimator \citep{hou2023genetic}. However, heritability estimation requires unbiased estimates of the random effect coefficient, which is biased when the standard kinship estimator is used. 
 
-In this study, we first characterize the theoretically predicted heritability estimation bias due to kinship bias, following the derivation in Aim 1. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. Then we apply various kinship matrices to several real datasets to further characterize the source of biases and their extent.
+In this study, we first characterize the theoretically predicted heritability estimation bias due to kinship bias, following the derivation in the previous study. We conduct simulation studies to evaluate heritability estimation with various kinship matrices for scenarios such as admixture structure only and admixture plus family structure. Then we apply various kinship matrices to several real datasets to further characterize the source of biases and their extent.
 
 
 \section{Methods}
@@ -570,10 +573,9 @@ Nephrotic Syndrome (NS) multiethnic cohort is a multi-ancestry study exploring t
 \section{Results}
 
 \subsection{Simulation results}
+First, we considered a scenario with only population structure, in the absence of family structure. Our findings indicate that only the popkin ROM estimator produces unbiased heritability estimates, whereas all other kinship estimators lead to downwardly biased estimates (\cref{fig:Herit_sim}). To further illustrate the pattern of these biases, we plotted the bias trends for different kinship estimators, which closely align with the theoretical results presented in \cref{fig:h}. Next, we extended our simulations to incorporate both population and family structures. The observed trend in bias remains consistent with the previous scenario; however, the variability in heritability estimates is notably lower.
 
-First, we considered a setting where there is only population structure (absence of family structure). We found that only popkin ROM results in unbiased heritability estimation while all estimates based on other kinship estimators are downwardly biased \cref{fig:Herit_sim}. To further illustrate the trend of the biases, we plot the biases for different kinship estimators. The trend is similar to the theoretical results in \cref{fig:h}. Then we consider a simulation including both population and family structure, the trend is similar to the first scenario while the variability of heritability estimation is much smaller.
-
-For the simulation based on the 1000 Genomes Project, we set the expected heritability to 0.8. When the traits are simulated based on all loci including rare ones, heritability estimations are all underestimated using different kinship estimators \cref{fig:tgp_sim}. When the traits are simulated based on loci after filtering out variants with allele frequency lower than 0.01 or 0.05, only heritability estimations using Popkin ROM generate unbiased results, while estimates based on Standard MOR underestimate the heritability. When kinship matrices are estimated filtering out more rare variants (maf=0.05), the heritability estimations differences is quite small using different kinship estimators.
+For the simulation based on data from the 1000 Genomes Project, we set the expected heritability to 0.8. When traits were simulated using all loci, including rare variants, heritability was systematically underestimated across all kinship estimators (\cref{fig:tgp_sim}). However, when traits were simulated using loci filtered to exclude variants with allele frequencies below 0.01 or 0.05, only heritability estimates obtained using the popkin ROM estimator remained unbiased, whereas those based on the Standard MOR estimator continued to underestimate heritability. Furthermore, when kinship matrices were estimated after filtering out a greater proportion of rare variants (maf=0.05), the differences in heritability estimates across kinship estimators became minimal, as the mean kinship values were small in this setting.
 
 
 \begin{figure}[bp!]
@@ -597,41 +599,41 @@ For the simulation based on the 1000 Genomes Project, we set the expected herita
 
 
 \subsection{Real data applications}
+To further validate our findings on real datasets, we estimated heritability using the popkin ROM estimator—an unbiased kinship estimator—and the standard kinship MOR estimator, which is commonly used but known to be biased. These analyses were conducted on three real datasets: the San Antonio Family Study (SAMAFS), the Hispanic Community Health Study/Study of Latinos (HCHS/SOL), and the Nephrotic Syndrome (NS) multiethnic cohort.
 
-To further validate our results on real datasets, we estimate heritability using the popkin ROM estimator (the unbiased kinship estimator) and standard kinship MOR estimator (the commonly used biased kinship estimator) on three real datasets: San Antonio Family Study (SAMAFS), Hispanic Community Health Study / Study of Latinos (HCHS/SOL) and  Nephrotic Syndrome (NS) multiethnic cohort.
+For both SAMAFS and HCHS/SOL, heritability estimates derived from the popkin ROM estimator were generally higher across most traits, though some exceptions were observed (\cref{fig:T2D,fig:HCHS}). This discrepancy arises because our theoretical justification in \ref{Estimation bias} applies only to estimators that weight loci consistently (i.e., both ROM or both MOR). These results are consistent with our simulation findings using the 1000 Genomes Project (\cref{fig:tgp_sim}). 
 
-For both SAMAFS and HCHS/SOL, heritabilities estimated from popkin ROM estimator are higher for most traits while there are some exceptions (\cref{fig:T2D,fig:HCHS}). This is because our theoretical justification in \ref{Estimation bias} holds only for estimators that weigh loci the same way (both ROM or both MOR), while there is some additional bias that has not yet been characterized when we compare results from popkin ROM to standard MOR (\cref{fig:est_relationship}).
+For the NS dataset, all heritability estimates obtained using the popkin ROM estimator were higher than those derived from the standard kinship MOR estimator (\cref{fig:NS}). This can be attributed to the higher mean kinship values in this dataset, which, as demonstrated in \cref{fig:h}, result in greater bias.
 
-For NS, we find that all heritabilities estimated from popkin ROM estimator are larger than the standard kinship MOR estimator \cref{fig:NS}. This is explained by the fact that this dataset has higher mean kinship values, which leads to larger biases as shown in \cref{fig:h}.
 
 % heights, compared with the published papers
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=\textwidth]{data/Fig_T2D_maf001_agesex.png}
+  \includegraphics[width=\textwidth]{data/Fig2_T2D_maf001_agesex.png}
   \caption{
-    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-1.}
-    The figure shows results from the San Antonio Family Study: Type 2 Diabetes (low mean kinship).
+    {\bf Heritability estimation on the SAMAFS dataset.}
+    The figure shows heritability estimates using pedigree, Popkin ROM, Standard ROM, and Standard MOR kinship estimators on the San Antonio Family Study: Type 2 Diabetes (low mean kinship).
     }
   \label{fig:T2D}
 \end{figure}
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=\textwidth]{data/Fig_HCHS_All_maf001_agesex.png}
+  \includegraphics[width=\textwidth]{data/Fig2_HCHS_All_maf001_agesex.png}
   \caption{
-    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-2.}
-    The figure shows results from the Hispanic Community Health Study / Study of Latinos (middle mean kinship).
+    {\bf Heritability estimation on the HCHS/SOL dataset.}
+    The figure shows heritability estimates using Popkin ROM, Standard ROM, and Standard MOR kinship estimators on the Hispanic Community Health Study / Study of Latinos (middle mean kinship).
     }
   \label{fig:HCHS}
 \end{figure}
 
 \begin{figure}[bp!]
   \centering
-  \includegraphics[width=\textwidth]{data/Fig_NS_sex_array.png}
+  \includegraphics[width=\textwidth]{data/Fig2_NS_sex_array.png}
   \caption{
-    {\bf Heritability estimation by standard kinship MOR estimator and popkin ROM estimator on real datasets-3.}
-    The figure shows results from Nephrotic Syndrome: multiethnic cohort (high mean kinship).
+    {\bf Heritability estimation on the NS dataset.}
+    The figure shows heritability estimates using Popkin ROM, Standard ROM, and Standard MOR kinship estimators on the Nephrotic Syndrome: multiethnic cohort (high mean kinship). Note the Standard ROM result for SSNS does not converge, so it is not shown in the figure.
     }
   \label{fig:NS}
 \end{figure}
@@ -641,25 +643,33 @@ For NS, we find that all heritabilities estimated from popkin ROM estimator are 
 \section{Discussion}
 
 % summary of this whole paper
-Previous research found that commonly used kinship estimators are biased, and these kinship biases will not affect association test statistics. In this project, we explored how kinship estimation bias affects heritability, and found the bias carried away to heritability estimation.
-
+Previous research has shown that commonly used kinship estimators are biased; however, these biases do not influence association test statistics. In this study, we investigated the impact of kinship estimation bias on heritability and found that this bias propagates to heritability estimation. Specifically, we observed that the Standard kinship estimator (ROM) systematically underestimates heritability, while the bias introduced by the MOR estimators depends on the presence of rare variants.
 
 
 % ROM and MOR, 1000 genome results
-
-
 % rare variants simulation, and how it affects MOR
 
+Based on our simulation and real data analysis, the bias between the standard ROM and popkin ROM estimators is evident, with the magnitude of the differences depending on the mean kinship values. However, it remains challenging to quantitatively determine both the direction and the extent of bias between the ROM and MOR versions of the popkin or standard kinship estimators. Based on the formula of the MOR estimator in \cref{eq:kinship_std_mor}, we hypothesize that MOR estimators tend to assign greater weight to the contribution of rare variants. Our simulation studies (\cref{fig:Herit_sim,fig:tgp_sim}) confirm that rare variants may influence the extent of bias in the MOR estimator. Thus, the relationship of heritability using different kinship estimators can be characterized in \cref{fig:est_relationship}.
+
+Directly simulating rare variants is difficult; therefore, in our initial simulation (\cref{fig:Herit_sim}), we primarily generated common variants. Under these conditions, only the popkin ROM estimator produced unbiased heritability estimates, whereas heritability estimates derived from the MOR estimators consistently exhibited downward bias, as further confirmed in the second and third columns of \cref{fig:tgp_sim}.
+
+To simulate traits influenced by rare variants, we utilized genotype data from the 1000 Genomes Project. When traits were generated based on rare variants, we observed that all kinship estimators led to an underestimation of heritability. The heritability of traits affected by rare variants remains a theoretically underdeveloped area, necessitating further research (Some ref papers..). In practical applications, as demonstrated by our real data analysis, certain traits are influenced by rare variants, which may explain why heritability estimates obtained using the popkin ROM are lower than those obtained using the standard MOR estimator.
 
 % San Antonio Family Study pedigree
+For the San Antonio Family Study (SAMAFS), pedigree information was available, allowing us to estimate the kinship matrix based on pedigree data and subsequently obtain heritability estimates. Our results indicate that heritability estimated using the pedigree-based kinship matrix is upwardly biased compared to estimates obtained with the popkin ROM estimator. This bias arises because pedigree-derived kinship matrices do not account for cryptic relatedness, leading to inflated heritability estimates. Some research found that studies based on close relatives and family tend to lead to a higher heritability (some ref papers).  
+
 
 % Binary traits
+In the Nephrotic Syndrome (NS) multiethnic cohort, the traits are binary (case vs. control). Heritability was initially estimated directly (observed heritability) and subsequently transformed into liability-scale heritability. In our study, although the liability-scaled heritability estimates ranged from 0.1 to 0.3 after transformation, the observed heritability estimates for NS vs. control and SSNS vs. control using the popkin ROM estimator approached 0.99 (Supplement table index here). This is because $\hat{\sigma}^2_e$ converged to nearly zero after several iterations in the GCTA software. These findings suggest that improved algorithms and transformation frameworks may be necessary to ensure accurate heritability estimation for binary traits.
+
+% Conclusion
+In this study, we empirically and theoretically examined the impact of kinship estimation bias on heritability estimation, expanding on prior research that identified biases in commonly used kinship estimators. While these biases do not affect association test statistics, our findings show that they propagate to heritability estimates. Specifically, the Standard ROM kinship estimator consistently underestimates heritability, whereas bias in MOR estimators depends on the presence of rare variants. Through simulations and real data analyses, we observed that the extent of Standard MOR estimator bias is influenced by mean kinship values, with rare variants playing a critical role in shaping bias patterns as well. Overall, our study highlights the importance of selecting appropriate kinship estimators in heritability analyses, particularly in structured populations and rare variant studies. These findings provide key insights into the biases inherent in existing kinship estimators and underscore the need for future research to refine estimation methods for more accurate and reliable heritability inference across diverse genetic datasets.
 
 
 
 
 
-...
+
 \begin{figure}[bp!]
   \centering
   \includegraphics[width=\textwidth]{data/est_relationships.png}
@@ -678,7 +688,68 @@ Previous research found that commonly used kinship estimators are biased, and th
 
 \beginsupplement
 
-\section{Supplemental figures}
-...
+\section{Supplemental Tables and figures}
+
+
+
+\begin{table}[h]
+  \caption{Heritability for the NS multiethnic cohort}
+  \label{tbl:NS_herit_table}
+  \includegraphics[width=\linewidth]{data/S_table_1_NS_herit.PNG}
+\end{table}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/SFig_TGP_kinships.png}
+  \caption{
+    {\bf Kinships heatmap for the 1000 Genome dataset.}
+    }
+  \label{fig:TGP_kinships}
+\end{figure}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/SFig_T2D_kinships.png}
+  \caption{
+    {\bf Kinships heatmap for the San Antonio Family
+Study dataset.}
+    }
+  \label{fig:T2D_kinships}
+\end{figure}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/SFig_NS_sex_array_kinships.png}
+  \caption{
+    {\bf Kinships heatmap for the Nephrotic Syndrome multiethnic cohort dataset.}
+    }
+  \label{fig:NS_kinships}
+\end{figure}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/SFig_HCHS_All_maf001_kinships.png}
+  \caption{
+    {\bf Kinships heatmap for the Hispanic Community Health Study / Study of Latinos dataset.}
+    }
+  \label{fig:HCHS_kinships}
+\end{figure}
+
+\includepdf[pages=-]{data/SFig_T2D_condition_plot.pdf}
+
+\begin{figure}[bp!]
+  \centering
+  \includegraphics[width=\textwidth]{data/SFig_T2D_condition_compare.png}
+  \caption{
+    {\bf Compare heritability conditioning on sex and age with other alternative conditioning (unconditional and condition on sex).}
+    }
+  \label{fig:condition_compare}
+\end{figure}
+
+
+
+\section{Supplemental ...}
+
+
 
 \end{document}
