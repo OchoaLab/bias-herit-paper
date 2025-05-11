@@ -1,0 +1,6 @@
+code	nice	type	short
+true	True Kinship	ROM lim.	True Kinship
+pedigree	pedigree	pedigree	pedigree
+popkin_rom	Popkin ROM est.	ROM est.	Popkin
+std_rom	Standard ROM est.	ROM est.	Standard
+std_mor	Standard MOR est.	MOR est.	Standard
